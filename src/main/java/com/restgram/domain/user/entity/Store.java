@@ -2,21 +2,17 @@ package com.restgram.domain.user.entity;
 
 import com.restgram.domain.address.entity.EmdAddress;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Getter
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("STORE")
 public class Store extends User {
     private String storeName;
-
-    @Column(nullable = false)
-    private String user_id;
-
     private String password;
     private Double latitude;
     private Double longitude;

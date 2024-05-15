@@ -1,18 +1,23 @@
 package com.restgram.domain.address.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.repository.EntityGraph;
 
 @Entity
+@Table(name = "address_sigg")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SiggAddress {
     @Id
-    private String id;
+    private Long id;
     private String name;
+
+    @JoinColumn(name = "sido_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private SidoAddress sido;
 }
