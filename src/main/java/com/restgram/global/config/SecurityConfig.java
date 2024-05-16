@@ -51,7 +51,7 @@ public class SecurityConfig {
                         authorize -> authorize
                                 .requestMatchers("/store/join", "/store/login", "/user/reissue", "/login/oauth2/**").permitAll()
                                 .requestMatchers("/user/logout", "/customer/info").authenticated()
-                                .requestMatchers("/coupon", "/coupon/**").hasAuthority(UserType.STORE.getName())
+                                .requestMatchers("/coupon", "/coupon/stop/**", "/coupon/finish").hasAuthority(UserType.STORE.getName())
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

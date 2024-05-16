@@ -32,7 +32,7 @@ public class Coupon extends BaseEntity {
     private Integer payMoney;
 
     @ColumnDefault("false")
-    private boolean disable;
+    private Boolean disable;
 
     public void setDisable(boolean disable) {
         this.disable = disable;

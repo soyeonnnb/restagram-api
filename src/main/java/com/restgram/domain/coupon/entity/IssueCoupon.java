@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Builder
 @AllArgsConstructor
@@ -26,6 +28,6 @@ public class IssueCoupon extends BaseEntity {
     private Coupon coupon;
 
     private Boolean isUsed;
-
+    private LocalDateTime usedAt;
     private String qrImage;
 }

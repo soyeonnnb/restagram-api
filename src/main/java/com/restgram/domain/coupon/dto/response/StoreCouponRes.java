@@ -1,0 +1,41 @@
+package com.restgram.domain.coupon.dto.response;
+
+import com.restgram.domain.coupon.entity.Coupon;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class StoreCouponRes {
+
+    private Long id;
+    private LocalDateTime startAt;
+    private LocalDateTime finishAt;
+    private Long quantity;
+    private Long remainQuantity;
+    private Long useQuantity;
+    private Integer discountMoney;
+    private Integer payMoney;
+    private boolean disable;
+
+    public static StoreCouponRes of(Coupon coupon, Long useQuantity) {
+        return StoreCouponRes.builder()
+                .id(coupon.getId())
+                .startAt(coupon.getStartAt())
+                .finishAt(coupon.getFinishAt())
+                .quantity(coupon.getQuantity())
+                .remainQuantity(coupon.getRemainQuantity())
+                .useQuantity(useQuantity)
+                .discountMoney(coupon.getDiscountMoney())
+                .payMoney(coupon.getPayMoney())
+                .disable(coupon.getDisable())
+                .build();
+    }
+
+}
