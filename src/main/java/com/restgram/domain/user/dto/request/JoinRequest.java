@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,7 +42,6 @@ public class JoinRequest {
 
     private String storePhone;
 
-    @NotBlank(message = "주소는 필수값입니다.")
     private Long bcode;
 
     @NotBlank(message = "상세주소는 필수값입니다.")

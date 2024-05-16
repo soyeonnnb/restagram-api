@@ -1,15 +1,13 @@
 package com.restgram.domain.user.service;
 
 
-import com.restgram.domain.EmdAddressRepository;
 import com.restgram.domain.address.entity.EmdAddress;
+import com.restgram.domain.address.repository.EmdAddressRepository;
 import com.restgram.domain.user.dto.request.JoinRequest;
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.entity.Store;
-import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.entity.UserType;
-import com.restgram.domain.user.repository.RefreshTokenRepository;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
@@ -20,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +33,10 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void join(JoinRequest req) {
         // 중복 이메일 확인
-        if (storeRepository.existsByEmail(req.getEmail())) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
+        if (storeRepository.existsByEmail(req.getEmail())) throw new RestApiException(UserErrorCode.EMAIL_DUPLICATED);
         
         // 중복 닉네임 확인
-        if (userRepository.existsByNickname(req.getNickname())) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
+        if (userRepository.existsByNickname(req.getNickname())) throw new RestApiException(UserErrorCode.NICKNAME_DUPLICATED);
 
         // 비밀번호 암호화
         req.setPassword(passwordEncoder.encode(req.getPassword()));

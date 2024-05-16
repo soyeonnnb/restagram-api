@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.repository.EntityGraph;
 
 @Entity
-@Table(name = "address_sigg")
 @Builder
+@Table(name = "address_sigg")
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SiggAddress {

@@ -42,7 +42,6 @@ public class User {
     private LocalDateTime joinedAt;
 
     @UpdateTimestamp
-    @Column(insertable = false)
     private LocalDateTime updatedAt;
 
     @Transient

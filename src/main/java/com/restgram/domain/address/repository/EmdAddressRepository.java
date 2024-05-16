@@ -1,4 +1,4 @@
-package com.restgram.domain;
+package com.restgram.domain.address.repository;
 
 import com.restgram.domain.address.entity.EmdAddress;
 import org.springframework.data.jpa.repository.JpaRepository;
