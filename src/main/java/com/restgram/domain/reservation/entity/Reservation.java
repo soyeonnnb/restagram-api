@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,9 +35,17 @@ public class Reservation extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
-    private LocalDateTime reservated_at;
+    private Date date;
+
+    private Time time;
+
+    private Integer headCount; // 인원수
+    private String name; // 예약자명
+    private String phone; // 예약자 핸드폰
+    private String meno; // 메세지
 
     @Enumerated(EnumType.STRING)
     private ReservationState state;
+
 
 }

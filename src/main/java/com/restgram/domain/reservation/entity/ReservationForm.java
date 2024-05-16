@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
 import java.sql.Time;
 
 @Entity
@@ -23,8 +24,15 @@ public class ReservationForm extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Store store;
 
-    private Week week;
+    private Date date;
 
     private Time time;
 
+    private Integer quantity;
+
+    private Integer remainQuantity;
+
+    private Integer tablePerson; // 테이블 당 인원수
+
+    private Integer maxReservationPerson; // 최대 예약 인원수
 }

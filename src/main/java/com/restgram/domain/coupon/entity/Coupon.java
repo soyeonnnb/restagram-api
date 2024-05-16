@@ -3,16 +3,15 @@ package com.restgram.domain.coupon.entity;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Coupon extends BaseEntity {
@@ -26,7 +25,17 @@ public class Coupon extends BaseEntity {
 
     private LocalDateTime startAt;
     private LocalDateTime finishAt;
+
     private Long quantity;
     private Long remainQuantity;
+    private Integer discountMoney;
+    private Integer payMoney;
+
+    @ColumnDefault("false")
+    private boolean disable;
+
+    public void setDisable(boolean disable) {
+        this.disable = disable;
+    }
 
 }

@@ -1,5 +1,6 @@
 package com.restgram.global.config;
 
+import com.restgram.domain.user.entity.UserType;
 import com.restgram.domain.user.service.CustomOAuth2UserService;
 import com.restgram.global.handler.OAuth2AuthenticationFailureHandler;
 import com.restgram.global.handler.OAuth2AuthenticationSuccessHandler;
@@ -50,6 +51,7 @@ public class SecurityConfig {
                         authorize -> authorize
                                 .requestMatchers("/store/join", "/store/login", "/user/reissue", "/login/oauth2/**").permitAll()
                                 .requestMatchers("/user/logout", "/customer/info").authenticated()
+                                .requestMatchers("/coupon", "/coupon/**").hasAuthority(UserType.STORE.getName())
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
