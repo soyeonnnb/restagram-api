@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 public class Reservation extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JoinColumn(name = "reservation_id")
