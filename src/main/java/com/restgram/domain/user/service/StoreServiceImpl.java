@@ -3,7 +3,7 @@ package com.restgram.domain.user.service;
 
 import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.address.repository.EmdAddressRepository;
-import com.restgram.domain.user.dto.request.JoinRequest;
+import com.restgram.domain.user.dto.request.StoreJoinRequest;
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.entity.Store;
@@ -31,7 +31,7 @@ public class StoreServiceImpl implements StoreService {
 
     // 회원가입
     @Override
-    public void join(JoinRequest req) {
+    public void join(StoreJoinRequest req) {
         // 중복 이메일 확인
         if (storeRepository.existsByEmail(req.getEmail())) throw new RestApiException(UserErrorCode.EMAIL_DUPLICATED);
         

@@ -15,10 +15,10 @@ public class OAuthAttributes {
     private String email;
     private String nickname;
     private String profileImage;
+    private LoginMethod loginMethod;
     private UserType type;
 
     public static OAuthAttributes of(String registrationId, String nameAttributeKey, Map<String, Object> attributes) {
-        System.out.println("id"+nameAttributeKey);
         switch (registrationId) {
             case "kakao":
                 return ofKakao(nameAttributeKey, attributes);
@@ -41,6 +41,7 @@ public class OAuthAttributes {
                 .nickname(String.valueOf(profile.get("nickname")))
                 .profileImage(String.valueOf(profile.get("profile_image_url")))
                 .type(UserType.CUSTOMER)
+                .loginMethod(LoginMethod.KAKAO)
                 .build();
     }
 
@@ -51,6 +52,7 @@ public class OAuthAttributes {
                 .email(this.email)
                 .profileImage(this.profileImage)
                 .name(this.name)
+                .loginMethod(this.loginMethod)
                 .build();
     }
 

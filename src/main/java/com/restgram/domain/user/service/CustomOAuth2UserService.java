@@ -3,6 +3,7 @@ package com.restgram.domain.user.service;
 import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.OAuthAttributes;
+import com.restgram.domain.user.entity.UserType;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import jakarta.persistence.Column;
@@ -61,7 +62,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 
     private Customer save(OAuthAttributes attributes) {
-        Customer customer = customerRepository.findByUid(attributes.getUid())
+        Customer customer = customerRepository.findByUidAndLoginMethod(attributes.getUid(), attributes.getLoginMethod())
                 // 우리 프로젝트에서는 유저의 닉네임/사진에 대한 실시간 정보가 필요 없기 때문에 update는 하지 않는다.
                 .orElse(attributes.toEntity());
         return customerRepository.save(customer);
@@ -75,6 +76,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         map.put("name", customer.getName());
         map.put("profileImage", customer.getProfileImage());
         map.put("phone", customer.getPhone());
+        map.put("loginMethod", customer.getLoginMethod().getName());
         return map;
     }
 

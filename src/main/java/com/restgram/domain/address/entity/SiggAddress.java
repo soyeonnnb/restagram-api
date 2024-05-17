@@ -1,16 +1,14 @@
 package com.restgram.domain.address.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.repository.EntityGraph;
 
 @Entity
 @Builder
 @Table(name = "address_sigg")
 @AllArgsConstructor
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SiggAddress {
     @Id
@@ -19,5 +17,5 @@ public class SiggAddress {
 
     @JoinColumn(name = "sido_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private SidoAddress sido;
+    private SidoAddress sidoAddress;
 }

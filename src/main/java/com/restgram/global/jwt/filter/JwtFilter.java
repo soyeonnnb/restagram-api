@@ -1,5 +1,6 @@
 package com.restgram.global.jwt.filter;
 
+import com.nimbusds.oauth2.sdk.OAuth2Error;
 import com.restgram.global.exception.errorCode.JwtTokenErrorCode;
 import com.restgram.global.jwt.response.JwtErrorResponseSender;
 import com.restgram.global.jwt.token.JwtTokenProvider;
@@ -29,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override // 이 주소로 오는 건 토큰 없어도 됨.
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.equals("/store/login") || path.equals("/store/join") || path.equals("/user/reissue");
+        return path.equals("/user/login") || path.equals("/store/join") || path.equals("/user/reissue") || path.equals("/customer/join");
     }
 
     @Override
@@ -48,7 +49,6 @@ public class JwtFilter extends OncePerRequestFilter {
             jwtErrorResponseSender.sendErrorResponse(response, JwtTokenErrorCode.DOES_NOT_EXIST_TOKEN);
             return;
         }
-
         filterChain.doFilter(request, response);
     }
 

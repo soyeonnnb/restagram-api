@@ -1,6 +1,7 @@
 package com.restgram.domain.coupon.controller;
 
 import com.restgram.domain.coupon.dto.request.AddCouponReq;
+import com.restgram.domain.coupon.dto.response.CustomerCouponRes;
 import com.restgram.domain.coupon.dto.response.StoreCouponRes;
 import com.restgram.domain.coupon.service.CouponService;
 import com.restgram.global.exception.entity.CommonResponse;
@@ -26,8 +27,8 @@ public class CouponController {
     // 쿠폰 발급
     @PostMapping
     public CommonResponse registerCoupon(Authentication authentication, @RequestBody @Valid AddCouponReq req) {
-        Long id = Long.parseLong(authentication.getName());
-        couponService.addCoupon(id, req);
+        Long storeId = Long.parseLong(authentication.getName());
+        couponService.addCoupon(storeId, req);
         return CommonResponse.builder()
                 .success(true)
                 .code(HttpStatus.CREATED.value())
@@ -38,8 +39,8 @@ public class CouponController {
     // 쿠폰 발급 종료
     @PostMapping("/stop/{couponId}")
     public CommonResponse stopIssueCoupon(Authentication authentication, @PathVariable Long couponId) {
-        Long id = Long.parseLong(authentication.getName());
-        couponService.stopCoupon(id, couponId);
+        Long storeId = Long.parseLong(authentication.getName());
+        couponService.stopCoupon(storeId, couponId);
         return CommonResponse.builder()
                 .success(true)
                 .code(HttpStatus.OK.value())
@@ -49,8 +50,8 @@ public class CouponController {
 
     @GetMapping
     public CommonResponse getAvailableCouponList(Authentication authentication) {
-        Long id = Long.parseLong(authentication.getName());
-        List<StoreCouponRes> res = couponService.getAvailableCouponList(id);
+        Long storeId = Long.parseLong(authentication.getName());
+        List<StoreCouponRes> res = couponService.getAvailableCouponList(storeId);
         return CommonResponse.builder()
                 .success(true)
                 .code(HttpStatus.OK.value())
@@ -61,13 +62,40 @@ public class CouponController {
 
     @GetMapping("/finish")
     public CommonResponse getFinishCouponList(Authentication authentication) {
-        Long id = Long.parseLong(authentication.getName());
-        List<StoreCouponRes> res = couponService.getFinsihCouponList(id);
+        Long storeId = Long.parseLong(authentication.getName());
+        List<StoreCouponRes> res = couponService.getFinsihCouponList(storeId);
         return CommonResponse.builder()
                 .success(true)
                 .code(HttpStatus.OK.value())
                 .data(res)
                 .message("쿠폰 리스트 가져오기 성공")
+                .build();
+    }
+
+
+
+    // 구매자 -> 가게 발급가능 쿠폰 가져오기
+    @GetMapping("/{storeId}")
+    public CommonResponse getStoresCouponList(Authentication authentication, @PathVariable Long storeId) {
+        Long customerId = Long.parseLong(authentication.getName());
+        List<CustomerCouponRes> res = couponService.getStoresCouponList(customerId, storeId);
+        return CommonResponse.builder()
+                .success(true)
+                .code(HttpStatus.OK.value())
+                .data(res)
+                .message("쿠폰 리스트 가져오기 성공")
+                .build();
+    }
+
+    // 쿠폰 발급
+    @PostMapping("/{couponId}")
+    public CommonResponse issueCoupon(Authentication authentication, @PathVariable Long couponId) {
+        Long customerId = Long.parseLong(authentication.getName());
+        couponService.issueCoupon(customerId, couponId);
+        return CommonResponse.builder()
+                .success(true)
+                .code(HttpStatus.CREATED.value())
+                .message("쿠폰 발급 성공")
                 .build();
     }
 }

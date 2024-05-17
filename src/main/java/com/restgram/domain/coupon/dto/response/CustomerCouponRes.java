@@ -12,32 +12,28 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StoreCouponRes {
-
+public class CustomerCouponRes {
     private Long id;
     private LocalDateTime startAt;
     private LocalDateTime finishAt;
     private Long quantity;
     private Long remainQuantity;
-    private Long useQuantity;
     private Integer discountMoney;
     private Integer payMoney;
     private Long expiredMinute;
-    private boolean disable;
+    private boolean isIssued; // 발급 여부
 
-    public static StoreCouponRes of(Coupon coupon, Long useQuantity) {
-        return StoreCouponRes.builder()
+    public static CustomerCouponRes of(Coupon coupon, Boolean isIssued) {
+        return CustomerCouponRes.builder()
                 .id(coupon.getId())
                 .startAt(coupon.getStartAt())
                 .finishAt(coupon.getFinishAt())
                 .quantity(coupon.getQuantity())
                 .remainQuantity(coupon.getRemainQuantity())
-                .useQuantity(useQuantity)
                 .discountMoney(coupon.getDiscountMoney())
                 .payMoney(coupon.getPayMoney())
-                .disable(coupon.getDisable())
+                .isIssued(isIssued)
                 .expiredMinute(coupon.getExpiredMinute())
                 .build();
     }
-
 }

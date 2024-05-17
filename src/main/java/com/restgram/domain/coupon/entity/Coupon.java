@@ -30,12 +30,16 @@ public class Coupon extends BaseEntity {
     private Long remainQuantity;
     private Integer discountMoney;
     private Integer payMoney;
+    private Long expiredMinute;
 
     @ColumnDefault("false")
     private Boolean disable;
 
     public void setDisable(boolean disable) {
         this.disable = disable;
+    }
+    public void issueCoupon() {
+        this.remainQuantity--;
     }
 
 }

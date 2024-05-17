@@ -5,6 +5,7 @@ import com.restgram.domain.user.service.CustomOAuth2UserService;
 import com.restgram.global.handler.OAuth2AuthenticationFailureHandler;
 import com.restgram.global.handler.OAuth2AuthenticationSuccessHandler;
 import com.restgram.global.jwt.filter.JwtFilter;
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,9 +50,11 @@ public class SecurityConfig {
                 .httpBasic(HttpBasicConfigurer::disable) // 기본
                 .authorizeHttpRequests(
                         authorize -> authorize
-                                .requestMatchers("/store/join", "/store/login", "/user/reissue", "/login/oauth2/**").permitAll()
+                                .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll() // 인가 안되면 자체 시큐리티 타는데 -> 이거 막아주는 로직
+                                .requestMatchers("/store/join", "/user/login", "/user/reissue", "/customer/join", "/login/oauth2/**").permitAll()
                                 .requestMatchers("/user/logout", "/customer/info").authenticated()
-                                .requestMatchers("/coupon", "/coupon/stop/**", "/coupon/finish").hasAuthority(UserType.STORE.getName())
+                                .requestMatchers("/coupon", "/coupon/stop/**", "/coupon/finish").hasAuthority(UserType.STORE.toString())
+                                .requestMatchers("/coupon/issue","/coupon/**").hasAuthority(UserType.CUSTOMER.toString())
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

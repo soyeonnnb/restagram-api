@@ -35,6 +35,7 @@ public class User {
     private String phone;
     private String description;
     private String nickname;
+    private String password;
 
 
     @CreationTimestamp

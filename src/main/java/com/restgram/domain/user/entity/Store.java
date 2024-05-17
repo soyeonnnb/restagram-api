@@ -13,7 +13,6 @@ import lombok.experimental.SuperBuilder;
 @DiscriminatorValue("STORE")
 public class Store extends User {
     private String storeName;
-    private String password;
     private Double latitude;
     private Double longitude;
 

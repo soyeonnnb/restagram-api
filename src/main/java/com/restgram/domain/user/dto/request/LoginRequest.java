@@ -1,5 +1,6 @@
 package com.restgram.domain.user.dto.request;
 
+import com.restgram.domain.user.entity.UserType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,4 +17,6 @@ public class LoginRequest {
 
     @NotNull(message = "비밀번호는 필수 입력값입니다.")
     private String password;
+    
+    private UserType type;
 }
