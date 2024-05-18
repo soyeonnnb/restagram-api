@@ -26,6 +26,7 @@ public class FollowServiceImpl implements FollowService{
     @Override
     @Transactional
     public void follow(Long follower_id, Long following_id) {
+        if (following_id == follower_id) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
         User follower = userRepository.findById(follower_id).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         User following = userRepository.findById(following_id).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         if (followRepository.existsByFollowerAndFollowing(follower, following)) throw new RestApiException(CommonErrorCode.ENTITY_ALREADY_EXISTS);
