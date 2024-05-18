@@ -6,6 +6,7 @@ import com.restgram.domain.address.repository.EmdAddressRepository;
 import com.restgram.domain.user.dto.request.StoreJoinRequest;
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
+import com.restgram.domain.user.dto.response.StoreInfoResponse;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.UserType;
 import com.restgram.domain.user.repository.StoreRepository;
@@ -18,6 +19,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +50,16 @@ public class StoreServiceImpl implements StoreService {
 
         // 저장
         storeRepository.save(req.of(emdAddress));
+    }
+
+    @Override
+    public List<StoreInfoResponse> searchByName(String parameter) {
+        List<Store> storeList = storeRepository.findAllByStoreNameOrNicknameContaining(parameter);
+        List<StoreInfoResponse> storeInfoResponseList = new ArrayList<>();
+        for(Store store : storeList) {
+            storeInfoResponseList.add(StoreInfoResponse.of(store));
+        }
+        return storeInfoResponseList;
     }
 
     // 로그인
