@@ -39,7 +39,7 @@ public class FollowController {
         return CommonResponse.builder()
                 .success(true)
                 .code(HttpStatus.OK.value())
-                .message("Follow success")
+                .message("Follow cancel success")
                 .build();
     }
 
@@ -51,7 +51,7 @@ public class FollowController {
                 .success(true)
                 .data(followUserResponseList)
                 .code(HttpStatus.OK.value())
-                .message("Follow success")
+                .message("팔로잉 리스트 가져오기")
                 .build();
     }
 
@@ -62,8 +62,8 @@ public class FollowController {
         return CommonResponse.builder()
                 .success(true)
                 .data(followUserResponseList)
-                .code(HttpStatus.CREATED.value())
-                .message("Follow success")
+                .code(HttpStatus.OK.value())
+                .message("팔로워 리스트 가져오기")
                 .build();
     }
 

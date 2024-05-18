@@ -24,7 +24,7 @@ public class FeedResponse {
     private List<FeedImageResponse> images;
     private Boolean isLike;
 
-    public static FeedResponse of(Feed feed, List<FeedImage> images) {
+    public static FeedResponse of(Feed feed, List<FeedImage> images, boolean isLike) {
         List<FeedImageResponse> feedImageResponsesList = new ArrayList<>();
         for(FeedImage feedImage : images) feedImageResponsesList.add(FeedImageResponse.of(feedImage));
         return FeedResponse.builder()
@@ -33,7 +33,7 @@ public class FeedResponse {
                 .user(UserInfoResponse.of(feed.getWriter()))
                 .store(StoreInfoResponse.of(feed.getStore()))
                 .images(feedImageResponsesList)
-                .isLike(false)
+                .isLike(isLike)
                 .build();
     }
 }

@@ -17,7 +17,7 @@ public class Store extends User {
     private Double longitude;
 
     @JoinColumn(name = "emd_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private EmdAddress address;
 
     private String detailAddress;

@@ -5,6 +5,7 @@ import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.entity.Feed;
 import com.restgram.domain.feed.entity.FeedImage;
 import com.restgram.domain.feed.repository.FeedImageRepository;
+import com.restgram.domain.feed.repository.FeedLikeRepository;
 import com.restgram.domain.feed.repository.FeedRepository;
 import com.restgram.domain.follow.entity.Follow;
 import com.restgram.domain.follow.repository.FollowRepository;
@@ -35,6 +36,7 @@ public class FeedServiceImpl implements FeedService {
     private final FeedRepository feedRepository;
     private final FeedImageRepository feedImageRepository;
     private final FollowRepository followRepository;
+    private final FeedLikeRepository feedLikeRepository;
 
     @Override
     @Transactional
@@ -61,6 +63,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<FeedResponse> getFeeds(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         // 팔로우 리스트 가져오기
@@ -70,7 +73,7 @@ public class FeedServiceImpl implements FeedService {
         // 응답 만들기
         List<FeedResponse> feedResponseList = new ArrayList<>();
         for(Feed feed : feedList) {
-            feedResponseList.add(FeedResponse.of(feed, feedImageRepository.findAllByFeed(feed)));
+            feedResponseList.add(FeedResponse.of(feed, feedImageRepository.findAllByFeed(feed), feedLikeRepository.existsByFeedAndUser(feed, user)));
         }
         return feedResponseList;
     }

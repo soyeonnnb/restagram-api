@@ -23,6 +23,6 @@ public class FeedImage extends BaseEntity {
     private Integer number; // 순서
 
     @JoinColumn(name = "feed_id", nullable = false)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Feed feed;
 }
