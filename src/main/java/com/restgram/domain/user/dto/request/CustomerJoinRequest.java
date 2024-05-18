@@ -1,9 +1,7 @@
 package com.restgram.domain.user.dto.request;
 
-import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.LoginMethod;
-import com.restgram.domain.user.entity.Store;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -27,7 +25,6 @@ public class CustomerJoinRequest {
     @NotBlank(message = "이름은 필수값입니다.")
     private String name;
 
-
     @NotBlank(message = "전화번호는 필수값입니다.")
     private String phone;
 
@@ -44,6 +41,7 @@ public class CustomerJoinRequest {
                 .nickname(nickname)
                 .password(password)
                 .loginMethod(LoginMethod.DEFAULT)
+                .addressRange(0)
                 .build();
     }
 }
