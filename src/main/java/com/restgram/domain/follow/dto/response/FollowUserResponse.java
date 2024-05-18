@@ -1,6 +1,7 @@
 package com.restgram.domain.follow.dto.response;
 
 import com.restgram.domain.follow.entity.Follow;
+import com.restgram.domain.user.dto.response.UserInfoResponse;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.entity.UserType;
 import lombok.AllArgsConstructor;
@@ -14,18 +15,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FollowUserResponse {
     private Long id;
-    private Long userId;
-    private String nickname;
-    private String profileImage;
-    private String type;
+    private UserInfoResponse user;
     private boolean isFollowed;
     public static FollowUserResponse of(Long id, User user, boolean isFollowed) {
         return FollowUserResponse.builder()
                 .id(id)
-                .userId(user.getId())
-                .nickname(user.getNickname())
-                .profileImage(user.getProfileImage())
-                .type(user.getType())
+                .user(UserInfoResponse.of(user))
                 .isFollowed(isFollowed)
                 .build();
     }

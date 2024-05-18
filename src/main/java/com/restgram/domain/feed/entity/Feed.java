@@ -2,15 +2,14 @@ package com.restgram.domain.feed.entity;
 
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
+import com.restgram.domain.user.entity.User;
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Feed extends BaseEntity {
@@ -22,9 +21,9 @@ public class Feed extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Store store;
 
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Customer customer;
+    private User writer;
 
     private String content;
 

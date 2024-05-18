@@ -18,7 +18,6 @@ public class FeedImage extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String image;
+    private String url;
     private Integer number; // 순서
 }
