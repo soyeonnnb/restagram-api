@@ -2,8 +2,7 @@ package com.restgram.domain.user.service;
 
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.restgram.domain.user.dto.request.LoginRequest;
-import com.restgram.domain.user.dto.response.LoginResponse;
-import com.restgram.domain.user.dto.response.UserInfoResponse;
+import com.restgram.domain.user.dto.response.*;
 import com.restgram.domain.user.entity.LoginMethod;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
@@ -96,6 +95,25 @@ public class UserServiceImpl implements UserService{
             userInfoResponseList.add(UserInfoResponse.of(user));
         }
         return userInfoResponseList;
+    }
+
+    @Override
+    public FeedUserInfoResponse getFeedUser(Long myId, Long userId) {
+        User me = userRepository.findById(myId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        if (user.getType().equals(UserType.STORE)) {
+            return getFeedStore(me, userId);
+        } else {
+            return getFeedCustomer(me, userId);
+        }
+    }
+
+    private FeedStoreInfoResponse getFeedStore(User me, Long userId) {
+        return null;
+    }
+
+    private FeedCustomerInfoResponse getFeedCustomer(User me, Long userId) {
+        return null;
     }
 
 }

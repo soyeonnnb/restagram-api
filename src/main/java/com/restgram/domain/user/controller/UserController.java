@@ -1,6 +1,7 @@
 package com.restgram.domain.user.controller;
 
 import com.restgram.domain.user.dto.request.LoginRequest;
+import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserInfoResponse;
 import com.restgram.domain.user.service.UserService;
@@ -8,6 +9,7 @@ import com.restgram.global.exception.entity.CommonResponse;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -66,6 +68,19 @@ public class UserController {
     @GetMapping
     public CommonResponse searchUser(@RequestParam("query") String query) {
         List<UserInfoResponse> response = userService.searchUser(query);
+        return CommonResponse.builder()
+                .data(response)
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .success(true)
+                .build()
+                ;
+    }
+
+    @GetMapping("/{userId}")
+    public CommonResponse getUserInfo(Authentication authentication, @PathVariable Long userId) {
+        Long myId = Long.parseLong(authentication.getName());
+        FeedUserInfoResponse response = userService.getFeedUser(myId, userId);
         return CommonResponse.builder()
                 .data(response)
                 .message("SUCCESS")
