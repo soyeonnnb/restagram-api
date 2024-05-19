@@ -4,6 +4,7 @@ import com.restgram.domain.feed.dto.request.AddFeedRequest;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.service.FeedService;
 import com.restgram.global.exception.entity.CommonResponse;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,19 @@ public class FeedController {
                 .data(feedResponseList)
                 .code(HttpStatus.OK.value())
                 .message("팔로우한 유저 피드 가져오기")
+                .build();
+    }
+
+    // 피드 검색
+    @GetMapping("/search")
+    public CommonResponse searchFeed(Authentication authentication, @RequestParam("addressId") @Nullable Long addressId, @RequestParam("addressRange") Integer addressRange, @RequestParam("query") String query) {
+        Long userId = Long.parseLong(authentication.getName());
+        List<FeedResponse> feedResponseList = feedService.searchFeeds(userId, addressId, addressRange, query);
+        return CommonResponse.builder()
+                .success(true)
+                .data(feedResponseList)
+                .code(HttpStatus.OK.value())
+                .message("피드 검색하기")
                 .build();
     }
 

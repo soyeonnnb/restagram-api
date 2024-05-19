@@ -2,6 +2,7 @@ package com.restgram.domain.user.controller;
 
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
+import com.restgram.domain.user.dto.response.UserInfoResponse;
 import com.restgram.domain.user.service.UserService;
 import com.restgram.global.exception.entity.CommonResponse;
 import jakarta.annotation.Nullable;
@@ -12,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import javax.management.monitor.CounterMonitor;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -58,5 +62,18 @@ public class UserController {
                 .build()
                 ;
     }
+
+    @GetMapping
+    public CommonResponse searchUser(@RequestParam("query") String query) {
+        List<UserInfoResponse> response = userService.searchUser(query);
+        return CommonResponse.builder()
+                .data(response)
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .success(true)
+                .build()
+                ;
+    }
+
 }
 

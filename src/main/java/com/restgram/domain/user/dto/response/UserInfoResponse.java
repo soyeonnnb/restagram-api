@@ -26,7 +26,7 @@ public class UserInfoResponse {
                 .id(user.getId())
                 .nickname(user.getNickname())
                 .profileImage(user.getProfileImage())
-                .type(user.getProfileImage())
+                .type(user.getType())
                 .build();
     }
 }

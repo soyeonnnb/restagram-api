@@ -1,7 +1,9 @@
 package com.restgram.domain.user.service;
 
+import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
+import com.restgram.domain.user.dto.response.UserInfoResponse;
 import com.restgram.domain.user.entity.LoginMethod;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
@@ -20,6 +22,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -81,6 +86,16 @@ public class UserServiceImpl implements UserService{
         // 존재한다면 우선 토큰 삭제
         tokenProvider.tokenRemove(response, accessToken, refreshToken);
         tokenProvider.createTokens(user.getId(), user.getType(), response);
+    }
+
+    @Override
+    public List<UserInfoResponse> searchUser(String query) {
+        List<User> userList = userRepository.findAllByNicknameOrName(query);
+        List<UserInfoResponse> userInfoResponseList = new ArrayList<>();
+        for(User user : userList) {
+            userInfoResponseList.add(UserInfoResponse.of(user));
+        }
+        return userInfoResponseList;
     }
 
 }

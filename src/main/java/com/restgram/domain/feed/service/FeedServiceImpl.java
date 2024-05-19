@@ -1,5 +1,10 @@
 package com.restgram.domain.feed.service;
 
+import com.restgram.domain.address.dto.res.EmdAddressRes;
+import com.restgram.domain.address.entity.EmdAddress;
+import com.restgram.domain.address.repository.EmdAddressRepository;
+import com.restgram.domain.address.repository.SidoAddressRepository;
+import com.restgram.domain.address.repository.SiggAddressRepository;
 import com.restgram.domain.feed.dto.request.AddFeedRequest;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.entity.Feed;
@@ -9,11 +14,14 @@ import com.restgram.domain.feed.repository.FeedLikeRepository;
 import com.restgram.domain.feed.repository.FeedRepository;
 import com.restgram.domain.follow.entity.Follow;
 import com.restgram.domain.follow.repository.FollowRepository;
+import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
+import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
+import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.S3ErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.s3.service.S3Service;
@@ -31,12 +39,16 @@ import java.util.List;
 public class FeedServiceImpl implements FeedService {
 
     private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
     private final StoreRepository storeRepository;
     private final S3Service s3Service;
     private final FeedRepository feedRepository;
     private final FeedImageRepository feedImageRepository;
     private final FollowRepository followRepository;
     private final FeedLikeRepository feedLikeRepository;
+    private final EmdAddressRepository emdAddressRepository;
+    private final SiggAddressRepository siggAddressRepository;
+    private final SidoAddressRepository sidoAddressRepository;
 
     @Override
     @Transactional
@@ -77,4 +89,33 @@ public class FeedServiceImpl implements FeedService {
         }
         return feedResponseList;
     }
+
+    @Override
+    public List<FeedResponse> searchFeeds(Long userId, Long addressId, Integer addressRange, String query) {
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        List<EmdAddress> emdAddressList = new ArrayList<>();
+        List<Feed> feedList;
+        switch (addressRange) {
+            case 1:
+                emdAddressList = emdAddressRepository.findAllBySidoAddress(sidoAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)));
+                break;
+            case 2:
+                emdAddressList = emdAddressRepository.findAllBySiggAddress(siggAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)));
+                break;
+            case 3:
+                emdAddressList.add(emdAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)));
+                break;
+        }
+        if (addressRange == 0) feedList = feedRepository.searchByQuery(query);
+        else feedList = feedRepository.searchByQueryAndEmdAddressList(query, emdAddressList);
+
+        List<FeedResponse> feedResponseList = new ArrayList<>();
+
+        for(Feed feed : feedList) {
+            feedResponseList.add(FeedResponse.of(feed, feedImageRepository.findAllByFeed(feed), feedLikeRepository.existsByFeedAndUser(feed, customer)));
+        }
+
+        return feedResponseList;
+    }
+
 }
