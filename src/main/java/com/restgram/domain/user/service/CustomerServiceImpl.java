@@ -1,6 +1,7 @@
 package com.restgram.domain.user.service;
 
 import com.restgram.domain.address.dto.res.AddressRes;
+import com.restgram.domain.address.dto.res.EmdAddressRes;
 import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.address.entity.SidoAddress;
 import com.restgram.domain.address.entity.SiggAddress;
@@ -91,6 +92,10 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public UserAddressListResponse getUserAddressList(Long userId) {
         Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        int range = customer.getAddressRange();
+
+        List<AddressRes> addressResList = new ArrayList<>();
+
         // 시도는 항상 가져와야 함.(전체여도)
         List<SidoAddress> sidoAddressList = sidoAddressRepository.findAllByOrderByName();
         List<AddressRes> sidoResList = new ArrayList<>();
@@ -98,23 +103,29 @@ public class CustomerServiceImpl implements CustomerService {
 
         // 시군구는 시도가 전체가 아니라면 가져오기
         List<AddressRes> siggResList = new ArrayList<>();
-        if (customer.getAddressRange() >= 1) {
+        if (range >= 1) {
             List<SiggAddress> siggAddressList = siggAddressRepository.findALlBySidoAddressOrderByName(customer.getSidoAddress());
             for(SiggAddress siggAddress : siggAddressList) siggResList.add(AddressRes.of(siggAddress));
         }
 
         // 읍면동은 시군구가 전체가 아니라면 가져오기
         List<AddressRes> emdResList = new ArrayList<>();
-        if (customer.getAddressRange() >= 2) {
+        if (range >= 2) {
             List<EmdAddress> emdAddressList = emdAddressRepository.findAllBySiggAddressOrderByName(customer.getSiggAddress());
             for(EmdAddress emdAddress : emdAddressList) emdResList.add(AddressRes.of(emdAddress));
         }
 
+        // 유저 초기 지역
+        if (range >= 1) addressResList.add(AddressRes.of(customer.getSidoAddress()));
+        if (range >= 2) addressResList.add(AddressRes.of(customer.getSiggAddress()));
+        if (range >= 3) addressResList.add(AddressRes.of(customer.getEmdAddress()));
+
         UserAddressListResponse response = UserAddressListResponse.builder()
+                .addressList(addressResList)
                 .emdAddressList(emdResList)
                 .siggAddressList(siggResList)
                 .sidoAddressList(sidoResList)
-                .range(customer.getAddressRange())
+                .range(range)
                 .build();
         return response;
     }
