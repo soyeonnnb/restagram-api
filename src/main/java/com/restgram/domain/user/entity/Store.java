@@ -18,8 +18,9 @@ public class Store extends User {
 
     @JoinColumn(name = "emd_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private EmdAddress address;
+    private EmdAddress emdAddress;
 
+    private String address;
     private String detailAddress;
     private String storePhone;
 }

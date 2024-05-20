@@ -13,7 +13,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FeedStoreInfoResponse extends FeedUserInfoResponse {
-    private EmdAddressRes emdAddress;
+//    private EmdAddressRes emdAddress;
+    private String address;
     private String detailAddress;
     private String storeName;
     private String storePhone;
@@ -30,7 +31,8 @@ public class FeedStoreInfoResponse extends FeedUserInfoResponse {
                 .feedNum(feedNum)
                 .followingNum(followingNum)
                 .isFollow(isFollow)
-                .emdAddress(EmdAddressRes.of(store.getAddress()))
+//                .emdAddress(EmdAddressRes.of(store.getEmdAddress()))
+                .address(store.getAddress())
                 .detailAddress(store.getDetailAddress())
                 .storeName(store.getStoreName())
                 .storePhone(store.getStorePhone())

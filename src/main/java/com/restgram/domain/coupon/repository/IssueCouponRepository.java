@@ -14,6 +14,6 @@ public interface IssueCouponRepository extends JpaRepository<IssueCoupon, Long> 
     Long countAllByCouponAndIsUsed(Coupon coupon, Boolean isUsed);
     boolean existsByCustomerAndCoupon(Customer customer,Coupon coupon);
 
-    @EntityGraph(attributePaths = {"coupon", "coupon.store", "coupon.store.address", "coupon.store.address.siggAddress", "coupon.store.address.siggAddress.sidoAddress"})
+    @EntityGraph(attributePaths = {"coupon", "coupon.store", "coupon.store.emdAddress", "coupon.store.emdAddress.siggAddress", "coupon.store.emdAddress.siggAddress.sidoAddress"})
     List<IssueCoupon> findAllByCustomerAndIsUsedAndExpiredAtAfter(Customer customer, Boolean isUsed, LocalDateTime expiredAt);
 }

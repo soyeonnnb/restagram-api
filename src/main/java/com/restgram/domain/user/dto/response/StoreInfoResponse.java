@@ -16,7 +16,8 @@ public class StoreInfoResponse {
     private String profileImage;
     private String nickname;
     private String storeName;
-    private EmdAddressRes address;
+//    private EmdAddressRes emdAddress;
+    private String address;
     private String detailAddress;
     private String storePhone;
 
@@ -26,7 +27,8 @@ public class StoreInfoResponse {
                 .profileImage(store.getProfileImage())
                 .nickname(store.getNickname())
                 .storeName(store.getStoreName())
-                .address(EmdAddressRes.of(store.getAddress()))
+//                .emdAddress(EmdAddressRes.of(store.getEmdAddress()))
+                .address(store.getAddress())
                 .detailAddress(store.getDetailAddress())
                 .storePhone(store.getStorePhone())
                 .build();

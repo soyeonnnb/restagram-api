@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface FeedLikeRepository extends JpaRepository<FeedLike, Long> {
     boolean existsByFeedAndUser(Feed feed, User user);
-    @EntityGraph(attributePaths = {"feed", "feed.writer", "feed.store", "feed.store.address", "feed.store.address.siggAddress", "feed.store.address.siggAddress.sidoAddress"})
+    @EntityGraph(attributePaths = {"feed", "feed.writer", "feed.store", "feed.store.emdAddress", "feed.store.emdAddress.siggAddress", "feed.store.emdAddress.siggAddress.sidoAddress"})
     List<FeedLike> findAlllByUserOrderByCreatedAtDesc(User user);
     void deleteByFeedAndUser(Feed feed, User user);
 }

@@ -39,6 +39,8 @@ public class StoreJoinRequest {
 
     private Long bcode;
 
+    private String address;
+
     @NotBlank(message = "상세주소는 필수값입니다.")
     private String detailAddress;
 
@@ -57,7 +59,8 @@ public class StoreJoinRequest {
                 .password(password)
                 .latitude(latitude)
                 .longitude(longitude)
-                .address(emdAddress)
+                .emdAddress(emdAddress)
+                .address(address)
                 .detailAddress(detailAddress)
                 .storePhone(storePhone)
                 .build();
