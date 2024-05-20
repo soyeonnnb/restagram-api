@@ -16,5 +16,6 @@ public interface CouponRepository extends JpaRepository<Coupon, Long> {
     List<Coupon> findAllByStoreAndDisableAndFinishAtAfterOrderByStartAt(Store store, Boolean disable, LocalDateTime finishedAt);
     List<Coupon> findAllByStoreAndDisableOrFinishAtBeforeOrderByStartAt(Store store, Boolean disable, LocalDateTime finishedAt);
     List<Coupon> findAllByStoreAndDisableAndStartAtBeforeAndFinishAtAfterOrderByStartAt(Store store, Boolean disable, LocalDateTime startAt, LocalDateTime finishAt);
-    List<Coupon> findAllByDisableAndStartAtBeforeAndFinishAtAfterOrderByStartAt(Boolean disable, LocalDateTime startAt, LocalDateTime finishAt);
+
+    Integer countAllByStoreAndDisableAndStartAtBeforeAndFinishAtAfter(Store store, Boolean disable, LocalDateTime startAt, LocalDateTime finishedAt);
 }

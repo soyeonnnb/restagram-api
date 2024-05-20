@@ -2,6 +2,7 @@ package com.restgram.domain.follow.repository;
 
 import com.restgram.domain.follow.entity.Follow;
 import com.restgram.domain.user.entity.Customer;
+import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +19,7 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     @Query("SELECT f.following FROM Follow f WHERE f.follower = :follower")
     List<User> findFollowingsByFollower(@Param("follower") User follower);
+
+    Integer countAllByFollowing(User user);
+    Integer countAllByFollower(User user);
 }

@@ -1,12 +1,12 @@
 package com.restgram.domain.user.service;
 
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
+import com.restgram.domain.coupon.repository.CouponRepository;
+import com.restgram.domain.feed.repository.FeedRepository;
+import com.restgram.domain.follow.repository.FollowRepository;
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.response.*;
-import com.restgram.domain.user.entity.LoginMethod;
-import com.restgram.domain.user.entity.Store;
-import com.restgram.domain.user.entity.User;
-import com.restgram.domain.user.entity.UserType;
+import com.restgram.domain.user.entity.*;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.RefreshTokenRepository;
 import com.restgram.domain.user.repository.StoreRepository;
@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,9 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final CustomerRepository customerRepository;
+    private final FeedRepository feedRepository;
+    private final FollowRepository followRepository;
+    private final CouponRepository couponRepository;
     private final JwtTokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -101,19 +105,33 @@ public class UserServiceImpl implements UserService{
     public FeedUserInfoResponse getFeedUser(Long myId, Long userId) {
         User me = userRepository.findById(myId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        if (user.getType().equals(UserType.STORE)) {
+        System.out.println(user.getType());
+        if (user.getType().equals(UserType.STORE.toString())) {
+            System.out.println("zz");
             return getFeedStore(me, userId);
         } else {
             return getFeedCustomer(me, userId);
         }
     }
-
     private FeedStoreInfoResponse getFeedStore(User me, Long userId) {
-        return null;
+        Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Integer feedNum = feedRepository.countAllByWriter(store);
+        Integer followingNum = followRepository.countAllByFollowing(store);
+        Integer reviewNum = feedRepository.countAllByStore(store);
+        Integer couponNum = couponRepository.countAllByStoreAndDisableAndStartAtBeforeAndFinishAtAfter(store, false, LocalDateTime.now(), LocalDateTime.now());
+        boolean isFollow = followRepository.existsByFollowerAndFollowing(me, store);
+        FeedStoreInfoResponse response = FeedStoreInfoResponse.of(store, feedNum, followingNum, reviewNum, couponNum, isFollow);
+        return response;
     }
 
     private FeedCustomerInfoResponse getFeedCustomer(User me, Long userId) {
-        return null;
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Integer feedNum = feedRepository.countAllByWriter(customer);
+        Integer followerNum = followRepository.countAllByFollower(customer);
+        Integer followingNum = followRepository.countAllByFollowing(customer);
+        boolean isFollow = followRepository.existsByFollowerAndFollowing(me, customer);
+        FeedCustomerInfoResponse response = FeedCustomerInfoResponse.of(customer, feedNum, followerNum, followingNum, isFollow);
+        return response;
     }
 
 }
