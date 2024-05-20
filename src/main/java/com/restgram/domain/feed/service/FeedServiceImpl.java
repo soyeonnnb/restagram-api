@@ -7,6 +7,7 @@ import com.restgram.domain.address.repository.SidoAddressRepository;
 import com.restgram.domain.address.repository.SiggAddressRepository;
 import com.restgram.domain.feed.dto.request.AddFeedRequest;
 import com.restgram.domain.feed.dto.response.FeedResponse;
+import com.restgram.domain.feed.dto.response.UserFeedImageResponse;
 import com.restgram.domain.feed.entity.Feed;
 import com.restgram.domain.feed.entity.FeedImage;
 import com.restgram.domain.feed.repository.FeedImageRepository;
@@ -117,5 +118,6 @@ public class FeedServiceImpl implements FeedService {
 
         return feedResponseList;
     }
+
 
 }

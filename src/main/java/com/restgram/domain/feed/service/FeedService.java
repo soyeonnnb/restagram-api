@@ -2,6 +2,7 @@ package com.restgram.domain.feed.service;
 
 import com.restgram.domain.feed.dto.request.AddFeedRequest;
 import com.restgram.domain.feed.dto.response.FeedResponse;
+import com.restgram.domain.feed.dto.response.UserFeedImageResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
