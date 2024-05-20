@@ -5,6 +5,7 @@ import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.address.repository.EmdAddressRepository;
 import com.restgram.domain.user.dto.request.StoreJoinRequest;
 import com.restgram.domain.user.dto.request.LoginRequest;
+import com.restgram.domain.user.dto.request.UpdateStoreRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.StoreInfoResponse;
 import com.restgram.domain.user.entity.Store;
@@ -60,6 +61,16 @@ public class StoreServiceImpl implements StoreService {
             storeInfoResponseList.add(StoreInfoResponse.of(store));
         }
         return storeInfoResponseList;
+    }
+
+    @Override
+    @Transactional
+    public void updateStore(Long userId, UpdateStoreRequest request) {
+        Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        store.updateDescription(request.getDescription());
+        store.updatePhone(request.getPhone());
+        store.updateStoreInfo(request, emdAddressRepository.findById(request.getBcode()).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)));
+        storeRepository.save(store);
     }
 
     // 로그인

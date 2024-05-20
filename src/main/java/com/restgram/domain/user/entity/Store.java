@@ -1,6 +1,7 @@
 package com.restgram.domain.user.entity;
 
 import com.restgram.domain.address.entity.EmdAddress;
+import com.restgram.domain.user.dto.request.UpdateStoreRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -23,4 +24,14 @@ public class Store extends User {
     private String address;
     private String detailAddress;
     private String storePhone;
+
+    public void updateStoreInfo(UpdateStoreRequest request, EmdAddress emdAddress) {
+        this.storeName = request.getStoreName();
+        this.storePhone = request.getStorePhone();
+        this.emdAddress = emdAddress;
+        this.address = request.getAddress();
+        this.detailAddress = request.getDetailAddress();
+        this.latitude = request.getLatitude();
+        this.longitude = request.getLongitude();
+    }
 }

@@ -3,6 +3,7 @@ package com.restgram.domain.user.controller;
 import com.restgram.domain.follow.dto.response.FollowUserResponse;
 import com.restgram.domain.user.dto.request.StoreJoinRequest;
 import com.restgram.domain.user.dto.request.LoginRequest;
+import com.restgram.domain.user.dto.request.UpdateStoreRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.StoreInfoResponse;
 import com.restgram.domain.user.service.StoreService;
@@ -45,5 +46,17 @@ public class StoreController {
                 .code(HttpStatus.OK.value())
                 .message("가게 리스트 가져오기")
                 .build();
+    }
+
+    @PatchMapping
+    public CommonResponse updateStore(Authentication authentication, @RequestBody UpdateStoreRequest request) {
+        Long userId = Long.parseLong(authentication.getName());
+        storeService.updateStore(userId, request);
+        return CommonResponse.builder()
+                .message("SUCCESS")
+                .code(HttpStatus.CREATED.value())
+                .success(true)
+                .build()
+                ;
     }
 }
