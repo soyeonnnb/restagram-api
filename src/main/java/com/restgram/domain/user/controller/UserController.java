@@ -1,7 +1,9 @@
 package com.restgram.domain.user.controller;
 
 import com.restgram.domain.user.dto.request.LoginRequest;
+import com.restgram.domain.user.dto.request.NicknameRequest;
 import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
+import com.restgram.domain.user.dto.response.CheckResponse;
 import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserInfoResponse;
@@ -96,6 +98,18 @@ public class UserController {
         Long userId = Long.parseLong(authentication.getName());
         userService.updatePassword(userId, request);
         return CommonResponse.builder()
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .success(true)
+                .build()
+                ;
+    }
+
+    @GetMapping("/nickname")
+    public CommonResponse duplicateNickname(@RequestBody NicknameRequest request) {
+        CheckResponse check = userService.duplicateNickname(request);
+        return CommonResponse.builder()
+                .data(check)
                 .message("SUCCESS")
                 .code(HttpStatus.OK.value())
                 .success(true)

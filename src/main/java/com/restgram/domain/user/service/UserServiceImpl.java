@@ -5,6 +5,7 @@ import com.restgram.domain.coupon.repository.CouponRepository;
 import com.restgram.domain.feed.repository.FeedRepository;
 import com.restgram.domain.follow.repository.FollowRepository;
 import com.restgram.domain.user.dto.request.LoginRequest;
+import com.restgram.domain.user.dto.request.NicknameRequest;
 import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
 import com.restgram.domain.user.dto.response.*;
 import com.restgram.domain.user.entity.*;
@@ -128,6 +129,14 @@ public class UserServiceImpl implements UserService{
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) throw new RestApiException(UserErrorCode.PASSWORD_MISMATCH);
         user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
         userRepository.save(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CheckResponse duplicateNickname(NicknameRequest request) {
+        return CheckResponse.builder()
+                .check(userRepository.existsByNickname(request.getNickname()))
+                .build();
     }
 
     private FeedStoreInfoResponse getFeedStore(User me, Long userId) {
