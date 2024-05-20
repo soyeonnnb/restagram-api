@@ -139,6 +139,16 @@ public class UserServiceImpl implements UserService{
                 .build();
     }
 
+    @Override
+    @Transactional
+    public void updateNickname(Long userId, NicknameRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        if (userRepository.existsByNickname(request.getNickname())) throw new RestApiException(UserErrorCode.NICKNAME_DUPLICATED);
+        System.out.println(request.getNickname());
+        user.updateNickname(request.getNickname());
+        userRepository.save(user);
+    }
+
     private FeedStoreInfoResponse getFeedStore(User me, Long userId) {
         Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         Integer feedNum = feedRepository.countAllByWriter(store);

@@ -117,5 +117,17 @@ public class UserController {
                 ;
     }
 
+    @PatchMapping("/nickname")
+    public CommonResponse updateNickname(Authentication authentication, @RequestBody NicknameRequest request) {
+        Long userId = Long.parseLong(authentication.getName());
+        userService.updateNickname(userId, request);
+        return CommonResponse.builder()
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .success(true)
+                .build()
+                ;
+    }
+
 }
 

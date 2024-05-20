@@ -62,4 +62,8 @@ public class User {
     public void updatePhone(String phone) {
         this.phone = phone;
     }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }

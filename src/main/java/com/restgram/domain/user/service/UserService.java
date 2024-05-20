@@ -20,4 +20,5 @@ public interface UserService {
     FeedUserInfoResponse getFeedUser(Long myId, Long userId);
     void updatePassword(Long userId, UpdatePasswordRequest request);
     CheckResponse duplicateNickname(NicknameRequest request);
+    void updateNickname(Long userId, NicknameRequest request);
 }
