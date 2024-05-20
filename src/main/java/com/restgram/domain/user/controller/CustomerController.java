@@ -2,6 +2,7 @@ package com.restgram.domain.user.controller;
 
 import com.restgram.domain.user.dto.request.CustomerJoinRequest;
 import com.restgram.domain.user.dto.request.StoreJoinRequest;
+import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.service.CustomerService;
@@ -72,4 +73,16 @@ public class CustomerController {
                 .message("가져오기 완료")
                 .build();
     }
+
+    @PatchMapping
+    public CommonResponse updateCustomer(Authentication authentication, @RequestBody UpdateCustomerRequest request) {
+        Long userId = Long.parseLong(authentication.getName());
+        customerService.updateCustomer(userId, request);
+        return CommonResponse.builder()
+                .code(HttpStatus.OK.value())
+                .success(true)
+                .message("유저 정보 업데이트 완료")
+                .build();
+    }
+
 }

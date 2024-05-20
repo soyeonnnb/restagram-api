@@ -3,6 +3,7 @@ package com.restgram.domain.user.entity;
 import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.address.entity.SidoAddress;
 import com.restgram.domain.address.entity.SiggAddress;
+import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -41,4 +42,5 @@ public class Customer extends User{
         this.sidoAddress = sidoAddress;
         this.addressRange = range;
     }
+
 }

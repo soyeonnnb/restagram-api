@@ -1,6 +1,7 @@
 package com.restgram.domain.user.entity;
 
 import com.restgram.domain.address.entity.EmdAddress;
+import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -52,5 +53,13 @@ public class User {
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+    public void updatePhone(String phone) {
+        this.phone = phone;
     }
 }

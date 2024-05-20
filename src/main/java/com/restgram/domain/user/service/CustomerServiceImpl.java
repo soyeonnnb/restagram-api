@@ -9,9 +9,11 @@ import com.restgram.domain.address.repository.EmdAddressRepository;
 import com.restgram.domain.address.repository.SidoAddressRepository;
 import com.restgram.domain.address.repository.SiggAddressRepository;
 import com.restgram.domain.user.dto.request.CustomerJoinRequest;
+import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.entity.Customer;
+import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
@@ -87,6 +89,15 @@ public class CustomerServiceImpl implements CustomerService {
         customer.updateAddress(emdAddress, siggAddress, sidoAddress, range);
         customerRepository.save(customer);
 
+    }
+
+    @Override
+    @Transactional
+    public void updateCustomer(Long userId, UpdateCustomerRequest request) {
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        customer.updateDescription(request.getDescription());
+        customer.updatePhone(request.getPhone());
+        customerRepository.save(customer);
     }
 
     @Override
