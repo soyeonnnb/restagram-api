@@ -6,6 +6,7 @@ import com.restgram.domain.address.repository.EmdAddressRepository;
 import com.restgram.domain.address.repository.SidoAddressRepository;
 import com.restgram.domain.address.repository.SiggAddressRepository;
 import com.restgram.domain.feed.dto.request.AddFeedRequest;
+import com.restgram.domain.feed.dto.request.UpdateFeedRequest;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.dto.response.UserFeedImageResponse;
 import com.restgram.domain.feed.entity.Feed;
@@ -131,6 +132,15 @@ public class FeedServiceImpl implements FeedService {
             feedImageRepository.delete(feedImage);
         }
         feedRepository.delete(feed);
+    }
+
+    @Override
+    @Transactional
+    public void updateFeed(Long userId, UpdateFeedRequest request) {
+        Feed feed = feedRepository.findById(request.getFeedId()).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+        if (feed.getWriter().getId() != userId) throw new RestApiException(UserErrorCode.USER_MISMATCH);
+        feed.updateContent(request.getContent());
+        feedRepository.save(feed);
     }
 
 

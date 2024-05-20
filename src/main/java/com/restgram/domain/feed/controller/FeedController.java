@@ -1,6 +1,7 @@
 package com.restgram.domain.feed.controller;
 
 import com.restgram.domain.feed.dto.request.AddFeedRequest;
+import com.restgram.domain.feed.dto.request.UpdateFeedRequest;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.dto.response.UserFeedImageResponse;
 import com.restgram.domain.feed.service.FeedService;
@@ -44,6 +45,18 @@ public class FeedController {
                 .success(true)
                 .code(HttpStatus.OK.value())
                 .message("피드가 정상적으로 삭제되었습니다.")
+                .build();
+    }
+
+    // 피드 수정은 글만 수정 가능
+    @PatchMapping
+    public CommonResponse updateFeed(Authentication authentication, @RequestBody UpdateFeedRequest request) {
+        Long userId = Long.parseLong(authentication.getName());
+        feedService.updateFeed(userId, request);
+        return CommonResponse.builder()
+                .success(true)
+                .code(HttpStatus.OK.value())
+                .message("피드가 정상적으로 수정되었습니다.")
                 .build();
     }
 
