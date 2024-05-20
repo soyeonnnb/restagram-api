@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -35,9 +36,7 @@ public class Reservation extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
-    private Date date;
-
-    private Time time;
+    private LocalDateTime datetime;
 
     private Integer headCount; // 인원수
     private String name; // 예약자명

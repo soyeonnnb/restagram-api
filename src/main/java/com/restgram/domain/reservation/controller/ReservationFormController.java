@@ -1,10 +1,11 @@
 package com.restgram.domain.reservation.controller;
 
-import com.restgram.domain.reservation.dto.request.ReservationFormReq;
+import com.restgram.domain.reservation.dto.request.ReservationFormRequest;
 import com.restgram.domain.reservation.service.ReservationFormService;
 import com.restgram.global.exception.entity.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,10 +22,14 @@ public class ReservationFormController {
 
     // 가게 예약 등록
     @PostMapping
-    public CommonResponse storePostReservation(Authentication authentication, @RequestBody ReservationFormReq req) {
-        Long id = Long.parseLong(authentication.getName());
-        reservationFormService.addReservationForm(id, req);
-        return CommonResponse.builder().build();
+    public CommonResponse addReservation(Authentication authentication, @RequestBody ReservationFormRequest request) {
+        Long userId = Long.parseLong(authentication.getName());
+        reservationFormService.addReservationForm(userId, request);
+        return CommonResponse.builder()
+                .success(true)
+                .code(HttpStatus.CREATED.value())
+                .message("가계 예약 생성 성공")
+                .build();
     }
 
 }
