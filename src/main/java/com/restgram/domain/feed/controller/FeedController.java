@@ -36,6 +36,17 @@ public class FeedController {
                 .build();
     }
 
+    @DeleteMapping("/{feedId}")
+    public CommonResponse deleteFeed(Authentication authentication, @PathVariable Long feedId) {
+        Long userId = Long.parseLong(authentication.getName());
+        feedService.deleteFeed(userId, feedId);
+        return CommonResponse.builder()
+                .success(true)
+                .code(HttpStatus.OK.value())
+                .message("피드가 정상적으로 삭제되었습니다.")
+                .build();
+    }
+
     // 팔로우한+내 유저의 피드 가져오기
     @GetMapping
     public CommonResponse getFeeds(Authentication authentication) {

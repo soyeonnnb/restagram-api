@@ -39,8 +39,8 @@ public class S3ServiceImpl implements S3Service {
     @Override
     public boolean delete(String fileUrl) {
         try {
-            String[] temp = fileUrl.split("/");
-            String fileKey = temp[temp.length-1];
+            String[] temp = fileUrl.split(".com/");
+            String fileKey = temp[1];
             amazonS3.deleteObject(bucket, fileKey);
             return true;
         } catch (Exception e) {

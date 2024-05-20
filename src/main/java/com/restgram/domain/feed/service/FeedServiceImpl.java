@@ -92,6 +92,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<FeedResponse> searchFeeds(Long userId, Long addressId, Integer addressRange, String query) {
         Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         List<EmdAddress> emdAddressList = new ArrayList<>();
@@ -117,6 +118,19 @@ public class FeedServiceImpl implements FeedService {
         }
 
         return feedResponseList;
+    }
+
+    @Override
+    @Transactional
+    public void deleteFeed(Long userId, Long feedId) {
+        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+        if (feed.getWriter().getId() != userId) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
+        List<FeedImage> feedImageList = feedImageRepository.findAllByFeed(feed);
+        for(FeedImage feedImage : feedImageList) {
+            System.out.println(s3Service.delete(feedImage.getUrl()));
+            feedImageRepository.delete(feedImage);
+        }
+        feedRepository.delete(feed);
     }
 
 

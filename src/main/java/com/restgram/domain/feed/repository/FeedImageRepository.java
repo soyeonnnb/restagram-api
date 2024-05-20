@@ -19,4 +19,6 @@ public interface FeedImageRepository extends JpaRepository<FeedImage, Long> {
     @EntityGraph(attributePaths = {"feed"})
     @Query("select fi from FeedImage fi where fi.feed.store = :user and fi.feed.writer != :user and fi.number = :number order by fi.id desc")
     List<FeedImage> findByFeedStoreAndNumberOrderByIdDesc(User user, Integer number);
+
+    void deleteAllByFeed(Feed feed);
 }
