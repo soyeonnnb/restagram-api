@@ -3,10 +3,7 @@ package com.restgram.domain.user.controller;
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.request.NicknameRequest;
 import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
-import com.restgram.domain.user.dto.response.CheckResponse;
-import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
-import com.restgram.domain.user.dto.response.LoginResponse;
-import com.restgram.domain.user.dto.response.UserInfoResponse;
+import com.restgram.domain.user.dto.response.*;
 import com.restgram.domain.user.service.UserService;
 import com.restgram.global.exception.entity.CommonResponse;
 import jakarta.annotation.Nullable;
@@ -18,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.management.monitor.CounterMonitor;
 import java.util.List;
@@ -127,6 +125,20 @@ public class UserController {
                 .success(true)
                 .build()
                 ;
+    }
+
+    @PatchMapping("/image")
+    public CommonResponse updateImage(Authentication authentication, @RequestPart(name = "image") @Nullable MultipartFile image) {
+        Long userId = Long.parseLong(authentication.getName());
+        UserProfileResponse response = userService.updateProfileImage(userId, image);
+        return CommonResponse.builder()
+                .message("SUCCESS")
+                .data(response)
+                .code(HttpStatus.OK.value())
+                .success(true)
+                .build()
+                ;
+
     }
 
 }

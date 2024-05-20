@@ -18,12 +18,14 @@ import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.JwtTokenErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.jwt.token.JwtTokenProvider;
+import com.restgram.global.s3.service.S3Service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,9 +41,12 @@ public class UserServiceImpl implements UserService{
     private final FeedRepository feedRepository;
     private final FollowRepository followRepository;
     private final CouponRepository couponRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+
+    private final S3Service s3Service;
+
     private final JwtTokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
-    private final RefreshTokenRepository refreshTokenRepository;
     private static final String TYPE_ACCESS = "access";
     private static final String TYPE_REFRESH = "refresh";
 
@@ -108,9 +113,7 @@ public class UserServiceImpl implements UserService{
     public FeedUserInfoResponse getFeedUser(Long myId, Long userId) {
         User me = userRepository.findById(myId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        System.out.println(user.getType());
         if (user.getType().equals(UserType.STORE.toString())) {
-            System.out.println("zz");
             return getFeedStore(me, userId);
         } else {
             return getFeedCustomer(me, userId);
@@ -147,6 +150,23 @@ public class UserServiceImpl implements UserService{
         System.out.println(request.getNickname());
         user.updateNickname(request.getNickname());
         userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
+    public UserProfileResponse updateProfileImage(Long userId, MultipartFile image) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        String url = null;
+        System.out.println(image);
+        if (image != null) {
+            url = s3Service.uploadFile(image, "user/profile/" + user.getId());
+        }
+        if (user.getProfileImage() != null) {
+            s3Service.delete(user.getProfileImage());
+        }
+        user.updateProfileImage(url);
+        userRepository.save(user);
+        return UserProfileResponse.builder().imageUrl(url).build();
     }
 
     private FeedStoreInfoResponse getFeedStore(User me, Long userId) {

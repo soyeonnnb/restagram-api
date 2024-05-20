@@ -28,15 +28,12 @@ public class CustomerJoinRequest {
     @NotBlank(message = "전화번호는 필수값입니다.")
     private String phone;
 
-    private String profileImage;
-
 
     public Customer of() {
         return Customer.builder()
                 .email(email)
                 .uid(email)
                 .name(name)
-                .profileImage(profileImage)
                 .phone(phone)
                 .nickname(nickname)
                 .password(password)

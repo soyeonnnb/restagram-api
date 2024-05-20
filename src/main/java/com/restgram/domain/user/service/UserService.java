@@ -4,11 +4,9 @@ import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.request.NicknameRequest;
 import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
-import com.restgram.domain.user.dto.response.CheckResponse;
-import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
-import com.restgram.domain.user.dto.response.LoginResponse;
-import com.restgram.domain.user.dto.response.UserInfoResponse;
+import com.restgram.domain.user.dto.response.*;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,4 +19,5 @@ public interface UserService {
     void updatePassword(Long userId, UpdatePasswordRequest request);
     CheckResponse duplicateNickname(NicknameRequest request);
     void updateNickname(Long userId, NicknameRequest request);
+    UserProfileResponse updateProfileImage(Long userId, MultipartFile image);
 }

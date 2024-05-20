@@ -30,8 +30,6 @@ public class StoreJoinRequest {
     @NotBlank(message = "전화번호는 필수값입니다.")
     private String phone;
 
-    private String profileImage;
-
     @NotBlank(message = "가게 주소는 필수값입니다.")
     private String storeName;
 
@@ -52,7 +50,6 @@ public class StoreJoinRequest {
         return Store.builder()
                 .email(email)
                 .name(name)
-                .profileImage(profileImage)
                 .phone(phone)
                 .nickname(nickname)
                 .storeName(storeName)
