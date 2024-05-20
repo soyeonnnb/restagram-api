@@ -1,6 +1,7 @@
 package com.restgram.domain.user.controller;
 
 import com.restgram.domain.user.dto.request.LoginRequest;
+import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
 import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserInfoResponse;
@@ -83,6 +84,18 @@ public class UserController {
         FeedUserInfoResponse response = userService.getFeedUser(myId, userId);
         return CommonResponse.builder()
                 .data(response)
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .success(true)
+                .build()
+                ;
+    }
+
+    @PatchMapping("/password")
+    public CommonResponse updatePassword(Authentication authentication, @RequestBody @Valid UpdatePasswordRequest request) {
+        Long userId = Long.parseLong(authentication.getName());
+        userService.updatePassword(userId, request);
+        return CommonResponse.builder()
                 .message("SUCCESS")
                 .code(HttpStatus.OK.value())
                 .success(true)

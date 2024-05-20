@@ -2,6 +2,7 @@ package com.restgram.domain.user.service;
 
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.restgram.domain.user.dto.request.LoginRequest;
+import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
 import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserInfoResponse;
@@ -15,4 +16,5 @@ public interface UserService {
     void reissue(HttpServletResponse response, String accessToken, String refreshToken);
     List<UserInfoResponse> searchUser(String query);
     FeedUserInfoResponse getFeedUser(Long myId, Long userId);
+    void updatePassword(Long userId, UpdatePasswordRequest request);
 }

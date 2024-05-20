@@ -5,6 +5,7 @@ import com.restgram.domain.coupon.repository.CouponRepository;
 import com.restgram.domain.feed.repository.FeedRepository;
 import com.restgram.domain.follow.repository.FollowRepository;
 import com.restgram.domain.user.dto.request.LoginRequest;
+import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
 import com.restgram.domain.user.dto.response.*;
 import com.restgram.domain.user.entity.*;
 import com.restgram.domain.user.repository.CustomerRepository;
@@ -12,6 +13,7 @@ import com.restgram.domain.user.repository.RefreshTokenRepository;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
+import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.JwtTokenErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.jwt.token.JwtTokenProvider;
@@ -113,6 +115,21 @@ public class UserServiceImpl implements UserService{
             return getFeedCustomer(me, userId);
         }
     }
+
+    @Override
+    @Transactional
+    public void updatePassword(Long userId, UpdatePasswordRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        if (user.getType().toString().equals(UserType.CUSTOMER)) {
+            Customer c = (Customer) user;
+            // 소셜 로그인의 경우에는 비밀번호가 없음
+            if (c.getLoginMethod().toString().equals(LoginMethod.KAKAO)) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
+        }
+        if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) throw new RestApiException(UserErrorCode.PASSWORD_MISMATCH);
+        user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
     private FeedStoreInfoResponse getFeedStore(User me, Long userId) {
         Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         Integer feedNum = feedRepository.countAllByWriter(store);

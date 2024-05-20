@@ -50,4 +50,7 @@ public class User {
         return this.getClass().getAnnotation(DiscriminatorValue.class).value();
     }
 
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }
