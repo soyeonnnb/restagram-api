@@ -1,7 +1,6 @@
 package com.restgram.domain.address.service;
 
-import com.amazonaws.services.ec2.model.Address;
-import com.restgram.domain.address.dto.res.AddressRes;
+import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.address.entity.SidoAddress;
 import com.restgram.domain.address.entity.SiggAddress;
@@ -25,34 +24,34 @@ public class AddressServiceImpl implements AddressService {
     private final SidoAddressRepository sidoAddressRepository;
 
     @Override
-    public List<AddressRes> getSidoList() {
+    public List<AddressResponse> getSidoList() {
         List<SidoAddress> sidoAddressList = sidoAddressRepository.findAllByOrderByName();
-        List<AddressRes> addressResList = new ArrayList<>();
+        List<AddressResponse> addressResponseList = new ArrayList<>();
         for(SidoAddress sidoAddress : sidoAddressList) {
-            addressResList.add(AddressRes.of(sidoAddress));
+            addressResponseList.add(AddressResponse.of(sidoAddress));
         }
-        return addressResList;
+        return addressResponseList;
     }
 
     @Override
-    public List<AddressRes> getSiggList(Long sidoId) {
+    public List<AddressResponse> getSiggList(Long sidoId) {
         SidoAddress sidoAddress = sidoAddressRepository.findById(sidoId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
         List<SiggAddress> siggAddressList = siggAddressRepository.findALlBySidoAddressOrderByName(sidoAddress);
-        List<AddressRes> addressResList = new ArrayList<>();
+        List<AddressResponse> addressResponseList = new ArrayList<>();
         for(SiggAddress siggAddress : siggAddressList) {
-            addressResList.add(AddressRes.of(siggAddress));
+            addressResponseList.add(AddressResponse.of(siggAddress));
         }
-        return addressResList;
+        return addressResponseList;
     }
 
     @Override
-    public List<AddressRes> getEmdList(Long siggId) {
+    public List<AddressResponse> getEmdList(Long siggId) {
         SiggAddress siggAddress = siggAddressRepository.findById(siggId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
         List<EmdAddress> emdAddressList = emdAddressRepository.findAllBySiggAddressOrderByName(siggAddress);
-        List<AddressRes> addressResList = new ArrayList<>();
+        List<AddressResponse> addressResponseList = new ArrayList<>();
         for(EmdAddress emdAddress : emdAddressList) {
-            addressResList.add(AddressRes.of(emdAddress));
+            addressResponseList.add(AddressResponse.of(emdAddress));
         }
-        return addressResList;
+        return addressResponseList;
     }
 }

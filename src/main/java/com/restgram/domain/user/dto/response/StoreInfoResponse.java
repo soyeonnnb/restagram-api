@@ -1,6 +1,5 @@
 package com.restgram.domain.user.dto.response;
 
-import com.restgram.domain.address.dto.res.EmdAddressRes;
 import com.restgram.domain.user.entity.Store;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

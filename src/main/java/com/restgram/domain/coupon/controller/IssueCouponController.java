@@ -1,7 +1,6 @@
 package com.restgram.domain.coupon.controller;
 
-import com.restgram.domain.coupon.dto.response.CustomerCouponRes;
-import com.restgram.domain.coupon.dto.response.IssueCouponRes;
+import com.restgram.domain.coupon.dto.response.IssueCouponResponse;
 import com.restgram.domain.coupon.service.IssueCouponService;
 import com.restgram.global.exception.entity.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class IssueCouponController {
     @GetMapping
     public CommonResponse getCustomerCouponList(Authentication authentication) {
         Long customerId = Long.parseLong(authentication.getName());
-        List<IssueCouponRes> res = issueCouponService.getCustomerCouponList(customerId);
+        List<IssueCouponResponse> res = issueCouponService.getCustomerCouponList(customerId);
         return CommonResponse.builder()
                 .success(true)
                 .code(HttpStatus.OK.value())

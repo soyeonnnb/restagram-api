@@ -1,8 +1,8 @@
 package com.restgram.domain.coupon.service;
 
-import com.restgram.domain.coupon.dto.request.AddCouponReq;
-import com.restgram.domain.coupon.dto.response.CustomerCouponRes;
-import com.restgram.domain.coupon.dto.response.StoreCouponRes;
+import com.restgram.domain.coupon.dto.request.AddCouponRequest;
+import com.restgram.domain.coupon.dto.response.CustomerCouponResponse;
+import com.restgram.domain.coupon.dto.response.StoreCouponResponse;
 import com.restgram.domain.coupon.entity.Coupon;
 import com.restgram.domain.coupon.entity.IssueCoupon;
 import com.restgram.domain.coupon.repository.CouponRepository;
@@ -15,13 +15,10 @@ import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.CouponErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
-import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,7 +37,7 @@ public class CouponServiceImpl implements CouponService{
     private String serverUrl;
 
     @Override
-    public void addCoupon(Long storeId, AddCouponReq req) {
+    public void addCoupon(Long storeId, AddCouponRequest req) {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         // 시작일은 종료일 이전이여야 한다.
         if (req.getStartAt().isAfter(req.getFinishAt())) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
@@ -60,39 +57,39 @@ public class CouponServiceImpl implements CouponService{
 
     // 현재 가능한 쿠폰 리스트
     @Override
-    public List<StoreCouponRes> getAvailableCouponList(Long storeId) {
+    public List<StoreCouponResponse> getAvailableCouponList(Long storeId) {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         // 취소처리X 하면서 종료일이 현재 후전인 쿠폰들
         List<Coupon> couponList = couponRepository.findAllByStoreAndDisableAndFinishAtAfterOrderByStartAt(store, false, LocalDateTime.now());
-        List<StoreCouponRes> storeCouponResList = new ArrayList<>();
+        List<StoreCouponResponse> storeCouponResponseList = new ArrayList<>();
         for(Coupon coupon : couponList) {
-            storeCouponResList.add(StoreCouponRes.of(coupon, issueCouponRepository.countAllByCouponAndIsUsed(coupon, true)));
+            storeCouponResponseList.add(StoreCouponResponse.of(coupon, issueCouponRepository.countAllByCouponAndIsUsed(coupon, true)));
         }
-        return storeCouponResList;
+        return storeCouponResponseList;
     }
 
     @Override
-    public List<StoreCouponRes> getFinsihCouponList(Long storeId) {
+    public List<StoreCouponResponse> getFinsihCouponList(Long storeId) {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         // 취소처리O 거나 종료일이 현재 이전인 쿠폰들
         List<Coupon> couponList = couponRepository.findAllByStoreAndDisableOrFinishAtBeforeOrderByStartAt(store, true, LocalDateTime.now());
-        List<StoreCouponRes> storeCouponResList = new ArrayList<>();
+        List<StoreCouponResponse> storeCouponResponseList = new ArrayList<>();
         for(Coupon coupon : couponList) {
-            storeCouponResList.add(StoreCouponRes.of(coupon, issueCouponRepository.countAllByCouponAndIsUsed(coupon, true)));
+            storeCouponResponseList.add(StoreCouponResponse.of(coupon, issueCouponRepository.countAllByCouponAndIsUsed(coupon, true)));
         }
-        return storeCouponResList;
+        return storeCouponResponseList;
     }
 
     // 가게 쿠폰 전체 가져오기
     @Override
-    public List<CustomerCouponRes> getStoresCouponList(Long customerId, Long storeId) {
+    public List<CustomerCouponResponse> getStoresCouponList(Long customerId, Long storeId) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         // 취소처리X 하면서 시작일이 현재 이전이면서 종료일이 현재 이후인 쿠폰들
         List<Coupon> couponList = couponRepository.findAllByStoreAndDisableAndStartAtBeforeAndFinishAtAfterOrderByStartAt(store, true, LocalDateTime.now(), LocalDateTime.now());
-        List<CustomerCouponRes> customerCouponResList = new ArrayList<>();
+        List<CustomerCouponResponse> customerCouponResList = new ArrayList<>();
         for(Coupon coupon : couponList) {
-            customerCouponResList.add(CustomerCouponRes.of(coupon, issueCouponRepository.existsByCustomerAndCoupon(customer, coupon)));
+            customerCouponResList.add(CustomerCouponResponse.of(coupon, issueCouponRepository.existsByCustomerAndCoupon(customer, coupon)));
         }
         return customerCouponResList;
     }

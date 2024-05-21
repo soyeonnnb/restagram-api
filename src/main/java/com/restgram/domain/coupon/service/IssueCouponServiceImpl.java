@@ -1,13 +1,10 @@
 package com.restgram.domain.coupon.service;
 
-import com.restgram.domain.coupon.dto.response.CustomerCouponRes;
-import com.restgram.domain.coupon.dto.response.IssueCouponRes;
-import com.restgram.domain.coupon.entity.Coupon;
+import com.restgram.domain.coupon.dto.response.IssueCouponResponse;
 import com.restgram.domain.coupon.entity.IssueCoupon;
 import com.restgram.domain.coupon.repository.IssueCouponRepository;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.repository.CustomerRepository;
-import com.restgram.domain.user.service.CustomerService;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +23,13 @@ public class IssueCouponServiceImpl implements IssueCouponService{
 
     // 사용가능한 발급완료쿠폰
     @Override
-    public List<IssueCouponRes> getCustomerCouponList(Long customerId) {
+    public List<IssueCouponResponse> getCustomerCouponList(Long customerId) {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         List<IssueCoupon> issueCouponList = issueCouponRepository.findAllByCustomerAndIsUsedAndExpiredAtAfter(customer, false, LocalDateTime.now());
-        List<IssueCouponRes> issueCouponResList = new ArrayList<>();
+        List<IssueCouponResponse> issueCouponResponseList = new ArrayList<>();
         for(IssueCoupon issueCoupon : issueCouponList) {
-            issueCouponResList.add(IssueCouponRes.of(issueCoupon));
+            issueCouponResponseList.add(IssueCouponResponse.of(issueCoupon));
         }
-        return issueCouponResList;
+        return issueCouponResponseList;
     }
 }

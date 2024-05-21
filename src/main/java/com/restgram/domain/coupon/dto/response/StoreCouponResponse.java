@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StoreCouponRes {
+public class StoreCouponResponse {
 
     private Long id;
     private LocalDateTime startAt;
@@ -25,8 +25,8 @@ public class StoreCouponRes {
     private Long expiredMinute;
     private boolean disable;
 
-    public static StoreCouponRes of(Coupon coupon, Long useQuantity) {
-        return StoreCouponRes.builder()
+    public static StoreCouponResponse of(Coupon coupon, Long useQuantity) {
+        return StoreCouponResponse.builder()
                 .id(coupon.getId())
                 .startAt(coupon.getStartAt())
                 .finishAt(coupon.getFinishAt())

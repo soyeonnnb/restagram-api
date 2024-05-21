@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class IssueCouponRes {
+public class IssueCouponResponse {
     private Long id;
     private Boolean isUsed;
     private LocalDateTime usedAt;
@@ -23,8 +23,8 @@ public class IssueCouponRes {
     private Integer payMoney;
     private StoreInfoResponse store;
 
-    public static IssueCouponRes of(IssueCoupon coupon) {
-        return IssueCouponRes.builder()
+    public static IssueCouponResponse of(IssueCoupon coupon) {
+        return IssueCouponResponse.builder()
                 .id(coupon.getId())
                 .isUsed(coupon.getIsUsed())
                 .usedAt(coupon.getUsedAt())

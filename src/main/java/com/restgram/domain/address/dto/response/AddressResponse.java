@@ -1,4 +1,4 @@
-package com.restgram.domain.address.dto.res;
+package com.restgram.domain.address.dto.response;
 
 import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.address.entity.SidoAddress;
@@ -12,26 +12,26 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AddressRes {
+public class AddressResponse {
     private Long id;
     private String name;
 
-    public static AddressRes of(EmdAddress address) {
-        return AddressRes.builder()
+    public static AddressResponse of(EmdAddress address) {
+        return AddressResponse.builder()
                 .id(address.getId())
                 .name(address.getName())
                 .build();
     }
 
-    public static AddressRes of(SiggAddress address) {
-        return AddressRes.builder()
+    public static AddressResponse of(SiggAddress address) {
+        return AddressResponse.builder()
                 .id(address.getId())
                 .name(address.getName())
                 .build();
     }
 
-    public static AddressRes of(SidoAddress address) {
-        return AddressRes.builder()
+    public static AddressResponse of(SidoAddress address) {
+        return AddressResponse.builder()
                 .id(address.getId())
                 .name(address.getName())
                 .build();

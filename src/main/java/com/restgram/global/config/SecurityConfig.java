@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .httpBasic(HttpBasicConfigurer::disable) // 기본
                 .authorizeHttpRequests(
                         authorize -> authorize
-                                .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll() // 인가 안되면 자체 시큐리티 타는데 -> 이거 막아주는 로직
+                                .dispatcherTypeMatchers(DispatcherType.ERROR).denyAll() // 인가 안되면 자체 시큐리티 타는데 -> 이거 막아주는 로직
                                 .requestMatchers("/store/join", "/user/login", "/user/reissue", "/customer/join", "/login/oauth2/**").permitAll()
                                 .requestMatchers("/user/logout", "/customer/info").authenticated()
                                 .requestMatchers("/coupon", "/coupon/stop/**", "/coupon/finish").hasAuthority(UserType.STORE.toString())

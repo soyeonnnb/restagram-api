@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CustomerCouponRes {
+public class CustomerCouponResponse {
     private Long id;
     private LocalDateTime startAt;
     private LocalDateTime finishAt;
@@ -23,8 +23,8 @@ public class CustomerCouponRes {
     private Long expiredMinute;
     private boolean isIssued; // 발급 여부
 
-    public static CustomerCouponRes of(Coupon coupon, Boolean isIssued) {
-        return CustomerCouponRes.builder()
+    public static CustomerCouponResponse of(Coupon coupon, Boolean isIssued) {
+        return CustomerCouponResponse.builder()
                 .id(coupon.getId())
                 .startAt(coupon.getStartAt())
                 .finishAt(coupon.getFinishAt())

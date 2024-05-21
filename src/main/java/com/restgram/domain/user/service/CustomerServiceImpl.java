@@ -1,7 +1,6 @@
 package com.restgram.domain.user.service;
 
-import com.restgram.domain.address.dto.res.AddressRes;
-import com.restgram.domain.address.dto.res.EmdAddressRes;
+import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.address.entity.SidoAddress;
 import com.restgram.domain.address.entity.SiggAddress;
@@ -13,7 +12,6 @@ import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.entity.Customer;
-import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
@@ -105,34 +103,34 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         int range = customer.getAddressRange();
 
-        List<AddressRes> addressResList = new ArrayList<>();
+        List<AddressResponse> addressResponseList = new ArrayList<>();
 
         // 시도는 항상 가져와야 함.(전체여도)
         List<SidoAddress> sidoAddressList = sidoAddressRepository.findAllByOrderByName();
-        List<AddressRes> sidoResList = new ArrayList<>();
-        for(SidoAddress sidoAddress : sidoAddressList) sidoResList.add(AddressRes.of(sidoAddress));
+        List<AddressResponse> sidoResList = new ArrayList<>();
+        for(SidoAddress sidoAddress : sidoAddressList) sidoResList.add(AddressResponse.of(sidoAddress));
 
         // 시군구는 시도가 전체가 아니라면 가져오기
-        List<AddressRes> siggResList = new ArrayList<>();
+        List<AddressResponse> siggResList = new ArrayList<>();
         if (range >= 1) {
             List<SiggAddress> siggAddressList = siggAddressRepository.findALlBySidoAddressOrderByName(customer.getSidoAddress());
-            for(SiggAddress siggAddress : siggAddressList) siggResList.add(AddressRes.of(siggAddress));
+            for(SiggAddress siggAddress : siggAddressList) siggResList.add(AddressResponse.of(siggAddress));
         }
 
         // 읍면동은 시군구가 전체가 아니라면 가져오기
-        List<AddressRes> emdResList = new ArrayList<>();
+        List<AddressResponse> emdResList = new ArrayList<>();
         if (range >= 2) {
             List<EmdAddress> emdAddressList = emdAddressRepository.findAllBySiggAddressOrderByName(customer.getSiggAddress());
-            for(EmdAddress emdAddress : emdAddressList) emdResList.add(AddressRes.of(emdAddress));
+            for(EmdAddress emdAddress : emdAddressList) emdResList.add(AddressResponse.of(emdAddress));
         }
 
         // 유저 초기 지역
-        if (range >= 1) addressResList.add(AddressRes.of(customer.getSidoAddress()));
-        if (range >= 2) addressResList.add(AddressRes.of(customer.getSiggAddress()));
-        if (range >= 3) addressResList.add(AddressRes.of(customer.getEmdAddress()));
+        if (range >= 1) addressResponseList.add(AddressResponse.of(customer.getSidoAddress()));
+        if (range >= 2) addressResponseList.add(AddressResponse.of(customer.getSiggAddress()));
+        if (range >= 3) addressResponseList.add(AddressResponse.of(customer.getEmdAddress()));
 
         UserAddressListResponse response = UserAddressListResponse.builder()
-                .addressList(addressResList)
+                .addressList(addressResponseList)
                 .emdAddressList(emdResList)
                 .siggAddressList(siggResList)
                 .sidoAddressList(sidoResList)
