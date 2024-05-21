@@ -3,10 +3,7 @@ package com.restgram.domain.reservation.entity;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -15,6 +12,7 @@ import java.time.LocalTime;
 
 @Entity
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReservationForm extends BaseEntity {
@@ -38,7 +36,10 @@ public class ReservationForm extends BaseEntity {
 
     private Integer maxReservationPerson; // 최대 예약 인원수
 
+    @Enumerated(EnumType.STRING)
     private ReservationFormState state;
 
-
+    public void updateRemainQuantity(Integer tableNum) {
+        this.remainQuantity -= tableNum;
+    }
 }

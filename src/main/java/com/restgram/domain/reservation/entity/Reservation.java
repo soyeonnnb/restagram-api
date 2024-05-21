@@ -41,7 +41,7 @@ public class Reservation extends BaseEntity {
     private Integer headCount; // 인원수
     private String name; // 예약자명
     private String phone; // 예약자 핸드폰
-    private String meno; // 메세지
+    private String memo; // 메세지
 
     @Enumerated(EnumType.STRING)
     private ReservationState state;
