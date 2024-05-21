@@ -9,6 +9,7 @@ import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -50,11 +51,18 @@ public class SecurityConfig {
                 .httpBasic(HttpBasicConfigurer::disable) // 기본
                 .authorizeHttpRequests(
                         authorize -> authorize
-                                .dispatcherTypeMatchers(DispatcherType.ERROR).denyAll() // 인가 안되면 자체 시큐리티 타는데 -> 이거 막아주는 로직
+                                .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll() // 인가 안되면 자체 시큐리티 타는데 -> 이거 막아주는 로직
                                 .requestMatchers("/store/join", "/user/login", "/user/reissue", "/customer/join", "/login/oauth2/**").permitAll()
                                 .requestMatchers("/user/logout", "/customer/info").authenticated()
+                                .requestMatchers("/address/**").authenticated()
                                 .requestMatchers("/coupon", "/coupon/stop/**", "/coupon/finish").hasAuthority(UserType.STORE.toString())
                                 .requestMatchers("/coupon/issue","/coupon/**").hasAuthority(UserType.CUSTOMER.toString())
+                                .requestMatchers("/feed/**").authenticated()
+                                .requestMatchers("/follow/**").authenticated()
+                                .requestMatchers("/reservation", "/reservation/customer").hasAuthority(UserType.CUSTOMER.toString())
+                                .requestMatchers("/reservation/store").hasAuthority(UserType.STORE.toString())
+                                .requestMatchers(HttpMethod.POST, "/reservation/form").hasAuthority(UserType.STORE.toString())
+                                .requestMatchers("/reservation/**").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
