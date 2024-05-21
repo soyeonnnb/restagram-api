@@ -4,10 +4,7 @@ import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -17,6 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @AllArgsConstructor
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Reservation extends BaseEntity {
 
@@ -46,5 +44,8 @@ public class Reservation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ReservationState state;
 
+    public void updateState(ReservationState state) {
+        this.state = state;
+    }
 
 }

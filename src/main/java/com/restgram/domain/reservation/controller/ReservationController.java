@@ -1,16 +1,16 @@
 package com.restgram.domain.reservation.controller;
 
 import com.restgram.domain.reservation.dto.request.AddReservationRequest;
+import com.restgram.domain.reservation.dto.request.DeleteReservationRequest;
 import com.restgram.domain.reservation.service.ReservationService;
 import com.restgram.global.exception.entity.CommonResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,7 +33,16 @@ public class ReservationController {
     }
 
     // 예약 취소
-
+    @PatchMapping("/{reservation_id}")
+    public CommonResponse deleteReservation(Authentication authentication, @RequestBody @Valid DeleteReservationRequest request) {
+        Long userId = Long.parseLong(authentication.getName());
+        reservationService.cancelReservation(userId, request);
+        return CommonResponse.builder()
+                .success(true)
+                .code(HttpStatus.OK.value())
+                .message("예약이 성공적으로 삭제되었습니다.")
+                .build();
+    }
     
     // 예약리스트 가져오기
     
