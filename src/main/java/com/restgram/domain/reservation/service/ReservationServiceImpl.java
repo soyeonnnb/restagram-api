@@ -2,12 +2,16 @@ package com.restgram.domain.reservation.service;
 
 import com.restgram.domain.reservation.dto.request.AddReservationRequest;
 import com.restgram.domain.reservation.dto.request.DeleteReservationRequest;
+import com.restgram.domain.reservation.dto.response.CustomerReservationResponse;
+import com.restgram.domain.reservation.dto.response.StoreReservationResponse;
 import com.restgram.domain.reservation.entity.*;
 import com.restgram.domain.reservation.repository.ReservationCancelRepository;
 import com.restgram.domain.reservation.repository.ReservationFormRepository;
 import com.restgram.domain.reservation.repository.ReservationRepository;
 import com.restgram.domain.user.entity.Customer;
+import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.repository.CustomerRepository;
+import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.ReservationErrorCode;
@@ -18,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +33,7 @@ public class ReservationServiceImpl implements ReservationService{
     private final ReservationFormRepository reservationFormRepository;
     private final ReservationRepository reservationRepository;
     private final ReservationCancelRepository reservationCancelRepository;
+    private final StoreRepository storeRepository;
 
     @Override
     @Transactional
@@ -73,6 +80,41 @@ public class ReservationServiceImpl implements ReservationService{
         
         reservationCancelRepository.save(reservationCancel);
         reservationRepository.save(reservation);
+    }
+
+    // 구매자 예약 리스트
+    @Override
+    public List<CustomerReservationResponse> getCustomerReservations(Long userId) {
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        List<Reservation> reservationList = reservationRepository.findAllByCustomerOrderByDatetimeDesc(customer);
+        List<CustomerReservationResponse> customerReservationResponseList = new ArrayList<>();
+        for(Reservation reservation : reservationList) {
+            if (reservation.getState().equals(ReservationState.ACTIVE)) {
+                customerReservationResponseList.add(CustomerReservationResponse.of(reservation));
+            } else {
+                ReservationCancel reservationCancel = reservationCancelRepository.findByReservation(reservation).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+                customerReservationResponseList.add(CustomerReservationResponse.of(reservation, reservationCancel.getMemo()));
+            }
+        }
+        return customerReservationResponseList;
+    }
+
+    @Override
+    public List<StoreReservationResponse> getStoreReservations(Long userId, Integer year, Integer month) {
+        Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        LocalDateTime startAt = LocalDateTime.of(year, month, 1, 0, 0);
+        // 해당 가게의, 연도/월 검색
+        List<Reservation> reservationList = reservationRepository.findAllByStoreAndDatetimeGreaterThanEqualAndDatetimeLessThan(store, startAt, startAt.plusMonths(1));
+        List<StoreReservationResponse> storeReservationResponseList = new ArrayList<>();
+        for(Reservation reservation : reservationList) {
+            if (reservation.getState().equals(ReservationState.ACTIVE)) {
+                storeReservationResponseList.add(StoreReservationResponse.of(reservation));
+            } else {
+                ReservationCancel reservationCancel = reservationCancelRepository.findByReservation(reservation).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+                storeReservationResponseList.add(StoreReservationResponse.of(reservation, reservationCancel.getMemo()));
+            }
+        }
+        return storeReservationResponseList;
     }
 
     private int getTableNum(Integer headcount, Integer tablePerson) {
