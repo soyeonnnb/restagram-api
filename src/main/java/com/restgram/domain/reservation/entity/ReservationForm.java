@@ -42,4 +42,8 @@ public class ReservationForm extends BaseEntity {
     public void updateRemainQuantity(Integer tableNum) {
         this.remainQuantity += tableNum;
     }
+
+    public void updateState(ReservationFormState state) {
+        this.state = state;
+    }
 }
