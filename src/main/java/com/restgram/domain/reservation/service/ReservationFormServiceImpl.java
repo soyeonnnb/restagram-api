@@ -11,12 +11,15 @@ import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.CommonErrorCode;
+import com.restgram.global.exception.errorCode.ReservationErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +63,7 @@ public class ReservationFormServiceImpl implements ReservationFormService{
     public List<ReservationFormResponse> getReservationForm(Long storeId, Integer year, Integer month) {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         LocalDate date = LocalDate.of(year, month, 1);
-        List<ReservationForm> reservationFormList = reservationFormRepository.findAllByStoreAndDateBetweenAndStateEqualsAndRemainQuantityGreaterThan(store, date, date.plusMonths(1).minusDays(1), ReservationFormState.ACTIVE, 0);
+        List<ReservationForm> reservationFormList = reservationFormRepository.findAllByStoreAndDateBetweenAndStateEquals(store, date, date.plusMonths(1).minusDays(1), ReservationFormState.ACTIVE);
         List<ReservationFormResponse> customerReservationFormResponseList = new ArrayList<>();
         for(ReservationForm form : reservationFormList) {
             customerReservationFormResponseList.add(ReservationFormResponse.of(form));
@@ -88,6 +91,9 @@ public class ReservationFormServiceImpl implements ReservationFormService{
         ReservationForm form = reservationFormRepository.findById(request.getId()).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
         // 유저 일치 확인
         if (form.getStore().getId() != storeId) throw new RestApiException(UserErrorCode.USER_MISMATCH);
+        LocalDateTime formDateTime = LocalDateTime.of(form.getDate(), form .getTime());
+        // 이미 시간이 지나간 예약폼은 수정 불가
+        if (formDateTime.isBefore(LocalDateTime.now())) throw new RestApiException(ReservationErrorCode.RESERVATION_IS_BEFORE_NOW);
         form.updateState(request.getState());
         reservationFormRepository.save(form);
     }

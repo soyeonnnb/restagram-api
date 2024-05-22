@@ -19,6 +19,6 @@ public interface ReservationFormRepository extends JpaRepository<ReservationForm
     Optional<ReservationForm> findById(Long id);
 
     boolean existsByStoreAndDate(Store store, LocalDate date);
-    List<ReservationForm> findAllByStoreAndDateBetweenAndStateEqualsAndRemainQuantityGreaterThan(Store store, LocalDate startAt, LocalDate finishAt, ReservationFormState state, Integer remainQuantity);
+    List<ReservationForm> findAllByStoreAndDateBetweenAndStateEquals(Store store, LocalDate startAt, LocalDate finishAt, ReservationFormState state);
     List<ReservationForm> findAllByStoreAndDateBetween(Store store, LocalDate startAt, LocalDate finishAt);
 }
