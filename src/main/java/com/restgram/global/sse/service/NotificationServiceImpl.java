@@ -221,7 +221,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .append(reservation.getDatetime().getHour()).append("시 ");
             if (reservation.getDatetime().getMinute() > 0)
                 contentSb.append(reservation.getDatetime().getMinute()).append("분 ");
-            contentSb.append(" 예약 2시간 전입니다.");
+            contentSb.append("예약 2시간 전입니다.");
             imageUrl = reservation.getStore().getProfileImage();
         } else if (type.equals(NotificationType.NEW_RESERVATION)) {
             // [XX] YYYY년 MM월 DD일 HH시 MM분에 새로운 예약이 추가되었습니다.
