@@ -10,13 +10,18 @@ import com.restgram.domain.reservation.repository.ReservationFormRepository;
 import com.restgram.domain.reservation.repository.ReservationRepository;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
+import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.StoreRepository;
+import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.ReservationErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
+import com.restgram.global.sse.entity.NotificationType;
+import com.restgram.global.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,17 +34,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservationServiceImpl implements ReservationService{
 
+    private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
     private final ReservationFormRepository reservationFormRepository;
     private final ReservationRepository reservationRepository;
     private final ReservationCancelRepository reservationCancelRepository;
     private final StoreRepository storeRepository;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
     public void addReservation(Long userId, AddReservationRequest request) {
         Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         ReservationForm form = reservationFormRepository.findById(request.getReservationFormId()).orElseThrow(() -> new RestApiException(ReservationErrorCode.RESERVATION_FORM_NOT_FOUND));
+        // 예약 일자 확인
+        LocalDateTime formDate = LocalDateTime.of(form.getDate(), form.getTime());
+        if (formDate.isBefore(LocalDateTime.now())) throw new RestApiException(ReservationErrorCode.RESERVATION_IS_BEFORE_NOW);
         // 테이블이 가능한지 확인
         if (form.getState().toString().equals(ReservationFormState.DISABLE)) throw new RestApiException(ReservationErrorCode.RESERVATION_DISABLE);
         // 테이블 수 확인
@@ -55,11 +65,15 @@ public class ReservationServiceImpl implements ReservationService{
         reservationRepository.save(reservation);
         form.updateRemainQuantity(tableNum * -1);
         reservationFormRepository.save(form);
+
+        // 예약 생성 알림 보내기
+        notificationService.send(reservation.getStore(), NotificationType.NEW_RESERVATION, reservation);
     }
 
     @Override
     @Transactional
     public void cancelReservation(Long userId, DeleteReservationRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         Reservation reservation = reservationRepository.findById(request.getReservationId()).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
         // 만약 해당 유저와 관계 없는 예약이면 삭제 취소 불가
         if ((request.getState().equals(ReservationCancelState.CUSTOMER) && reservation.getCustomer().getId() != userId)
@@ -77,9 +91,17 @@ public class ReservationServiceImpl implements ReservationService{
 
         // 테이블 수 업데이트
         reservation.getReservationForm().updateRemainQuantity(getTableNum(reservation.getHeadCount(), reservation.getReservationForm().getTablePerson()));
-        
+
+        // 엔티티 수정& 저장
         reservationCancelRepository.save(reservationCancel);
         reservationRepository.save(reservation);
+
+        // 알림 보내기
+        if (request.getState().equals(ReservationCancelState.CUSTOMER)) {
+            notificationService.send(reservation.getStore(), NotificationType.CUSTOMER_RESERVATION_CANCEL, reservation);
+        } else {
+            notificationService.send(reservation.getCustomer(), NotificationType.STORE_RESERVATION_CANCEL, reservation);
+        }
     }
 
     // 구매자 예약 리스트

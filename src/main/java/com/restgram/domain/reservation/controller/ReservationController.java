@@ -38,14 +38,14 @@ public class ReservationController {
     }
 
     // 예약 취소
-    @PatchMapping("/{reservation_id}")
+    @PatchMapping
     public CommonResponse deleteReservation(Authentication authentication, @RequestBody @Valid DeleteReservationRequest request) {
         Long userId = Long.parseLong(authentication.getName());
         reservationService.cancelReservation(userId, request);
         return CommonResponse.builder()
                 .success(true)
                 .code(HttpStatus.OK.value())
-                .message("예약이 성공적으로 삭제되었습니다.")
+                .message("예약이 성공적으로 취소되었습니다.")
                 .build();
     }
     
