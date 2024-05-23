@@ -127,46 +127,46 @@ public class NotificationServiceImpl implements NotificationService {
                 }
         );
     }
-
-    @Override
-    @Transactional
-    public void send(User receiver, NotificationType type, Coupon coupon) {
-        Notification notification = createNotification(receiver, type, coupon);
-
-        // 로그인 한 유저의 SseEmitter 모두 가져오기
-        Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(receiver.getId());
-
-        sseEmitters.forEach(
-                (key, emitter) -> {
-                    // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
-                    emitterRepository.saveEventCache(key, notification);
-                    // 데이터 전송
-                    sendToClient(emitter, key, NotificationResponse.of(notification));
-                }
-        );
-    }
-
-    @Override
-    @Transactional
-    public void sendList(List<User> receiverList, NotificationType type, Reservation reservation) {
-        Map<String, SseEmitter> sseEmitters;
-
-        for (User receiver : receiverList) {
-
-            sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(receiver.getId());
-
-            Notification notification = createNotification(receiver, type, reservation);
-
-            sseEmitters.forEach(
-                    (key, emitter) -> {
-                        // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
-                        emitterRepository.saveEventCache(key, notification);
-                        // 데이터 전송
-                        sendToClient(emitter, key, NotificationResponse.of(notification));
-                    }
-            );
-        }
-    }
+//
+//    @Override
+//    @Transactional
+//    public void send(User receiver, NotificationType type, Coupon coupon) {
+//        Notification notification = createNotification(receiver, type, coupon);
+//
+//        // 로그인 한 유저의 SseEmitter 모두 가져오기
+//        Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(receiver.getId());
+//
+//        sseEmitters.forEach(
+//                (key, emitter) -> {
+//                    // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
+//                    emitterRepository.saveEventCache(key, notification);
+//                    // 데이터 전송
+//                    sendToClient(emitter, key, NotificationResponse.of(notification));
+//                }
+//        );
+//    }
+//
+//    @Override
+//    @Transactional
+//    public void sendList(List<User> receiverList, NotificationType type, Reservation reservation) {
+//        Map<String, SseEmitter> sseEmitters;
+//
+//        for (User receiver : receiverList) {
+//
+//            sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(receiver.getId());
+//
+//            Notification notification = createNotification(receiver, type, reservation);
+//
+//            sseEmitters.forEach(
+//                    (key, emitter) -> {
+//                        // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
+//                        emitterRepository.saveEventCache(key, notification);
+//                        // 데이터 전송
+//                        sendToClient(emitter, key, NotificationResponse.of(notification));
+//                    }
+//            );
+//        }
+//    }
 
     @Override
     @Transactional

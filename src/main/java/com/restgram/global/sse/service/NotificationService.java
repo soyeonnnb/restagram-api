@@ -24,8 +24,6 @@ public interface NotificationService {
     void sendLostData(String lastEventId, Long userId, String emitterId, SseEmitter emitter);
     void sendToClient(SseEmitter emitter, String id, Object data);
     void send(User receiver, NotificationType type, Reservation reservation);
-    void send(User receiver, NotificationType type, Coupon coupon);
-    void sendList(List<User> receiverList, NotificationType type, Reservation reservation);
     void sendList(List<User> receiverList, NotificationType type, Coupon coupon);
     // 예약 생성/예약 2시간 전/취소
     Notification createNotification(User receiver, NotificationType type, Reservation reservation);
