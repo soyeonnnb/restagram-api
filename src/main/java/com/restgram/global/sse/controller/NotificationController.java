@@ -1,4 +1,4 @@
-package com.restgram.global.sse;
+package com.restgram.global.sse.controller;
 
 import com.restgram.global.sse.service.NotificationServiceImpl;
 import lombok.RequiredArgsConstructor;
