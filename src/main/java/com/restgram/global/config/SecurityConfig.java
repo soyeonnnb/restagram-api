@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll() // 인가 안되면 자체 시큐리티 타는데 -> 이거 막아주는 로직
+                                .requestMatchers("/ws/**").permitAll()
                                 .requestMatchers("/store/join", "/user/login", "/user/reissue", "/customer/join", "/login/oauth2/**").permitAll()
                                 .requestMatchers("/user/logout", "/customer/info").authenticated()
                                 .requestMatchers("/address/**").authenticated()
