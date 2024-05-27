@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 
@@ -15,5 +17,10 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     @EntityGraph(attributePaths = {"lastMessage"})
     Optional<ChatRoom> findByUsers(User user, User receiver);
 
+    @Query("select cr from ChatRoom cr join cr.members cm1 where cm1.user = :user and cr.lastMessage != null")
+    @EntityGraph(attributePaths = {"lastMessage"})
+    List<ChatRoom> findAllByUser(User user);
 
+    @EntityGraph(attributePaths = {"lastMessage", "members"})
+    Optional<ChatRoom> findById(Long id);
 }

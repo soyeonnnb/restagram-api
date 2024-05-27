@@ -1,10 +1,13 @@
 package com.restgram.global.config;
 
+import com.restgram.global.interceptor.HttpSessionHandshakeInterceptor;
+import com.restgram.global.interceptor.WebSocketSecurityInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -17,6 +20,10 @@ import org.springframework.web.socket.config.annotation.*;
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer { // websocket + stomp
 
+    private final WebSocketSecurityInterceptor webSocketSecurityInterceptor;
+    private final HttpSessionHandshakeInterceptor httpSessionHandshakeInterceptor;
+
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/sub"); // 해당 주소를 구독하고 있는 클라이언트들에게 메세지 전달
@@ -26,6 +33,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer { // we
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws") // SockJS 연결주소
+                .addInterceptors(httpSessionHandshakeInterceptor)
                 .setAllowedOriginPatterns("*") // 일단 모든 경로에 대해서 CORS 허용
 //                .withSockJS() // 낮은 버전의 브라우저에서도 적용 가능
         // 주소: ws:localhost:8080/ws-stomp
@@ -43,5 +51,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer { // we
         return new CorsFilter(source);
     }
 
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors(webSocketSecurityInterceptor);
+    }
 
 }

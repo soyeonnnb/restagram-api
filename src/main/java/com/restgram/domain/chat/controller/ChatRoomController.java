@@ -6,10 +6,9 @@ import com.restgram.global.exception.entity.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/chat/room")
@@ -25,6 +24,19 @@ public class ChatRoomController {
         ChatRoomResponse response = chatRoomService.getChatRoom(userId, receiverId);
         return CommonResponse.builder()
                 .message("특정 채팅방 가져오기")
+                .data(response)
+                .code(HttpStatus.OK.value())
+                .success(true)
+                .build();
+    }
+
+    // 내 채팅방 리스트 가져오기
+    @GetMapping
+    public CommonResponse getChatRoomList(Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        List<ChatRoomResponse> response = chatRoomService.getChatRoomList(userId);
+        return CommonResponse.builder()
+                .message("채팅방 가져오기")
                 .data(response)
                 .code(HttpStatus.OK.value())
                 .success(true)

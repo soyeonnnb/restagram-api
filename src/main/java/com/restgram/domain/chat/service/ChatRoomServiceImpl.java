@@ -15,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -61,5 +63,21 @@ public class ChatRoomServiceImpl implements ChatRoomService{
         }
         ChatRoomResponse chatRoomResponse = ChatRoomResponse.of(chatRoom, receiver);
         return chatRoomResponse;
+    }
+
+    @Override
+    public List<ChatRoomResponse> getChatRoomList(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        List<ChatRoom> chatRoomList = chatRoomRepository.findAllByUser(user);
+        List<ChatRoomResponse> chatRoomResponseList = new ArrayList<>();
+        for(ChatRoom chatRoom : chatRoomList) {
+            User receiver = chatRoom.getMembers().stream()
+                    .map(ChatMember::getUser)  // ChatMember에서 User를 추출
+                    .filter(member -> !member.equals(user))  // me와 다른 user를 필터링
+                    .findFirst()
+                    .orElse(null);
+            chatRoomResponseList.add(ChatRoomResponse.of(chatRoom, receiver));
+        }
+        return chatRoomResponseList;
     }
 }

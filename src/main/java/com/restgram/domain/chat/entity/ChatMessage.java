@@ -35,8 +35,6 @@ public class ChatMessage {
     @JoinColumn(name="user_id")
     private User author;
 
-    private String url;
-
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime time;

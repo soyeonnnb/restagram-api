@@ -214,7 +214,6 @@ public class JwtTokenProvider implements InitializingBean {
     // key에 해당하는 토큰이 있다면 해당 값 반환
     public String resolveToken(HttpServletRequest request, String keyValue) {
         if(request.getCookies() == null) return null;
-
         Optional<Cookie> cookie = Arrays.stream(request.getCookies())
                 .filter(c -> c.getName().equals(keyValue))
                 .findFirst();
