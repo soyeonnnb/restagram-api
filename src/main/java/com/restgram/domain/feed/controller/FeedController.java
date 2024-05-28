@@ -11,6 +11,8 @@ import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +29,9 @@ public class FeedController {
     private final FeedService feedService;
 
     @PostMapping
-    public CommonResponse postFeed(Authentication authentication, @RequestPart @Valid AddFeedRequest req, @RequestPart(name = "images") List<MultipartFile> images) {
+    public CommonResponse postFeed(Authentication authentication,
+                                   @RequestPart @Valid AddFeedRequest req,
+                                   @RequestPart(name = "images") List<MultipartFile> images) {
         Long userId = Long.parseLong(authentication.getName());
         feedService.addFeed(userId, req, images);
         return CommonResponse.builder()
@@ -62,9 +66,10 @@ public class FeedController {
 
     // 팔로우한+내 유저의 피드 가져오기
     @GetMapping
-    public CommonResponse getFeeds(Authentication authentication) {
+    public CommonResponse getFeeds(Authentication authentication,
+                                   Pageable pageable) {
         Long userId = Long.parseLong(authentication.getName());
-        List<FeedResponse> feedResponseList = feedService.getFeeds(userId);
+        List<FeedResponse> feedResponseList = feedService.getFeeds(userId, pageable);
         return CommonResponse.builder()
                 .success(true)
                 .data(feedResponseList)
@@ -75,9 +80,9 @@ public class FeedController {
 
     // 피드 검색
     @GetMapping("/search")
-    public CommonResponse searchFeed(Authentication authentication, @RequestParam("addressId") @Nullable Long addressId, @RequestParam("addressRange") Integer addressRange, @RequestParam("query") String query) {
+    public CommonResponse searchFeed(Authentication authentication, @RequestParam("addressId") @Nullable Long addressId, @RequestParam("addressRange") Integer addressRange, @RequestParam("query") String query, Pageable pageable) {
         Long userId = Long.parseLong(authentication.getName());
-        List<FeedResponse> feedResponseList = feedService.searchFeeds(userId, addressId, addressRange, query);
+        List<FeedResponse> feedResponseList = feedService.searchFeeds(userId, addressId, addressRange, query, pageable);
         return CommonResponse.builder()
                 .success(true)
                 .data(feedResponseList)

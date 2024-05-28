@@ -24,6 +24,8 @@ import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -73,12 +75,12 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FeedResponse> getFeeds(Long userId) {
+    public List<FeedResponse> getFeeds(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         // 팔로우 리스트 가져오기
         List<User> followUserList = followRepository.findFollowingsByFollower(user);
         // 내 + 팔로우한 사람들의 피드 리스트 가져오기
-        List<Feed> feedList = feedRepository.findAllByWriterInOrWriterOrderByCreatedAtDesc(followUserList, user);
+        Page<Feed> feedList = feedRepository.findAllByWriterInOrWriterOrderByIdDesc(followUserList, user, pageable);
         // 응답 만들기
         List<FeedResponse> feedResponseList = new ArrayList<>();
         for(Feed feed : feedList) {
@@ -89,7 +91,7 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FeedResponse> searchFeeds(Long userId, Long addressId, Integer addressRange, String query) {
+    public List<FeedResponse> searchFeeds(Long userId, Long addressId, Integer addressRange, String query, Pageable pageable) {
         Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         List<EmdAddress> emdAddressList = new ArrayList<>();
         List<Feed> feedList;
@@ -104,8 +106,8 @@ public class FeedServiceImpl implements FeedService {
                 emdAddressList.add(emdAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)));
                 break;
         }
-        if (addressRange == 0) feedList = feedRepository.searchByQuery(query);
-        else feedList = feedRepository.searchByQueryAndEmdAddressList(query, emdAddressList);
+        if (addressRange == 0) feedList = feedRepository.searchByQuery(query, pageable);
+        else feedList = feedRepository.searchByQueryAndEmdAddressList(query, emdAddressList, pageable);
 
         List<FeedResponse> feedResponseList = new ArrayList<>();
 

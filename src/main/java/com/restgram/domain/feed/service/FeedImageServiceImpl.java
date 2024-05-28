@@ -12,6 +12,7 @@ import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,9 +31,9 @@ public class FeedImageServiceImpl implements FeedImageService{
 
     // 피드리스트에서 첫번째 피드 리스트만 가져오기
     @Override
-    public List<UserFeedImageResponse> getFeedImageList(Long userId) {
+    public List<UserFeedImageResponse> getFeedImageList(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        List<FeedImage> feedImageList = feedImageRepository.findByFeedWriterAndNumberOrderByIdDesc(user, 0);
+        List<FeedImage> feedImageList = feedImageRepository.findByFeedWriterAndNumberOrderByIdDesc(user, 0, pageable);
         List<UserFeedImageResponse> userFeedImageResponseList = new ArrayList<>();
         for(FeedImage feedImage : feedImageList) {
             userFeedImageResponseList.add(UserFeedImageResponse.of(feedImage));
@@ -41,9 +42,9 @@ public class FeedImageServiceImpl implements FeedImageService{
     }
 
     @Override
-    public List<UserFeedImageResponse> getReviewImageList(Long userId) {
+    public List<UserFeedImageResponse> getReviewImageList(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        List<FeedImage> feedImageList = feedImageRepository.findByFeedStoreAndNumberOrderByIdDesc(user, 0);
+        List<FeedImage> feedImageList = feedImageRepository.findByFeedStoreAndNumberOrderByIdDesc(user, 0, pageable);
         List<UserFeedImageResponse> userFeedImageResponseList = new ArrayList<>();
         for(FeedImage feedImage : feedImageList) {
             userFeedImageResponseList.add(UserFeedImageResponse.of(feedImage));
