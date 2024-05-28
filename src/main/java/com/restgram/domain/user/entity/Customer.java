@@ -7,6 +7,7 @@ import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Getter

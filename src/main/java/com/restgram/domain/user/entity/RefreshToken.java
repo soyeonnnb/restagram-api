@@ -17,7 +17,6 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = true)
     private Date expiredAt;
 
     @Column(unique = true, nullable = false)

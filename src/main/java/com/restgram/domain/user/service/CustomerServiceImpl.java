@@ -9,6 +9,7 @@ import com.restgram.domain.address.repository.SidoAddressRepository;
 import com.restgram.domain.address.repository.SiggAddressRepository;
 import com.restgram.domain.user.dto.request.CustomerJoinRequest;
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
+import com.restgram.domain.user.dto.response.CalendarAgreeResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.entity.Customer;
@@ -137,5 +138,11 @@ public class CustomerServiceImpl implements CustomerService {
                 .range(range)
                 .build();
         return response;
+    }
+
+    // 유저 캘린더 업데이트
+    @Override
+    public CalendarAgreeResponse customerCalendarAgree(Long userId) {
+        return null;
     }
 }

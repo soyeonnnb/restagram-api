@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
@@ -23,16 +24,18 @@ public class ChatMessage {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private ChatMessageType type; // TALK, IMAGE
+    @Column(nullable = false)
+    private ChatMessageType type = ChatMessageType.TEXT; // TALK, IMAGE
 
+    @Column(nullable = false)
     private String message;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="chat_room_id")
+    @JoinColumn(name="chat_room_id", nullable = false)
     private ChatRoom chatRoom;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="user_id", nullable = false)
     private User author;
 
     @CreationTimestamp

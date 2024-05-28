@@ -26,7 +26,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @Column(nullable = false)
     private String email;
 
@@ -35,9 +34,10 @@ public class User {
     private String profileImage;
     private String phone;
     private String description;
+
+    @Column(nullable = false, unique = true)
     private String nickname;
     private String password;
-
 
     @CreationTimestamp
     @Column(updatable = false)

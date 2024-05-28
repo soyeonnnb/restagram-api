@@ -19,11 +19,11 @@ public class Follow extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "follower_id")
+    @JoinColumn(name = "follower_id", nullable = false)
     @ManyToOne
     private User follower;
 
-    @JoinColumn(name = "following_id")
+    @JoinColumn(name = "following_id", nullable = false)
     @ManyToOne
     private User following;
 

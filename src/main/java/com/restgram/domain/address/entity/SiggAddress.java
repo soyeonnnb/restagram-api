@@ -12,8 +12,11 @@ import lombok.*;
 public class SiggAddress {
     @Id
     private Long id;
+
+    @Column(nullable = false)
     private String name;
-    @JoinColumn(name = "sido_id")
+
+    @JoinColumn(name = "sido_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private SidoAddress sidoAddress;
 }

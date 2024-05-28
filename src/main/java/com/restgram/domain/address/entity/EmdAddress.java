@@ -12,9 +12,10 @@ import lombok.*;
 public class EmdAddress {
     @Id
     private Long id;
+    @Column(nullable = false)
     private String name;
 
-    @JoinColumn(name = "sigg_id")
+    @JoinColumn(name = "sigg_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private SiggAddress siggAddress;
 }

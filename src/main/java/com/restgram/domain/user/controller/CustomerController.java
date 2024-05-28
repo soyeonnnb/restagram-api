@@ -3,6 +3,7 @@ package com.restgram.domain.user.controller;
 import com.restgram.domain.user.dto.request.CustomerJoinRequest;
 import com.restgram.domain.user.dto.request.StoreJoinRequest;
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
+import com.restgram.domain.user.dto.response.CalendarAgreeResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.service.CustomerService;
@@ -85,4 +86,15 @@ public class CustomerController {
                 .build();
     }
 
+    @PatchMapping("/calendar-agree")
+    public CommonResponse customerCalendarAgree(Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        CalendarAgreeResponse response = customerService.customerCalendarAgree(userId);
+        return CommonResponse.builder()
+                .data(response)
+                .code(HttpStatus.OK.value())
+                .success(true)
+                .message("유저 정보 업데이트 완료")
+                .build();
+    }
 }

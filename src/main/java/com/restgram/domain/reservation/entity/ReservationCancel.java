@@ -14,7 +14,7 @@ public class ReservationCancel {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "reservation_id")
+    @JoinColumn(name = "reservation_id", nullable = false)
     private Reservation reservation;
 
     @Enumerated(EnumType.STRING)
