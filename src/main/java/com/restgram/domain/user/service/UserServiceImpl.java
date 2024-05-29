@@ -65,11 +65,7 @@ public class UserServiceImpl implements UserService{
         // 비밀번호 확인
         if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) throw new RestApiException(UserErrorCode.PASSWORD_MISMATCH);
         tokenProvider.createTokens(user.getId(), user.getType(), response);
-        LoginResponse res = LoginResponse.builder()
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .type(user.getType())
-                .build();
+        LoginResponse res = LoginResponse.of(user);
 
         return res;
     }
@@ -135,14 +131,6 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public CheckResponse duplicateNickname(NicknameRequest request) {
-        return CheckResponse.builder()
-                .check(userRepository.existsByNickname(request.getNickname()))
-                .build();
-    }
-
-    @Override
     @Transactional
     public void updateNickname(Long userId, NicknameRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
@@ -168,6 +156,16 @@ public class UserServiceImpl implements UserService{
         userRepository.save(user);
         return UserProfileResponse.builder().imageUrl(url).build();
     }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public CheckResponse duplicateNickname(String nickname) {
+        return CheckResponse.builder()
+                .check(userRepository.existsByNickname(nickname))
+                .build();
+    }
+
 
     private FeedStoreInfoResponse getFeedStore(User me, Long userId) {
         Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));

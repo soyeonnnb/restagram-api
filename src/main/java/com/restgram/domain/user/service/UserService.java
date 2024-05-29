@@ -17,7 +17,7 @@ public interface UserService {
     List<UserInfoResponse> searchUser(String query);
     FeedUserInfoResponse getFeedUser(Long myId, Long userId);
     void updatePassword(Long userId, UpdatePasswordRequest request);
-    CheckResponse duplicateNickname(NicknameRequest request);
     void updateNickname(Long userId, NicknameRequest request);
     UserProfileResponse updateProfileImage(Long userId, MultipartFile image);
+    CheckResponse duplicateNickname(String query);
 }

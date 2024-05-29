@@ -1,5 +1,6 @@
 package com.restgram.domain.user.controller;
 
+import com.restgram.domain.user.dto.request.CalendarAgreeRequest;
 import com.restgram.domain.user.dto.request.CustomerJoinRequest;
 import com.restgram.domain.user.dto.request.StoreJoinRequest;
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
@@ -8,9 +9,12 @@ import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.service.CustomerService;
 import com.restgram.global.exception.entity.CommonResponse;
+import com.restgram.global.jwt.token.JwtTokenProvider;
 import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,8 +31,8 @@ public class CustomerController {
 
     @GetMapping("/info")
     public CommonResponse getInfo(Authentication authentication) {
-        Long id = Long.parseLong(authentication.getName());
-        LoginResponse res = customerService.getUserInfo(id);
+        Long userId = Long.parseLong(authentication.getName());
+        LoginResponse res = customerService.getUserInfo(userId);
         return CommonResponse.builder()
                 .data(res)
                 .message("SUCCESS")
@@ -86,15 +90,4 @@ public class CustomerController {
                 .build();
     }
 
-    @PatchMapping("/calendar-agree")
-    public CommonResponse customerCalendarAgree(Authentication authentication) {
-        Long userId = Long.parseLong(authentication.getName());
-        CalendarAgreeResponse response = customerService.customerCalendarAgree(userId);
-        return CommonResponse.builder()
-                .data(response)
-                .code(HttpStatus.OK.value())
-                .success(true)
-                .message("유저 정보 업데이트 완료")
-                .build();
-    }
 }

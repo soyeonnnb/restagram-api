@@ -32,6 +32,7 @@ public class UserController {
 
     @PostMapping("/login")
     public CommonResponse login(@Valid @RequestBody LoginRequest req, HttpServletResponse response) {
+        System.out.println(req.toString());
         LoginResponse res = userService.login(req, response);
         return CommonResponse.builder()
                 .data(res)
@@ -103,18 +104,6 @@ public class UserController {
                 ;
     }
 
-    @GetMapping("/nickname")
-    public CommonResponse duplicateNickname(@RequestBody NicknameRequest request) {
-        CheckResponse check = userService.duplicateNickname(request);
-        return CommonResponse.builder()
-                .data(check)
-                .message("SUCCESS")
-                .code(HttpStatus.OK.value())
-                .success(true)
-                .build()
-                ;
-    }
-
     @PatchMapping("/nickname")
     public CommonResponse updateNickname(Authentication authentication, @RequestBody NicknameRequest request) {
         Long userId = Long.parseLong(authentication.getName());
@@ -139,6 +128,18 @@ public class UserController {
                 .build()
                 ;
 
+    }
+
+    @GetMapping("/duplicate/nickname")
+    public CommonResponse duplicateNickname(@RequestParam("query") String query) {
+        CheckResponse check = userService.duplicateNickname(query);
+        return CommonResponse.builder()
+                .data(check)
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .success(true)
+                .build()
+                ;
     }
 
 }

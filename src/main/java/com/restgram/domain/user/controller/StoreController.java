@@ -4,6 +4,7 @@ import com.restgram.domain.follow.dto.response.FollowUserResponse;
 import com.restgram.domain.user.dto.request.StoreJoinRequest;
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.request.UpdateStoreRequest;
+import com.restgram.domain.user.dto.response.CheckResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.StoreInfoResponse;
 import com.restgram.domain.user.service.StoreService;
@@ -55,6 +56,20 @@ public class StoreController {
         return CommonResponse.builder()
                 .message("SUCCESS")
                 .code(HttpStatus.CREATED.value())
+                .success(true)
+                .build()
+                ;
+    }
+
+
+
+    @GetMapping("/duplicate/email")
+    public CommonResponse duplicateEmail(@RequestParam("query") String query) {
+        CheckResponse check = storeService.duplicateEmail(query);
+        return CommonResponse.builder()
+                .data(check)
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
                 .success(true)
                 .build()
                 ;

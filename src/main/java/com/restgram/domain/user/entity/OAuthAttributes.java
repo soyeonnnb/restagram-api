@@ -53,6 +53,8 @@ public class OAuthAttributes {
                 .profileImage(this.profileImage)
                 .name(this.name)
                 .loginMethod(this.loginMethod)
+                .addressRange(0)
+                .calenderAgree(false)
                 .build();
     }
 

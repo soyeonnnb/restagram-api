@@ -6,6 +6,7 @@ import com.restgram.domain.address.repository.EmdAddressRepository;
 import com.restgram.domain.user.dto.request.StoreJoinRequest;
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.request.UpdateStoreRequest;
+import com.restgram.domain.user.dto.response.CheckResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.StoreInfoResponse;
 import com.restgram.domain.user.entity.Store;
@@ -82,13 +83,16 @@ public class StoreServiceImpl implements StoreService {
         if (!passwordEncoder.matches(req.getPassword(), store.getPassword())) throw new RestApiException(UserErrorCode.PASSWORD_MISMATCH);
         tokenProvider.createTokens(store.getId(), UserType.STORE.getName(), response);
 
-        LoginResponse res = LoginResponse.builder()
-                .email(store.getEmail())
-                .nickname(store.getNickname())
-                .type(UserType.STORE.getName())
-                .build();
-
+        LoginResponse res = LoginResponse.of(store);
         return res;
     }
 
+
+    @Override
+    @Transactional(readOnly = true)
+    public CheckResponse duplicateEmail(String email) {
+        return CheckResponse.builder()
+                .check(storeRepository.existsByEmail(email))
+                .build();
+    }
 }

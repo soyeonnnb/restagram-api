@@ -35,7 +35,15 @@ public class Customer extends User{
     @ManyToOne(fetch = FetchType.LAZY)
     private SidoAddress sidoAddress;
 
+    @ColumnDefault("0")
     private Integer addressRange;
+
+    @Column(nullable = false)
+    private String accessToken;
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
+    private boolean calenderAgree;
 
     public void updateAddress(EmdAddress emdAddress, SiggAddress siggAddress, SidoAddress sidoAddress, Integer range) {
         this.emdAddress = emdAddress;
@@ -44,4 +52,12 @@ public class Customer extends User{
         this.addressRange = range;
     }
 
+    public void updateAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public boolean updateCalendarAgree() {
+        this.calenderAgree = !calenderAgree;
+        return this.calenderAgree;
+    }
 }

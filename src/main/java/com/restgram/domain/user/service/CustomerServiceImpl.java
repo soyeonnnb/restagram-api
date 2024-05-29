@@ -7,12 +7,14 @@ import com.restgram.domain.address.entity.SiggAddress;
 import com.restgram.domain.address.repository.EmdAddressRepository;
 import com.restgram.domain.address.repository.SidoAddressRepository;
 import com.restgram.domain.address.repository.SiggAddressRepository;
+import com.restgram.domain.user.dto.request.CalendarAgreeRequest;
 import com.restgram.domain.user.dto.request.CustomerJoinRequest;
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import com.restgram.domain.user.dto.response.CalendarAgreeResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.entity.Customer;
+import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
@@ -38,13 +40,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     @Transactional(readOnly = true)
-    public LoginResponse getUserInfo(Long id) {
-        Customer customer = customerRepository.findById(id).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        LoginResponse res = LoginResponse.builder()
-                .email(customer.getEmail())
-                .nickname(customer.getNickname())
-                .type(customer.getType())
-                .build();
+    public LoginResponse getUserInfo(Long userId) {
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        LoginResponse res = LoginResponse.of(customer);
         return res;
     }
 
@@ -140,9 +138,4 @@ public class CustomerServiceImpl implements CustomerService {
         return response;
     }
 
-    // 유저 캘린더 업데이트
-    @Override
-    public CalendarAgreeResponse customerCalendarAgree(Long userId) {
-        return null;
-    }
 }
