@@ -26,6 +26,7 @@ import com.restgram.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,6 +37,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class FeedServiceImpl implements FeedService {
+
+    private final FeedImageService feedImageService;
 
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
@@ -63,13 +66,7 @@ public class FeedServiceImpl implements FeedService {
         feedRepository.save(feed);
         // 피드 별로 이미지 데이터 생성
         for(int idx=0;idx<images.size();idx++) {
-            FeedImage feedImage = FeedImage.builder()
-                    .number(idx)
-                    // S3에 저장한다.
-                    .url(s3Service.uploadFile(images.get(idx), "feed/"+feed.getId()))
-                    .feed(feed)
-                    .build();
-            feedImageRepository.save(feedImage);
+            feedImageService.saveFeedImage(feed, idx, images.get(idx));
         }
     }
 
