@@ -32,7 +32,6 @@ public class UserController {
 
     @PostMapping("/login")
     public CommonResponse login(@Valid @RequestBody LoginRequest req, HttpServletResponse response) {
-        System.out.println(req.toString());
         LoginResponse res = userService.login(req, response);
         return CommonResponse.builder()
                 .data(res)
@@ -45,6 +44,7 @@ public class UserController {
 
     @PostMapping("/logout")
     public CommonResponse logout(@CookieValue(value = TYPE_ACCESS) String accessToken, @CookieValue(value = TYPE_REFRESH) String refreshToken, HttpServletResponse response) {
+        log.info("로그아웃");
         userService.logout(response, accessToken, refreshToken);
         return CommonResponse.builder()
                 .data(null)
@@ -57,6 +57,7 @@ public class UserController {
 
     @PostMapping("/reissue")
     public CommonResponse reIssueToken(@Nullable @CookieValue(value = TYPE_ACCESS) String accessToken, @Nullable @CookieValue(value = TYPE_REFRESH) String refreshToken, HttpServletResponse response) {
+        log.info("토큰 재발급");
         userService.reissue(response, accessToken, refreshToken);
         return CommonResponse.builder()
                 .data(null)

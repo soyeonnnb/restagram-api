@@ -1,6 +1,5 @@
 package com.restgram.domain.chat.repository;
 
-import com.restgram.domain.chat.controller.ChatRoomController;
 import com.restgram.domain.chat.entity.ChatRoom;
 import com.restgram.domain.user.entity.User;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -9,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
 

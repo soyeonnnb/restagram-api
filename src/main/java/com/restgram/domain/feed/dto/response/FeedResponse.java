@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class FeedResponse {
     private UserInfoResponse user; // 작성자 정보
     private StoreInfoResponse store; // 스토어 정보
     private List<FeedImageResponse> images;
+    private LocalDateTime time;
     private Boolean isLike;
 
     public static FeedResponse of(Feed feed, List<FeedImage> images, boolean isLike) {
@@ -30,6 +32,7 @@ public class FeedResponse {
         return FeedResponse.builder()
                 .id(feed.getId())
                 .content(feed.getContent())
+                .time(feed.getCreatedAt())
                 .user(UserInfoResponse.of(feed.getWriter()))
                 .store(StoreInfoResponse.of(feed.getStore()))
                 .images(feedImageResponsesList)

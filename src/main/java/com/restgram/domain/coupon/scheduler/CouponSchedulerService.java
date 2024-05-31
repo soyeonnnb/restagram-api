@@ -31,7 +31,7 @@ public class CouponSchedulerService {
     private final FollowRepository followRepository;
 
     // 쿠폰 발생 시작 시 알림
-    @Scheduled(cron = "0 * * * * *", zone = "Asia/Seoul") // 매 분 확인해야함
+//    @Scheduled(cron = "0 * * * * *", zone = "Asia/Seoul") // 매 분 확인해야함
     @Transactional
     public void reservationBefore2HoursSchedule() {
         try {

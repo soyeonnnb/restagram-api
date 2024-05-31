@@ -26,7 +26,7 @@ public class ReservationSchedulerService {
     private final NotificationService notificationService;
 
     // 2시간 전 예약 알림
-    @Scheduled(cron = "0 * * * * *", zone = "Asia/Seoul") // 매 분 확인해야함
+//    @Scheduled(cron = "0 * * * * *", zone = "Asia/Seoul") // 매 분 확인해야함
     @Transactional
     public void reservationBefore2HoursSchedule() {
         try {

@@ -2,7 +2,10 @@ package com.restgram.global.jwt.token;
 
 import com.restgram.domain.user.entity.RefreshToken;
 import com.restgram.domain.user.repository.RefreshTokenRepository;
+import com.restgram.domain.user.repository.UserRepository;
+import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.JwtTokenErrorCode;
+import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.jwt.response.JwtErrorResponseSender;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -38,6 +41,7 @@ public class JwtTokenProvider implements InitializingBean {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtErrorResponseSender jwtErrorResponseSender;
+    private final UserRepository userRepository;
 
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String AUTHORITIES_KEY = "auth";
@@ -66,11 +70,13 @@ public class JwtTokenProvider implements InitializingBean {
 
     // 토큰 생성
     @Transactional
-    public void createTokens(Long id, String authority, HttpServletResponse response) {
+    public String[] createTokens(Long id, String authority, HttpServletResponse response) {
         long now = (new Date()).getTime();
         String accessToken = createAccessToken(id, authority, now);
         String refreshToken = createRefreshToken(id, now);
         tokenSave(response, accessToken, refreshToken, now);
+        String[] result = new String[]{accessToken, refreshToken};
+        return result;
     }
 
     // ACCESS TOKEN 관련
@@ -136,12 +142,14 @@ public class JwtTokenProvider implements InitializingBean {
     @Transactional
     public void tokenRemove(HttpServletResponse response, String accessToken, String refreshToken) {
         // 쿠키에서 삭제 -> 클라이언트에게 감
+        log.info("토큰 삭제");
         tokenCookieRemove(response, TYPE_ACCESS);
         tokenCookieRemove(response, TYPE_REFRESH);
         refreshTokenRepository.deleteByAccessTokenAndRefreshToken(accessToken, refreshToken); // 서버에서 삭제 -> 비교군
     }
 
     // 쿠키에서 삭제
+    @Transactional
     public void tokenCookieRemove(HttpServletResponse response, String type) {
         Cookie cookie = new Cookie(type, null);
         cookie.setMaxAge(0);
@@ -183,7 +191,6 @@ public class JwtTokenProvider implements InitializingBean {
     }
 
     public boolean checkExpiredToken(String token) {
-
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
@@ -221,5 +228,34 @@ public class JwtTokenProvider implements InitializingBean {
         else return null;
     }
 
+    // 재발급
+
+    public String reissue(HttpServletResponse response, String accessToken, String refreshToken) {
+        // 토큰이 쿠키에 없으면 재로그인 요청
+        if (accessToken == null || refreshToken == null) {
+            tokenCookieRemove(response, "access");
+            tokenCookieRemove(response, "refresh");
+            throw new RestApiException(JwtTokenErrorCode.DOES_NOT_EXIST_TOKEN);
+        }
+        // db에 있는 값인지 확인한 후, db에 없으면 유효하지 않다고 판단 -> 재로그인 요청
+        if (!refreshTokenRepository.existsByAccessTokenAndRefreshToken(accessToken, refreshToken)) throw new RestApiException(JwtTokenErrorCode.INVALID_TOKEN);
+        com.restgram.domain.user.entity.User user = userRepository.findById(getUserId(refreshToken, response)).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+
+        // 존재한다면 우선 토큰 삭제
+        tokenRemove(response, accessToken, refreshToken);
+        String[] tokens = createTokens(user.getId(), user.getType(), response);
+        return tokens[0];
+    }
+
+    public boolean validateRefreshToken(String refreshToken) {
+        // 만료기한 확인
+        if (!checkExpiredToken(refreshToken)) return false;
+
+        // 이미 사용된 refresh token인지 확인
+        if (!refreshTokenRepository.existsByRefreshToken(refreshToken)) return false;
+
+        log.info("refresh token 확인 완료");
+        return true;
+    }
 }
 

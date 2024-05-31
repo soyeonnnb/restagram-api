@@ -1,14 +1,11 @@
 package com.restgram.domain.chat.entity;
 
+import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Getter
-@EntityListeners(AuditingEntityListener.class)
-public class ChatRoom {
+public class ChatRoom extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,10 +26,17 @@ public class ChatRoom {
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ChatMember> members = new ArrayList<>();
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
 
     public void updateLastMessage(ChatMessage message) {
         this.lastMessage = message;
+    }
+
+    @Override
+    public String toString() {
+        return "ChatRoom{" +
+                "id=" + id +
+                ", lastMessage=" + lastMessage +
+                ", members=" + members +
+                '}';
     }
 }

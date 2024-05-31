@@ -21,6 +21,7 @@ import com.restgram.global.jwt.token.JwtTokenProvider;
 import com.restgram.global.s3.service.S3Service;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
@@ -75,24 +77,6 @@ public class UserServiceImpl implements UserService{
     @Transactional
     public void logout(HttpServletResponse response, String accessToken, String refreshToken) {
         tokenProvider.tokenRemove(response, accessToken, refreshToken);
-    }
-
-    @Override
-    @Transactional
-    public void reissue(HttpServletResponse response, String accessToken, String refreshToken) {
-        // 토큰이 쿠키에 없으면 재로그인 요청
-        if (accessToken == null || refreshToken == null) {
-            tokenProvider.tokenCookieRemove(response, TYPE_ACCESS);
-            tokenProvider.tokenCookieRemove(response, TYPE_REFRESH);
-            throw new RestApiException(JwtTokenErrorCode.DOES_NOT_EXIST_TOKEN);
-        }
-        // db에 있는 값인지 확인한 후, db에 없으면 유효하지 않다고 판단 -> 재로그인 요청
-        if (!refreshTokenRepository.existsByAccessTokenAndRefreshToken(accessToken, refreshToken)) throw new RestApiException(JwtTokenErrorCode.INVALID_TOKEN);
-        User user = userRepository.findById(tokenProvider.getUserId(refreshToken, response)).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-
-        // 존재한다면 우선 토큰 삭제
-        tokenProvider.tokenRemove(response, accessToken, refreshToken);
-        tokenProvider.createTokens(user.getId(), user.getType(), response);
     }
 
     @Override
@@ -188,4 +172,26 @@ public class UserServiceImpl implements UserService{
         return response;
     }
 
+
+    @Override
+    @Transactional
+    public String reissue(HttpServletResponse response, String accessToken, String refreshToken) {
+        // 토큰이 쿠키에 없으면 재로그인 요청
+        if (accessToken == null || refreshToken == null) {
+            tokenProvider.tokenCookieRemove(response, TYPE_ACCESS);
+            tokenProvider.tokenCookieRemove(response, TYPE_REFRESH);
+            throw new RestApiException(JwtTokenErrorCode.DOES_NOT_EXIST_TOKEN);
+        }
+        // db에 있는 값인지 확인한 후, db에 없으면 유효하지 않다고 판단 -> 재로그인 요청
+        if (!refreshTokenRepository.existsByAccessTokenAndRefreshToken(accessToken, refreshToken)) throw new RestApiException(JwtTokenErrorCode.INVALID_TOKEN);
+
+        // refresh token 유효기간 확인
+        if (!tokenProvider.checkExpiredToken(refreshToken)) throw new RestApiException(JwtTokenErrorCode.EXPIRED_TOKEN);
+        User user = userRepository.findById(tokenProvider.getUserId(refreshToken, response)).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+
+        // 존재한다면 우선 토큰 삭제
+        tokenProvider.tokenRemove(response, accessToken, refreshToken);
+        String[] tokens = tokenProvider.createTokens(user.getId(), user.getType(), response);
+        return tokens[0];
+    }
 }
