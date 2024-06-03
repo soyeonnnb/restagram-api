@@ -38,6 +38,19 @@ public class StoreController {
                 ;
     }
 
+
+    @PostMapping("/login")
+    public CommonResponse login(@Valid @RequestBody LoginRequest req, HttpServletResponse response) {
+        LoginResponse res = storeService.login(req, response);
+        return CommonResponse.builder()
+                .data(res)
+                .message("SUCCESS")
+                .code(HttpStatus.OK.value())
+                .success(true)
+                .build()
+                ;
+    }
+
     @GetMapping
     public CommonResponse searchByNameAndNickname(@RequestParam String name) {
         List<StoreInfoResponse> storeInfoResponseList = storeService.searchByName(name);

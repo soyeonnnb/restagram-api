@@ -52,27 +52,6 @@ public class UserServiceImpl implements UserService{
     private static final String TYPE_ACCESS = "access";
     private static final String TYPE_REFRESH = "refresh";
 
-
-    // 로그인
-    @Override
-    @Transactional
-    public LoginResponse login(LoginRequest req, HttpServletResponse response) {
-        User user = null;
-        if (req.getType().getName().equals(UserType.STORE.getName())) {
-            user = (User) storeRepository.findByEmail(req.getEmail()).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        } else if (req.getType().getName().equals(UserType.CUSTOMER.getName())) {
-            user = (User) customerRepository.findByEmailAndLoginMethod(req.getEmail(), LoginMethod.DEFAULT).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        }
-        if (user == null) throw new RestApiException(UserErrorCode.USER_NOT_FOUND);
-        // 비밀번호 확인
-        if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) throw new RestApiException(UserErrorCode.PASSWORD_MISMATCH);
-        tokenProvider.createTokens(user.getId(), user.getType(), response);
-        LoginResponse res = LoginResponse.of(user);
-
-        return res;
-    }
-
-
     @Override
     @Transactional
     public void logout(HttpServletResponse response, String accessToken, String refreshToken) {

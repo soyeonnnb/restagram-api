@@ -1,9 +1,7 @@
 package com.restgram.domain.user.service;
 
-import com.restgram.domain.user.dto.request.CalendarAgreeRequest;
 import com.restgram.domain.user.dto.request.CustomerJoinRequest;
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
-import com.restgram.domain.user.dto.response.CalendarAgreeResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
 

@@ -37,7 +37,7 @@ public class OAuthAttributes {
                 .nameAttributeKey(nameAttributeKey)
                 .uid(uid)
                 .name(String.valueOf(properties.get("nickname")))
-                .email(String.valueOf(account.get("email")))
+                .email(account.get("email") != null ? String.valueOf(account.get("email")) : null)
                 .nickname(String.valueOf(profile.get("nickname")))
                 .profileImage(String.valueOf(profile.get("profile_image_url")))
                 .type(UserType.CUSTOMER)

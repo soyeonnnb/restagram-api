@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface UserService {
-    LoginResponse login(LoginRequest req, HttpServletResponse response);
     void logout(HttpServletResponse response, String accessToken, String refreshToken);
     String reissue(HttpServletResponse response, String accessToken, String refreshToken);
     List<UserInfoResponse> searchUser(String query);

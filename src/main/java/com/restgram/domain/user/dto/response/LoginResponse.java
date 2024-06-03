@@ -1,5 +1,7 @@
 package com.restgram.domain.user.dto.response;
 
+import com.restgram.domain.user.entity.Customer;
+import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
 import lombok.*;
 
@@ -13,13 +15,23 @@ public class LoginResponse {
     private String type;
     private String profileImage;
 
-    public static LoginResponse of(User user) {
+    public static LoginResponse of(Store store) {
         return LoginResponse.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .type(user.getType())
-                .profileImage(user.getProfileImage())
+                .id(store.getId())
+                .email(store.getEmail())
+                .nickname(store.getNickname())
+                .type(store.getType())
+                .profileImage(store.getProfileImage())
+                .build();
+    }
+
+    public static LoginResponse of(Customer customer) {
+        return LoginResponse.builder()
+                .id(customer.getId())
+                .email(customer.getEmail())
+                .nickname(customer.getNickname())
+                .type(customer.getType())
+                .profileImage(customer.getProfileImage())
                 .build();
     }
 }

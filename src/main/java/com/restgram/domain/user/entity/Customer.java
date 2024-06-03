@@ -17,6 +17,8 @@ import org.hibernate.annotations.ColumnDefault;
 @DiscriminatorValue("CUSTOMER")
 public class Customer extends User{
 
+    private String email;
+
     @Column(nullable = false)
     private String uid;
 
@@ -59,5 +61,9 @@ public class Customer extends User{
     public boolean updateCalendarAgree(boolean calendarAgree) {
         this.calendarAgree = calendarAgree;
         return this.calendarAgree;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
     }
 }

@@ -13,6 +13,10 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("STORE")
 public class Store extends User {
+
+    @Column(nullable = false)
+    private String email;
+
     private String storeName;
     private Double latitude;
     private Double longitude;

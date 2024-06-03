@@ -27,9 +27,6 @@ public class User {
     private Long id;
 
     @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
     private String name;
     private String profileImage;
     private String phone;
@@ -45,6 +42,7 @@ public class User {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
 
     @Transient
     public String getType() {
@@ -70,4 +68,5 @@ public class User {
     public void updateProfileImage(String url) {
         this.profileImage = url;
     }
+
 }

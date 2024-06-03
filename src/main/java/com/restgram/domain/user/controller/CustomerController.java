@@ -1,20 +1,13 @@
 package com.restgram.domain.user.controller;
 
-import com.restgram.domain.user.dto.request.CalendarAgreeRequest;
 import com.restgram.domain.user.dto.request.CustomerJoinRequest;
-import com.restgram.domain.user.dto.request.StoreJoinRequest;
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
-import com.restgram.domain.user.dto.response.CalendarAgreeResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.service.CustomerService;
 import com.restgram.global.exception.entity.CommonResponse;
-import com.restgram.global.jwt.token.JwtTokenProvider;
 import jakarta.annotation.Nullable;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import lombok.Getter;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

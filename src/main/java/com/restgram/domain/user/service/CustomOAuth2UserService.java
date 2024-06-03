@@ -1,8 +1,9 @@
 package com.restgram.domain.user.service;
 
+import com.restgram.domain.calendar.service.CalendarService;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.OAuthAttributes;
-import com.restgram.domain.user.repository.CustomerCalendarRepository;
+import com.restgram.domain.calendar.repository.CalendarRepository;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Map;
@@ -29,10 +31,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
-    private final CustomerCalendarRepository customerCalendarRepository;
+    private final CalendarRepository calendarRepository;
     private final CalendarService calendarService;
 
     @Override
+    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         // 기본 OAuth2UserService 객체를 생성
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
@@ -48,7 +51,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String userNameAttributeName = "id";
         // OAuth2UserService를 사용하여 가져온  OAuth2User정보를 OAuth2Attribute 객체를 만든다
         OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
-
         // OAuth2UserRequest에서 accessToken을 가져옴
         OAuth2AccessToken accessToken = userRequest.getAccessToken();
 
@@ -56,11 +58,21 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         Customer customer = save(attributes, accessToken.getTokenValue());
 
         // 유저가 캘린더 관련 동의 체크했는지 확인
+
         boolean calendarAgree = oAuth2User.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch("SCOPE_talk_calendar"::equals);
-        if (calendarAgree && !customerCalendarRepository.existsByCustomer(customer)) {
+
+        boolean emailAgree = oAuth2User.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch("SCOPE_account_email"::equals);
+
+        if (calendarAgree && !calendarRepository.existsByCustomer(customer)) {
             calendarService.createCalendar(customer);
+        }
+
+        if (emailAgree && customer.getEmail() == null) {
+            customer.updateEmail(attributes.getEmail());
         }
 
         // 여기서 리턴해주는 값을 successHandler에서 authentication 객체에서 확인할 수 있음.
