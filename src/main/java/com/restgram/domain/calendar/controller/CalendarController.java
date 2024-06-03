@@ -1,8 +1,8 @@
-package com.restgram.domain.user.controller;
+package com.restgram.domain.calendar.controller;
 
-import com.restgram.domain.user.dto.request.CalendarAgreeRequest;
-import com.restgram.domain.user.dto.response.CalendarAgreeResponse;
-import com.restgram.domain.user.service.CalendarService;
+import com.restgram.domain.calendar.dto.request.CalendarAgreeRequest;
+import com.restgram.domain.calendar.dto.response.CalendarAgreeResponse;
+import com.restgram.domain.calendar.service.CalendarService;
 import com.restgram.global.exception.entity.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/customer/calendar")
+@RequestMapping("/calendar")
 @Slf4j
 public class CalendarController {
 
@@ -24,7 +24,7 @@ public class CalendarController {
     @PatchMapping("/agree")
     public CommonResponse customerCalendarAgree(Authentication authentication, @RequestBody CalendarAgreeRequest request) {
         Long userId = Long.parseLong(authentication.getName());
-        CalendarAgreeResponse response = calendarService.customerCalendarAgree(userId, request);
+        CalendarAgreeResponse response = calendarService.agreeCalendar(userId, request);
         return CommonResponse.builder()
                 .data(response)
                 .code(HttpStatus.OK.value())

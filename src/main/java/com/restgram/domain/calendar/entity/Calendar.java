@@ -1,5 +1,6 @@
-package com.restgram.domain.user.entity;
+package com.restgram.domain.calendar.entity;
 
+import com.restgram.domain.user.entity.Customer;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(indexes = @Index(name = "idx_customer_id", columnList = "customer_id"))
-public class CustomerCalendar {
+public class Calendar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

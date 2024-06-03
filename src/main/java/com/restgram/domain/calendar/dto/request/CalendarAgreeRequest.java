@@ -1,4 +1,4 @@
-package com.restgram.domain.user.dto.request;
+package com.restgram.domain.calendar.dto.request;
 
 import lombok.Getter;
 

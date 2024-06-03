@@ -1,12 +1,12 @@
-package com.restgram.domain.user.service;
+package com.restgram.domain.calendar.service;
 
-import com.restgram.domain.user.dto.request.CalendarAgreeRequest;
+import com.restgram.domain.calendar.dto.request.CalendarAgreeRequest;
 import com.restgram.domain.user.dto.request.CreateCalenderRequest;
-import com.restgram.domain.user.dto.response.CalendarAgreeResponse;
+import com.restgram.domain.calendar.dto.response.CalendarAgreeResponse;
 import com.restgram.domain.user.dto.response.CreateCalendarResponse;
 import com.restgram.domain.user.entity.Customer;
-import com.restgram.domain.user.entity.CustomerCalendar;
-import com.restgram.domain.user.repository.CustomerCalendarRepository;
+import com.restgram.domain.calendar.entity.Calendar;
+import com.restgram.domain.calendar.repository.CalendarRepository;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.CalendarErrorCode;
@@ -24,14 +24,12 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.HashMap;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class CalendarServiceImpl implements CalendarService {
 
-    private final CustomerCalendarRepository customerCalendarRepository;
+    private final CalendarRepository calendarRepository;
     private final CustomerRepository customerRepository;
     private final RestTemplate restTemplate;
     private final CreateCalenderRequest createCalenderRequest;
@@ -42,11 +40,11 @@ public class CalendarServiceImpl implements CalendarService {
     // 유저 캘린더 상태 변경
     @Override
     @Transactional
-    public CalendarAgreeResponse customerCalendarAgree(Long userId, CalendarAgreeRequest request) {
+    public CalendarAgreeResponse agreeCalendar(Long userId, CalendarAgreeRequest request) {
         Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
 
         // 이전에 동의한 경험이 없다면 생성 불가
-        if (!customerCalendarRepository.existsByCustomer(customer)) throw new RestApiException(CalendarErrorCode.CALENDER_NOT_AUTHORIZATION);
+        if (!calendarRepository.existsByCustomer(customer)) throw new RestApiException(CalendarErrorCode.CALENDER_NOT_AUTHORIZATION);
 
         boolean isAgree = customer.updateCalendarAgree(request.isAgree());
         customerRepository.save(customer);
@@ -65,7 +63,7 @@ public class CalendarServiceImpl implements CalendarService {
         // 캘린더 생성하기
         String calenderId = requestCreateCalender(customer);
         log.info("사용자 캘린더 생성완료 : " + calenderId);
-        customerCalendarRepository.save(CustomerCalendar.builder()
+        calendarRepository.save(Calendar.builder()
                 .customer(customer)
                 .calendarId(calenderId)
                 .build());
