@@ -7,6 +7,9 @@ import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Builder
 @Getter
@@ -26,6 +29,9 @@ public class Feed extends BaseEntity {
     private User writer;
 
     private String content;
+
+    @OneToMany(mappedBy = "feed")
+    List<FeedImage> feedImageList = new ArrayList<>();
 
     public void updateContent(String content) {
         this.content = content;

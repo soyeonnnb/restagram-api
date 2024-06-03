@@ -43,7 +43,7 @@ public class Customer extends User{
 
     @Column(nullable = false)
     @ColumnDefault("false")
-    private boolean calenderAgree;
+    private boolean calendarAgree;
 
     public void updateAddress(EmdAddress emdAddress, SiggAddress siggAddress, SidoAddress sidoAddress, Integer range) {
         this.emdAddress = emdAddress;
@@ -56,8 +56,8 @@ public class Customer extends User{
         this.accessToken = accessToken;
     }
 
-    public boolean updateCalendarAgree() {
-        this.calenderAgree = !calenderAgree;
-        return this.calenderAgree;
+    public boolean updateCalendarAgree(boolean calendarAgree) {
+        this.calendarAgree = calendarAgree;
+        return this.calendarAgree;
     }
 }

@@ -24,6 +24,7 @@ import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
@@ -39,7 +40,6 @@ import java.util.List;
 public class FeedServiceImpl implements FeedService {
 
     private final FeedImageService feedImageService;
-
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
     private final StoreRepository storeRepository;

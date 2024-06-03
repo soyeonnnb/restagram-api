@@ -2,10 +2,12 @@ package com.restgram.domain.user.service;
 
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.OAuthAttributes;
+import com.restgram.domain.user.repository.CustomerCalendarRepository;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -27,6 +29,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
+    private final CustomerCalendarRepository customerCalendarRepository;
+    private final CalendarService calendarService;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -51,6 +55,13 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // 저장
         Customer customer = save(attributes, accessToken.getTokenValue());
 
+        // 유저가 캘린더 관련 동의 체크했는지 확인
+        boolean calendarAgree = oAuth2User.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .anyMatch("SCOPE_talk_calendar"::equals);
+        if (calendarAgree && !customerCalendarRepository.existsByCustomer(customer)) {
+            calendarService.createCalendar(customer);
+        }
 
         // 여기서 리턴해주는 값을 successHandler에서 authentication 객체에서 확인할 수 있음.
         return new DefaultOAuth2User(

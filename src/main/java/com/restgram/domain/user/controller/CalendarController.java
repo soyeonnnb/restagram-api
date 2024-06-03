@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,14 +22,14 @@ public class CalendarController {
     private final CalendarService calendarService;
 
     @PatchMapping("/agree")
-    public CommonResponse customerCalendarAgree(Authentication authentication, CalendarAgreeRequest request) {
+    public CommonResponse customerCalendarAgree(Authentication authentication, @RequestBody CalendarAgreeRequest request) {
         Long userId = Long.parseLong(authentication.getName());
         CalendarAgreeResponse response = calendarService.customerCalendarAgree(userId, request);
         return CommonResponse.builder()
                 .data(response)
                 .code(HttpStatus.OK.value())
                 .success(true)
-                .message("유저 정보 업데이트 완료")
+                .message("캘린더 정보 업데이트 완료")
                 .build();
     }
 }

@@ -54,7 +54,7 @@ public class OAuthAttributes {
                 .name(this.name)
                 .loginMethod(this.loginMethod)
                 .addressRange(0)
-                .calenderAgree(false)
+                .calendarAgree(false)
                 .build();
     }
 

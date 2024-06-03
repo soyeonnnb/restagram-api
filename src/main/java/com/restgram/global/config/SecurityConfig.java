@@ -67,6 +67,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/reservation/form/**").hasAuthority(UserType.CUSTOMER.toString())
                                 .requestMatchers("/reservation/**").authenticated()
                                 .requestMatchers("/notification/**").authenticated()
+                                .requestMatchers("/customer/calender/agree").hasAuthority(UserType.CUSTOMER.toString())
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

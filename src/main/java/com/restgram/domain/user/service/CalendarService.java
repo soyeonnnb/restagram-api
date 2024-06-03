@@ -6,4 +6,5 @@ import com.restgram.domain.user.entity.Customer;
 
 public interface CalendarService {
     CalendarAgreeResponse customerCalendarAgree(Long userId, CalendarAgreeRequest request);
+    void createCalendar(Customer customer);
 }
