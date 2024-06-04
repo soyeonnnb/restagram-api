@@ -1,5 +1,6 @@
 package com.restgram.domain.reservation.service;
 
+import com.restgram.domain.calendar.service.CalendarEventService;
 import com.restgram.domain.reservation.dto.request.AddReservationRequest;
 import com.restgram.domain.reservation.dto.request.DeleteReservationRequest;
 import com.restgram.domain.reservation.dto.response.CustomerReservationResponse;
@@ -41,6 +42,7 @@ public class ReservationServiceImpl implements ReservationService{
     private final ReservationCancelRepository reservationCancelRepository;
     private final StoreRepository storeRepository;
     private final NotificationService notificationService;
+    private final CalendarEventService calendarEventService;
 
     @Override
     @Transactional
@@ -64,10 +66,15 @@ public class ReservationServiceImpl implements ReservationService{
         Reservation reservation = request.of(form, form.getStore(), customer);
         reservationRepository.save(reservation);
         form.updateRemainQuantity(tableNum * -1);
-        reservationFormRepository.save(form);
 
         // 예약 생성 알림 보내기
         notificationService.send(reservation.getStore(), NotificationType.NEW_RESERVATION, reservation);
+
+        // 만약 캘린더 동의가 되어 있다면 일정에 추가하기
+        if (customer.isCalendarAgree()) {
+            calendarEventService.createCalendarEvent(reservation);
+        }
+
     }
 
     @Override

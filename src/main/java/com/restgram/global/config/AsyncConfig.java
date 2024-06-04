@@ -13,12 +13,24 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class AsyncConfig{
 
     @Bean
-    public Executor asyncExecutor() {
+    public Executor s3AsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(10);
         executor.setMaxPoolSize(30);
         executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("exec");
+        executor.setThreadNamePrefix("exec-1");
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean
+    public Executor kakaoAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(30);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("exec-2");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.initialize();
         return executor;

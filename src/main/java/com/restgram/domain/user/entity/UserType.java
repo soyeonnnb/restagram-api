@@ -1,7 +1,7 @@
 package com.restgram.domain.user.entity;
 
 public enum UserType {
-    CUSTOMER("customer"), STORE("store");
+    CUSTOMER("CUSTOMER"), STORE("CUSTOMER");
     private String name;
     private UserType(String name) {
         this.name = name;

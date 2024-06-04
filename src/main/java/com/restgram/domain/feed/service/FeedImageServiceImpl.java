@@ -56,7 +56,7 @@ public class FeedImageServiceImpl implements FeedImageService{
         return userFeedImageResponseList;
     }
 
-    @Async
+    @Async("s3AsyncExecutor")
     @Override
     @Transactional
     public void saveFeedImage(Feed feed, Integer idx, MultipartFile file) {

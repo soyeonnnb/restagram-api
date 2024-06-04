@@ -3,7 +3,7 @@ package com.restgram.domain.calendar.service;
 import com.restgram.domain.calendar.dto.request.CalendarAgreeRequest;
 import com.restgram.domain.user.dto.request.CreateCalenderRequest;
 import com.restgram.domain.calendar.dto.response.CalendarAgreeResponse;
-import com.restgram.domain.user.dto.response.CreateCalendarResponse;
+import com.restgram.domain.calendar.dto.response.CreateCalendarResponse;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.calendar.entity.Calendar;
 import com.restgram.domain.calendar.repository.CalendarRepository;
@@ -51,10 +51,6 @@ public class CalendarServiceImpl implements CalendarService {
         return CalendarAgreeResponse.builder()
                 .agree(isAgree)
                 .build();
-    }
-
-    public void agreeCalender(Customer customer) {
-        String url = "https://kauth.kakao.com/oauth/authorize?client_id=${REST_API_KEY}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=talk_calendar";
     }
 
     @Transactional
