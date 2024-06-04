@@ -15,7 +15,7 @@ import lombok.NonNull;
 public class DeleteReservationRequest {
     @NonNull
     private Long reservationId;
-    @NonNull
+    @NotBlank
     private String memo;
     @NonNull
     private ReservationCancelState state;

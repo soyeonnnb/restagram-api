@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum CalendarErrorCode implements ErrorCode{
     CALENDAR_NOT_FOUND(HttpStatus.BAD_REQUEST, "카카오 캘린더를 찾을 수 없습니다."),
     CALENDER_NOT_AUTHORIZATION(HttpStatus.BAD_REQUEST, "카카오 내에서 캘린더 동의항목에 동의하지 않았습니다."),
+    CALENDAR_EVENT_NOT_FOUND(HttpStatus.BAD_REQUEST, "카카오 일정을 찾을 수 없습니다."),
     ;
 
     private final HttpStatus httpStatus;

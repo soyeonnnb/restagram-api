@@ -1,5 +1,6 @@
 package com.restgram.domain.reservation.service;
 
+import com.restgram.domain.calendar.repository.CalendarEventRepository;
 import com.restgram.domain.calendar.service.CalendarEventService;
 import com.restgram.domain.reservation.dto.request.AddReservationRequest;
 import com.restgram.domain.reservation.dto.request.DeleteReservationRequest;
@@ -43,6 +44,7 @@ public class ReservationServiceImpl implements ReservationService{
     private final StoreRepository storeRepository;
     private final NotificationService notificationService;
     private final CalendarEventService calendarEventService;
+    private final CalendarEventRepository calendarEventRepository;
 
     @Override
     @Transactional
@@ -101,13 +103,17 @@ public class ReservationServiceImpl implements ReservationService{
 
         // 엔티티 수정& 저장
         reservationCancelRepository.save(reservationCancel);
-        reservationRepository.save(reservation);
 
         // 알림 보내기
         if (request.getState().equals(ReservationCancelState.CUSTOMER)) {
             notificationService.send(reservation.getStore(), NotificationType.CUSTOMER_RESERVATION_CANCEL, reservation);
         } else {
             notificationService.send(reservation.getCustomer(), NotificationType.STORE_RESERVATION_CANCEL, reservation);
+        }
+
+        // 카카오 일정 삭제
+        if (calendarEventRepository.existsByReservation(reservation)) {
+            calendarEventService.deleteCalendarEvent(reservation);
         }
     }
 

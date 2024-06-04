@@ -3,33 +3,23 @@ package com.restgram.domain.calendar.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.restgram.domain.calendar.dto.request.EventCreate;
-import com.restgram.domain.calendar.dto.response.CreateCalendarEventResponse;
+import com.restgram.domain.calendar.dto.response.CalendarEventResponse;
 import com.restgram.domain.calendar.entity.CalendarEvent;
 import com.restgram.domain.calendar.repository.CalendarEventRepository;
 import com.restgram.domain.calendar.repository.CalendarRepository;
 import com.restgram.domain.reservation.entity.Reservation;
-import com.restgram.domain.calendar.dto.response.CreateCalendarResponse;
+import com.restgram.domain.user.entity.Customer;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.CalendarErrorCode;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -76,16 +66,16 @@ public class CalendarEventServiceImpl implements CalendarEventService{
             throw new RuntimeException("Failed to convert EventCreate to JSON", e);
         }
 
-        MultiValueMap<String, Object> map= new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
         map.add("event", eventJson);
         map.add("calendar_id", calendarId);
 
-        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(map, headers);
 
-        ResponseEntity<CreateCalendarEventResponse> response = restTemplate.postForEntity(
+        ResponseEntity<CalendarEventResponse> response = restTemplate.postForEntity(
                 url,
                 requestEntity,
-                CreateCalendarEventResponse.class
+                CalendarEventResponse.class
         );
 
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
@@ -101,6 +91,37 @@ public class CalendarEventServiceImpl implements CalendarEventService{
     @Transactional
     @Async("kakaoAsyncExecutor")
     public void deleteCalendarEvent(Reservation reservation) {
+        CalendarEvent calendarEvent = calendarEventRepository
+                .findByReservation(reservation)
+                .orElseThrow(() -> new RestApiException(CalendarErrorCode.CALENDAR_EVENT_NOT_FOUND));
 
+        // 일정 삭제하기
+        requestDeleteCalenderEvent(reservation.getCustomer(), calendarEvent.getEventId());
+        log.info("사용자 카카오 일정 삭제완료 : " + calendarEvent.getEventId());
+        calendarEventRepository.delete(calendarEvent);
+    }
+
+    // 카카오 API를 이용한 서브 캘린더 삭제
+    private boolean requestDeleteCalenderEvent(Customer customer, String eventId) {
+        String url = "https://kapi.kakao.com/v2/api/calendar/delete/event?event_id="+eventId;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + customer.getAccessToken());
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<CalendarEventResponse> response = restTemplate.exchange(
+                url,
+                HttpMethod.DELETE,
+                requestEntity,
+                CalendarEventResponse.class
+        );
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return true;
+        } else {
+            throw new RuntimeException("Calendar deletion failed: " + response.getStatusCode());
+        }
     }
 }

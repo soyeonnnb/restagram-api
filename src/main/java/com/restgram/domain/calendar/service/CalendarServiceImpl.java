@@ -32,7 +32,6 @@ public class CalendarServiceImpl implements CalendarService {
     private final CalendarRepository calendarRepository;
     private final CustomerRepository customerRepository;
     private final RestTemplate restTemplate;
-    private final CreateCalenderRequest createCalenderRequest;
 
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String secret;

@@ -2,13 +2,11 @@ package com.restgram.domain.calendar.entity;
 
 import com.restgram.domain.reservation.entity.Reservation;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Builder
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class CalendarEvent {

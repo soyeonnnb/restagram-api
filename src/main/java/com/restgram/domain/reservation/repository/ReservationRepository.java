@@ -17,6 +17,7 @@ import java.util.Optional;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     @Lock(LockModeType.PESSIMISTIC_READ) // 비관적 락 사용
+    @EntityGraph(attributePaths = {"customer"})
     Optional<Reservation> findById(Long id);
     @EntityGraph(attributePaths = {"store"})
     List<Reservation> findAllByCustomerOrderByDatetimeDesc(Customer customer);
