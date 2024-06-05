@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CouponRepository extends JpaRepository<Coupon, Long> {
-    @Lock(LockModeType.PESSIMISTIC_READ) // 비관적 락 사용
+    @Lock(LockModeType.PESSIMISTIC_WRITE) // 비관적 락 사용
     Optional<Coupon> findById(Long id);
     List<Coupon> findAllByStoreAndDisableAndFinishAtAfterOrderByStartAt(Store store, Boolean disable, LocalDateTime finishedAt);
     List<Coupon> findAllByStoreAndDisableOrFinishAtBeforeOrderByStartAt(Store store, Boolean disable, LocalDateTime finishedAt);
