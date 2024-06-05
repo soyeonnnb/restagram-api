@@ -6,8 +6,11 @@ import com.restgram.domain.user.entity.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface FeedImageRepository extends JpaRepository<FeedImage, Long> {
@@ -22,4 +25,12 @@ public interface FeedImageRepository extends JpaRepository<FeedImage, Long> {
     List<FeedImage> findByFeedStoreAndNumberOrderByIdDesc(User user, Integer number, Pageable pageable);
 
     void deleteAllByFeed(Feed feed);
+
+    @Modifying
+    @Query(value = "INSERT INTO feed_image (created_at, updated_at, number, url, feed_id) VALUES (:createdAt, :updatedAt, :number, :url, :feedId)", nativeQuery = true)
+    void insertFeedImage(@Param("createdAt") LocalDateTime createdAt,
+                         @Param("updatedAt") LocalDateTime updatedAt,
+                         @Param("number") int number,
+                         @Param("url") String url,
+                         @Param("feedId") int feedId);
 }

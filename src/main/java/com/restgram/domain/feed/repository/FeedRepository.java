@@ -11,11 +11,18 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FeedRepository extends JpaRepository<Feed, Long> {
 
     @EntityGraph(attributePaths = {"feedImageList", "store", "store.emdAddress", "store.emdAddress.siggAddress", "store.emdAddress.siggAddress.sidoAddress"})
     Page<Feed> findAllByWriterInOrWriterOrderByIdDesc(List<User> userList, User writer, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"feedImageList", "store", "store.emdAddress", "store.emdAddress.siggAddress", "store.emdAddress.siggAddress.sidoAddress"})
+    Page<Feed> findAllByWriterInOrderByIdDesc(List<User> followUserList, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"feedImageList", "store", "store.emdAddress", "store.emdAddress.siggAddress", "store.emdAddress.siggAddress.sidoAddress"})
+    List<Feed> findTop10ByWriterInAndIdLessThanOrderByIdDesc(List<User> userList, Long cursorId);
 
     @EntityGraph(attributePaths = {"store", "store.emdAddress", "store.emdAddress.siggAddress", "store.emdAddress.siggAddress.sidoAddress"})
     @Query("select f from Feed f where f.store.nickname LIKE %:query% or f.store.storeName LIKE %:query% or f.content LIKE %:query%")
@@ -27,4 +34,7 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
 
     Integer countAllByWriter(User user);
     Integer countAllByStore(Store store);
+
+    Optional<Feed> findTopByOrderByIdDesc();
+
 }

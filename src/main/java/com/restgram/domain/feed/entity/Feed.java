@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(indexes = @Index(name = "idx_feed_writer", columnList = "user_id"))
 public class Feed extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

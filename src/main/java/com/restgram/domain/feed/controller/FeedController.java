@@ -2,6 +2,7 @@ package com.restgram.domain.feed.controller;
 
 import com.restgram.domain.feed.dto.request.AddFeedRequest;
 import com.restgram.domain.feed.dto.request.UpdateFeedRequest;
+import com.restgram.domain.feed.dto.response.FeedCursorResponse;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.dto.response.UserFeedImageResponse;
 import com.restgram.domain.feed.service.FeedService;
@@ -11,6 +12,7 @@ import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -78,6 +80,19 @@ public class FeedController {
                 .build();
     }
 
+    // 팔로우한+내 유저의 피드 가져오기
+    @GetMapping("/cursor")
+    public CommonResponse getFeedsCursor(Authentication authentication, @RequestParam(value = "cursorId", required = false) Long cursorId) {
+        Long userId = Long.parseLong(authentication.getName());
+        FeedCursorResponse feedResponseList = feedService.getFeedsCursor(userId, cursorId);
+        return CommonResponse.builder()
+                .success(true)
+                .data(feedResponseList)
+                .code(HttpStatus.OK.value())
+                .message("팔로우한 유저 피드 가져오기")
+                .build();
+    }
+
     // 피드 검색
     @GetMapping("/search")
     public CommonResponse searchFeed(Authentication authentication, @RequestParam("addressId") @Nullable Long addressId, @RequestParam("addressRange") Integer addressRange, @RequestParam("query") String query, Pageable pageable) {
@@ -91,4 +106,17 @@ public class FeedController {
                 .build();
     }
 
+
+//    @PostMapping("/test")
+//    public CommonResponse test() {
+//
+//        for(int idx=315;idx<=100784;idx++) {
+//            feedService.test(idx);
+//        }
+//        return CommonResponse.builder()
+//                .success(true)
+//                .code(HttpStatus.OK.value())
+//                .message("피드 검색하기")
+//                .build();
+//    }
 }

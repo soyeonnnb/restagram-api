@@ -6,6 +6,7 @@ import com.restgram.domain.address.repository.SidoAddressRepository;
 import com.restgram.domain.address.repository.SiggAddressRepository;
 import com.restgram.domain.feed.dto.request.AddFeedRequest;
 import com.restgram.domain.feed.dto.request.UpdateFeedRequest;
+import com.restgram.domain.feed.dto.response.FeedCursorResponse;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.entity.Feed;
 import com.restgram.domain.feed.entity.FeedImage;
@@ -32,8 +33,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -76,8 +79,9 @@ public class FeedServiceImpl implements FeedService {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         // 팔로우 리스트 가져오기
         List<User> followUserList = followRepository.findFollowingsByFollower(user);
+        followUserList.add(user);
         // 내 + 팔로우한 사람들의 피드 리스트 가져오기
-        Page<Feed> feedList = feedRepository.findAllByWriterInOrWriterOrderByIdDesc(followUserList, user, pageable);
+        Page<Feed> feedList = feedRepository.findAllByWriterInOrderByIdDesc(followUserList, pageable);
         // 응답 만들기
         List<FeedResponse> feedResponseList = new ArrayList<>();
         for(Feed feed : feedList) {
@@ -135,6 +139,34 @@ public class FeedServiceImpl implements FeedService {
         if (feed.getWriter().getId() != userId) throw new RestApiException(UserErrorCode.USER_MISMATCH);
         feed.updateContent(request.getContent());
         feedRepository.save(feed);
+    }
+
+    @Override
+    public FeedCursorResponse getFeedsCursor(Long userId, Long cursorId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        // 팔로우 리스트 가져오기
+        List<User> followUserList = followRepository.findFollowingsByFollower(user);
+        if (cursorId == null) {
+            cursorId = feedRepository.findTopByOrderByIdDesc().orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)).getId();
+        }
+        // 내 + 팔로우한 사람들의 피드 리스트 가져오기
+        List<Feed> feedList = feedRepository.findTop10ByWriterInAndIdLessThanOrderByIdDesc(followUserList, cursorId);
+        // 응답 생성
+        List<FeedResponse> feedResponseList = new ArrayList<>();
+        for(Feed feed : feedList) {
+            feedResponseList.add(FeedResponse.of(feed, feedImageRepository.findAllByFeed(feed), feedLikeRepository.existsByFeedAndUser(feed, user)));
+        }
+
+        // 다음 커서 값 설정
+        Long nextCursorId = !feedList.isEmpty() ? feedList.get(feedList.size() - 1).getId() : null;
+        boolean hasNext = feedList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
+
+        FeedCursorResponse response = FeedCursorResponse.builder()
+                .cursorId(nextCursorId)
+                .hasNext(hasNext)
+                .feeds(feedResponseList)
+                .build();
+        return response;
     }
 
 

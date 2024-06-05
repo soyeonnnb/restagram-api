@@ -2,6 +2,7 @@ package com.restgram.domain.feed.service;
 
 import com.restgram.domain.feed.dto.request.AddFeedRequest;
 import com.restgram.domain.feed.dto.request.UpdateFeedRequest;
+import com.restgram.domain.feed.dto.response.FeedCursorResponse;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.dto.response.UserFeedImageResponse;
 import org.springframework.data.domain.Pageable;
@@ -15,4 +16,5 @@ public interface FeedService {
     List<FeedResponse> searchFeeds(Long userId, Long addressId, Integer addressRange, String query, Pageable pageable);
     void deleteFeed(Long userId, Long feedId);
     void updateFeed(Long userId, UpdateFeedRequest request);
+    FeedCursorResponse getFeedsCursor(Long userId, Long cursorId);
 }
