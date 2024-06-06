@@ -22,7 +22,8 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
     Page<Feed> findAllByWriterInOrderByIdDesc(List<User> followUserList, Pageable pageable);
 
     @EntityGraph(attributePaths = {"feedImageList", "store", "store.emdAddress", "store.emdAddress.siggAddress", "store.emdAddress.siggAddress.sidoAddress"})
-    List<Feed> findTop10ByWriterInAndIdLessThanOrderByIdDesc(List<User> userList, Long cursorId);
+    @Query("select f from Feed f where f.writer in :userList and f.id < :cursorId order by f.id desc limit 20")
+    List<Feed> findTop20ByWriterInAndIdLessThanOrderByIdDesc(List<User> userList, Long cursorId);
 
     @EntityGraph(attributePaths = {"store", "store.emdAddress", "store.emdAddress.siggAddress", "store.emdAddress.siggAddress.sidoAddress"})
     @Query("select f from Feed f where f.store.nickname LIKE %:query% or f.store.storeName LIKE %:query% or f.content LIKE %:query%")

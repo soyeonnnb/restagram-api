@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -27,8 +28,9 @@ public class FeedResponse {
     private Boolean isLike;
 
     public static FeedResponse of(Feed feed, List<FeedImage> images, boolean isLike) {
-        List<FeedImageResponse> feedImageResponsesList = new ArrayList<>();
-        for(FeedImage feedImage : images) feedImageResponsesList.add(FeedImageResponse.of(feedImage));
+        List<FeedImageResponse> feedImageResponsesList = images.stream()
+                .map(image -> FeedImageResponse.of(image))
+                .collect(Collectors.toList());
         return FeedResponse.builder()
                 .id(feed.getId())
                 .content(feed.getContent())

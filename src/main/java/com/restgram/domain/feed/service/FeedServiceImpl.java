@@ -37,6 +37,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -85,7 +86,7 @@ public class FeedServiceImpl implements FeedService {
         // 응답 만들기
         List<FeedResponse> feedResponseList = new ArrayList<>();
         for(Feed feed : feedList) {
-            feedResponseList.add(FeedResponse.of(feed, feedImageRepository.findAllByFeed(feed), feedLikeRepository.existsByFeedAndUser(feed, user)));
+            feedResponseList.add(FeedResponse.of(feed, feed.getFeedImageList(), feedLikeRepository.existsByFeedAndUser(feed, user)));
         }
         return feedResponseList;
     }
@@ -142,6 +143,7 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public FeedCursorResponse getFeedsCursor(Long userId, Long cursorId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         // 팔로우 리스트 가져오기
@@ -150,12 +152,12 @@ public class FeedServiceImpl implements FeedService {
             cursorId = feedRepository.findTopByOrderByIdDesc().orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)).getId();
         }
         // 내 + 팔로우한 사람들의 피드 리스트 가져오기
-        List<Feed> feedList = feedRepository.findTop10ByWriterInAndIdLessThanOrderByIdDesc(followUserList, cursorId);
+        List<Feed> feedList = feedRepository.findTop20ByWriterInAndIdLessThanOrderByIdDesc(followUserList, cursorId);
         // 응답 생성
-        List<FeedResponse> feedResponseList = new ArrayList<>();
-        for(Feed feed : feedList) {
-            feedResponseList.add(FeedResponse.of(feed, feedImageRepository.findAllByFeed(feed), feedLikeRepository.existsByFeedAndUser(feed, user)));
-        }
+        List<FeedResponse> feedResponseList = feedList.stream()
+                .map(feed -> FeedResponse.of(feed, feed.getFeedImageList(), feedLikeRepository.existsByFeedAndUser(feed, user)))
+                .collect(Collectors.toList());
+
 
         // 다음 커서 값 설정
         Long nextCursorId = !feedList.isEmpty() ? feedList.get(feedList.size() - 1).getId() : null;
