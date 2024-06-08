@@ -17,12 +17,12 @@ public interface FeedImageRepository extends JpaRepository<FeedImage, Long> {
     List<FeedImage> findAllByFeed(Feed feed);
 
     @EntityGraph(attributePaths = {"feed"})
-    @Query("select fi from FeedImage fi where fi.feed.writer = :user and fi.number = :number order by fi.id desc")
-    List<FeedImage> findByFeedWriterAndNumberOrderByIdDesc(User user, Integer number, Pageable pageable);
+    @Query("select fi from FeedImage fi where fi.feed.writer = :user and fi.number = :number and fi.feed.id < :cursorId order by fi.id desc")
+    List<FeedImage> findByFeedWriterAndNumberAndIdLessThanOrderByIdDesc(User user, Integer number, Long cursorId, Pageable pageable);
 
     @EntityGraph(attributePaths = {"feed"})
-    @Query("select fi from FeedImage fi where fi.feed.store = :user and fi.feed.writer != :user and fi.number = :number order by fi.id desc")
-    List<FeedImage> findByFeedStoreAndNumberOrderByIdDesc(User user, Integer number, Pageable pageable);
+    @Query("select fi from FeedImage fi where fi.feed.store = :user and fi.feed.writer != :user and fi.number = :number and fi.feed.id < :cursorId order by fi.id desc")
+    List<FeedImage> findByFeedStoreAndNumberOrderByIdDesc(User user, Integer number, Long cursorId, Pageable pageable);
 
     void deleteAllByFeed(Feed feed);
 

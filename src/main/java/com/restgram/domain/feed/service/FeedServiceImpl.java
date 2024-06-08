@@ -27,6 +27,7 @@ import com.restgram.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -147,12 +148,13 @@ public class FeedServiceImpl implements FeedService {
     public FeedCursorResponse getFeedsCursor(Long userId, Long cursorId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         // 팔로우 리스트 가져오기
-        List<User> followUserList = followRepository.findFollowingsByFollower(user);
+        List<User> searchUserList = followRepository.findFollowingsByFollower(user);
         if (cursorId == null) {
             cursorId = feedRepository.findTopByOrderByIdDesc().orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)).getId();
         }
+        searchUserList.add(user);
         // 내 + 팔로우한 사람들의 피드 리스트 가져오기
-        List<Feed> feedList = feedRepository.findTop20ByWriterInAndIdLessThanOrderByIdDesc(followUserList, cursorId);
+        List<Feed> feedList = feedRepository.findByIdLessThanAndWriterInOrderByIdDesc(cursorId, searchUserList, PageRequest.of(0, 20));
         // 응답 생성
         List<FeedResponse> feedResponseList = feedList.stream()
                 .map(feed -> FeedResponse.of(feed, feed.getFeedImageList(), feedLikeRepository.existsByFeedAndUser(feed, user)))
@@ -160,8 +162,8 @@ public class FeedServiceImpl implements FeedService {
 
 
         // 다음 커서 값 설정
-        Long nextCursorId = !feedList.isEmpty() ? feedList.get(feedList.size() - 1).getId() : null;
-        boolean hasNext = feedList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
+        Long nextCursorId = !feedList.isEmpty() ? feedResponseList.get(feedResponseList.size() - 1).getId() : null;
+        boolean hasNext = feedResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
 
         FeedCursorResponse response = FeedCursorResponse.builder()
                 .cursorId(nextCursorId)

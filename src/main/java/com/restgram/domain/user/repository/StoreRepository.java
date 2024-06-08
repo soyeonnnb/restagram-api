@@ -14,6 +14,9 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     boolean existsByNickname(String nickname);
     Optional<Store> findByEmail(String email);
 
+    @EntityGraph(attributePaths = {"emdAddress", "emdAddress.siggAddress", "emdAddress.siggAddress.sidoAddress"})
+    Optional<Store> findById(Long userId);
+
     @Query("SELECT s FROM Store s WHERE s.storeName LIKE %:param% OR s.nickname LIKE %:param%")
     @EntityGraph(attributePaths = {"emdAddress", "emdAddress.siggAddress", "emdAddress.siggAddress.sidoAddress"})
     List<Store> findAllByStoreNameOrNicknameContaining(@Param("param") String parameter);
