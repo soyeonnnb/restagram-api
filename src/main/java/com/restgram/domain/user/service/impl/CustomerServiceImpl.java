@@ -1,4 +1,4 @@
-package com.restgram.domain.user.service;
+package com.restgram.domain.user.service.impl;
 
 import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.address.entity.EmdAddress;
@@ -14,6 +14,7 @@ import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.UserRepository;
+import com.restgram.domain.user.service.CustomerService;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;

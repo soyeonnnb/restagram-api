@@ -1,4 +1,4 @@
-package com.restgram.domain.calendar.service;
+package com.restgram.domain.calendar.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,6 +7,7 @@ import com.restgram.domain.calendar.dto.response.CalendarEventResponse;
 import com.restgram.domain.calendar.entity.CalendarEvent;
 import com.restgram.domain.calendar.repository.CalendarEventRepository;
 import com.restgram.domain.calendar.repository.CalendarRepository;
+import com.restgram.domain.calendar.service.CalendarEventService;
 import com.restgram.domain.reservation.entity.Reservation;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.global.exception.entity.RestApiException;
@@ -24,7 +25,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CalendarEventServiceImpl implements CalendarEventService{
+public class CalendarEventServiceImpl implements CalendarEventService {
 
     private final CalendarRepository calendarRepository;
     private final CalendarEventRepository calendarEventRepository;

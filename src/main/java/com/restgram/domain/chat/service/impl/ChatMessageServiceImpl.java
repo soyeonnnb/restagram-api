@@ -1,4 +1,4 @@
-package com.restgram.domain.chat.service;
+package com.restgram.domain.chat.service.impl;
 
 import com.restgram.domain.chat.dto.request.ChatMessageRequest;
 import com.restgram.domain.chat.dto.response.ChatMessageResponse;
@@ -9,6 +9,7 @@ import com.restgram.domain.chat.entity.ChatMessageType;
 import com.restgram.domain.chat.entity.ChatRoom;
 import com.restgram.domain.chat.repository.ChatMessageRepository;
 import com.restgram.domain.chat.repository.ChatRoomRepository;
+import com.restgram.domain.chat.service.ChatMessageService;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;

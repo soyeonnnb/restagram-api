@@ -1,4 +1,4 @@
-package com.restgram.domain.feed.service;
+package com.restgram.domain.feed.service.impl;
 
 import com.restgram.domain.feed.dto.request.AddFeedRequest;
 import com.restgram.domain.feed.dto.response.FeedResponse;
@@ -7,6 +7,7 @@ import com.restgram.domain.feed.entity.FeedLike;
 import com.restgram.domain.feed.repository.FeedImageRepository;
 import com.restgram.domain.feed.repository.FeedLikeRepository;
 import com.restgram.domain.feed.repository.FeedRepository;
+import com.restgram.domain.feed.service.FeedLikeService;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;

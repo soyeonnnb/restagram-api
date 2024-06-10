@@ -1,4 +1,4 @@
-package com.restgram.domain.feed.service;
+package com.restgram.domain.feed.service.impl;
 
 import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.address.repository.EmdAddressRepository;
@@ -13,6 +13,8 @@ import com.restgram.domain.feed.entity.FeedImage;
 import com.restgram.domain.feed.repository.FeedImageRepository;
 import com.restgram.domain.feed.repository.FeedLikeRepository;
 import com.restgram.domain.feed.repository.FeedRepository;
+import com.restgram.domain.feed.service.FeedImageService;
+import com.restgram.domain.feed.service.FeedService;
 import com.restgram.domain.follow.repository.FollowRepository;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;

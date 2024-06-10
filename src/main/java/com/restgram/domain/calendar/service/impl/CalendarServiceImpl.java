@@ -1,6 +1,7 @@
-package com.restgram.domain.calendar.service;
+package com.restgram.domain.calendar.service.impl;
 
 import com.restgram.domain.calendar.dto.request.CalendarAgreeRequest;
+import com.restgram.domain.calendar.service.CalendarService;
 import com.restgram.domain.user.dto.request.CreateCalenderRequest;
 import com.restgram.domain.calendar.dto.response.CalendarAgreeResponse;
 import com.restgram.domain.calendar.dto.response.CreateCalendarResponse;

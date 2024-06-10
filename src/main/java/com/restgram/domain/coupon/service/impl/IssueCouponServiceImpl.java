@@ -1,8 +1,9 @@
-package com.restgram.domain.coupon.service;
+package com.restgram.domain.coupon.service.impl;
 
 import com.restgram.domain.coupon.dto.response.IssueCouponResponse;
 import com.restgram.domain.coupon.entity.IssueCoupon;
 import com.restgram.domain.coupon.repository.IssueCouponRepository;
+import com.restgram.domain.coupon.service.IssueCouponService;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.global.exception.entity.RestApiException;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class IssueCouponServiceImpl implements IssueCouponService{
+public class IssueCouponServiceImpl implements IssueCouponService {
 
     private final CustomerRepository customerRepository;
     private final IssueCouponRepository issueCouponRepository;

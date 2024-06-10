@@ -1,8 +1,9 @@
-package com.restgram.domain.follow.service;
+package com.restgram.domain.follow.service.impl;
 
 import com.restgram.domain.follow.dto.response.FollowUserResponse;
 import com.restgram.domain.follow.entity.Follow;
 import com.restgram.domain.follow.repository.FollowRepository;
+import com.restgram.domain.follow.service.FollowService;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
@@ -17,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FollowServiceImpl implements FollowService{
+public class FollowServiceImpl implements FollowService {
 
     private final UserRepository userRepository;
     private final FollowRepository followRepository;

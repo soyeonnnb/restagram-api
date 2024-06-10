@@ -1,4 +1,4 @@
-package com.restgram.domain.feed.service;
+package com.restgram.domain.feed.service.impl;
 
 import com.restgram.domain.feed.dto.response.FeedCursorResponse;
 import com.restgram.domain.feed.dto.response.FeedImageCursorResponse;
@@ -8,6 +8,7 @@ import com.restgram.domain.feed.entity.Feed;
 import com.restgram.domain.feed.entity.FeedImage;
 import com.restgram.domain.feed.repository.FeedImageRepository;
 import com.restgram.domain.feed.repository.FeedRepository;
+import com.restgram.domain.feed.service.FeedImageService;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.StoreRepository;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class FeedImageServiceImpl implements FeedImageService{
+public class FeedImageServiceImpl implements FeedImageService {
 
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;

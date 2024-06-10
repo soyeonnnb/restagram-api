@@ -1,4 +1,4 @@
-package com.restgram.domain.chat.service;
+package com.restgram.domain.chat.service.impl;
 
 import com.restgram.domain.chat.dto.response.ChatRoomResponse;
 import com.restgram.domain.chat.entity.ChatMember;
@@ -6,6 +6,7 @@ import com.restgram.domain.chat.entity.ChatMessage;
 import com.restgram.domain.chat.entity.ChatRoom;
 import com.restgram.domain.chat.repository.ChatMemberRepository;
 import com.restgram.domain.chat.repository.ChatRoomRepository;
+import com.restgram.domain.chat.service.ChatRoomService;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
@@ -22,7 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ChatRoomServiceImpl implements ChatRoomService{
+public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;

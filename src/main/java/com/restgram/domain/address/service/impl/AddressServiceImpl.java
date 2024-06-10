@@ -1,4 +1,4 @@
-package com.restgram.domain.address.service;
+package com.restgram.domain.address.service.impl;
 
 import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.address.entity.EmdAddress;
@@ -7,6 +7,7 @@ import com.restgram.domain.address.entity.SiggAddress;
 import com.restgram.domain.address.repository.EmdAddressRepository;
 import com.restgram.domain.address.repository.SidoAddressRepository;
 import com.restgram.domain.address.repository.SiggAddressRepository;
+import com.restgram.domain.address.service.AddressService;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.CommonErrorCode;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.restgram.domain.coupon.service;
+package com.restgram.domain.coupon.service.impl;
 
 import com.restgram.domain.coupon.dto.request.AddCouponRequest;
 import com.restgram.domain.coupon.dto.response.CustomerCouponResponse;
@@ -7,6 +7,7 @@ import com.restgram.domain.coupon.entity.Coupon;
 import com.restgram.domain.coupon.entity.IssueCoupon;
 import com.restgram.domain.coupon.repository.CouponRepository;
 import com.restgram.domain.coupon.repository.IssueCouponRepository;
+import com.restgram.domain.coupon.service.CouponService;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.repository.CustomerRepository;
@@ -26,7 +27,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CouponServiceImpl implements CouponService{
+public class CouponServiceImpl implements CouponService {
 
     private final CustomerRepository customerRepository;
     private final StoreRepository storeRepository;

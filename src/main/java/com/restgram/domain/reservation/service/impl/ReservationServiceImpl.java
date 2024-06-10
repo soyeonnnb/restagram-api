@@ -1,4 +1,4 @@
-package com.restgram.domain.reservation.service;
+package com.restgram.domain.reservation.service.impl;
 
 import com.restgram.domain.calendar.repository.CalendarEventRepository;
 import com.restgram.domain.calendar.service.CalendarEventService;
@@ -10,6 +10,7 @@ import com.restgram.domain.reservation.entity.*;
 import com.restgram.domain.reservation.repository.ReservationCancelRepository;
 import com.restgram.domain.reservation.repository.ReservationFormRepository;
 import com.restgram.domain.reservation.repository.ReservationRepository;
+import com.restgram.domain.reservation.service.ReservationService;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
@@ -34,7 +35,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ReservationServiceImpl implements ReservationService{
+public class ReservationServiceImpl implements ReservationService {
 
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;

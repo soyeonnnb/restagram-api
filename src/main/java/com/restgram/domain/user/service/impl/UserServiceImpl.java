@@ -1,4 +1,4 @@
-package com.restgram.domain.user.service;
+package com.restgram.domain.user.service.impl;
 
 import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.restgram.domain.coupon.repository.CouponRepository;
@@ -13,6 +13,7 @@ import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.RefreshTokenRepository;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
+import com.restgram.domain.user.service.UserService;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.JwtTokenErrorCode;
@@ -35,7 +36,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;

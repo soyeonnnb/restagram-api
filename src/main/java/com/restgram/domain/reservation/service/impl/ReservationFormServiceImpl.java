@@ -1,4 +1,4 @@
-package com.restgram.domain.reservation.service;
+package com.restgram.domain.reservation.service.impl;
 
 import com.restgram.domain.reservation.dto.request.ReservationFormDateRequest;
 import com.restgram.domain.reservation.dto.request.ReservationFormRequest;
@@ -7,6 +7,7 @@ import com.restgram.domain.reservation.dto.response.ReservationFormResponse;
 import com.restgram.domain.reservation.entity.ReservationForm;
 import com.restgram.domain.reservation.entity.ReservationFormState;
 import com.restgram.domain.reservation.repository.ReservationFormRepository;
+import com.restgram.domain.reservation.service.ReservationFormService;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.global.exception.entity.RestApiException;
@@ -26,7 +27,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class ReservationFormServiceImpl implements ReservationFormService{
+public class ReservationFormServiceImpl implements ReservationFormService {
 
     private final StoreRepository storeRepository;
     private final ReservationFormRepository reservationFormRepository;
