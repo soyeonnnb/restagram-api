@@ -38,9 +38,7 @@ public class HttpSessionHandshakeInterceptor implements HandshakeInterceptor {
 //        if (request instanceof ServletServerHttpRequest) {
 //            ServletServerHttpRequest servletServerRequest = (ServletServerHttpRequest) request;
 //            HttpServletRequest servletRequest = servletServerRequest.getServletRequest();
-//            System.out.println(WebUtils.getCookie(servletRequest, "access"));
 //
-////            System.out.println(token.getValue());
 ////            attributes.put("token", token.getValue());
 //        }
         return true;

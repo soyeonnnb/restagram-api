@@ -98,7 +98,6 @@ public class UserServiceImpl implements UserService{
     public void updateNickname(Long userId, NicknameRequest request) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         if (userRepository.existsByNickname(request.getNickname())) throw new RestApiException(UserErrorCode.NICKNAME_DUPLICATED);
-        System.out.println(request.getNickname());
         user.updateNickname(request.getNickname());
         userRepository.save(user);
     }
@@ -108,7 +107,6 @@ public class UserServiceImpl implements UserService{
     public UserProfileResponse updateProfileImage(Long userId, MultipartFile image) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         String url = null;
-        System.out.println(image);
         if (image != null) {
             url = s3Service.uploadFile(image, "user/profile/" + user.getId());
         }

@@ -28,7 +28,6 @@ public class WebSocketSecurityInterceptor implements ChannelInterceptor {
         log.info("token 유효성 확인");
         StompHeaderAccessor accessor =
                 MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
-        System.out.println(accessor.getCommand());
         // websocket 연결시 헤더의 jwt token 유효성 검증
 //        if (StompCommand.CONNECT == accessor.getCommand()) {
 //            String accessToken = accessor.getFirstNativeHeader("Authorization");

@@ -128,7 +128,6 @@ public class FeedServiceImpl implements FeedService {
         if (feed.getWriter().getId() != userId) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
         List<FeedImage> feedImageList = feedImageRepository.findAllByFeed(feed);
         for(FeedImage feedImage : feedImageList) {
-            System.out.println(s3Service.delete(feedImage.getUrl()));
             feedImageRepository.delete(feedImage);
         }
         feedRepository.delete(feed);
