@@ -16,12 +16,13 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/feed")
+@RequestMapping("/api/v1/feed")
 @Slf4j
 public class FeedImageController {
 
     private final FeedImageService feedImageService;
 
+    // 유저 피드 이미지 리스트 가져오기
     @GetMapping("/image/{userId}")
     public CommonResponse userFeedList(@PathVariable Long userId, @RequestParam("cursorId") @Nullable Long cursorId) {
         FeedImageCursorResponse feedImageResponses = feedImageService.getFeedImageList(userId, cursorId);
@@ -33,6 +34,7 @@ public class FeedImageController {
                 .build();
     }
 
+    // 유저 리뷰 이미지 리스트 가져오기
     @GetMapping("/image/review/{userId}")
     public CommonResponse userReviewFeedList(@PathVariable Long userId, @RequestParam("cursorId") @Nullable Long cursorId) {
         FeedImageCursorResponse feedImageResponses = feedImageService.getReviewImageList(userId, cursorId);

@@ -16,12 +16,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("/api/v1/customer")
 @Slf4j
 public class CustomerController {
 
     private final CustomerService customerService;
 
+    // 유저 정보 가져오기
     @GetMapping("/info")
     public CommonResponse getInfo(Authentication authentication) {
         Long userId = Long.parseLong(authentication.getName());
@@ -35,6 +36,7 @@ public class CustomerController {
                 ;
     }
 
+    // 구매자 회원가입
     @PostMapping("/join")
     public CommonResponse customerJoin(@Valid @RequestBody CustomerJoinRequest req) {
         customerService.join(req);
@@ -72,6 +74,7 @@ public class CustomerController {
                 .build();
     }
 
+    // 유저 정보 가져오기
     @PatchMapping
     public CommonResponse updateCustomer(Authentication authentication, @RequestBody UpdateCustomerRequest request) {
         Long userId = Long.parseLong(authentication.getName());

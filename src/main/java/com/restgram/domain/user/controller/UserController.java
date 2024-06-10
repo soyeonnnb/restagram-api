@@ -21,7 +21,7 @@ import javax.management.monitor.CounterMonitor;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/v1/user")
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
@@ -30,6 +30,7 @@ public class UserController {
     private final String TYPE_REFRESH = "refresh";
     private final UserService userService;
 
+    // 회원 로그아웃
     @PostMapping("/logout")
     public CommonResponse logout(@CookieValue(value = TYPE_ACCESS) String accessToken, @CookieValue(value = TYPE_REFRESH) String refreshToken, HttpServletResponse response) {
         log.info("로그아웃");
@@ -43,6 +44,7 @@ public class UserController {
                 ;
     }
 
+    // 토큰 재발급
     @PostMapping("/reissue")
     public CommonResponse reIssueToken(@Nullable @CookieValue(value = TYPE_ACCESS) String accessToken, @Nullable @CookieValue(value = TYPE_REFRESH) String refreshToken, HttpServletResponse response) {
         log.info("토큰 재발급");
@@ -56,6 +58,7 @@ public class UserController {
                 ;
     }
 
+    // 유저 리스트 검색
     @GetMapping
     public CommonResponse searchUser(@RequestParam("query") String query) {
         List<UserInfoResponse> response = userService.searchUser(query);
@@ -68,6 +71,7 @@ public class UserController {
                 ;
     }
 
+    // 유저 상세 정보 가져오기
     @GetMapping("/{userId}")
     public CommonResponse getUserInfo(Authentication authentication, @PathVariable Long userId) {
         Long myId = Long.parseLong(authentication.getName());
@@ -81,6 +85,7 @@ public class UserController {
                 ;
     }
 
+    // 유저 패스워드 변경
     @PatchMapping("/password")
     public CommonResponse updatePassword(Authentication authentication, @RequestBody @Valid UpdatePasswordRequest request) {
         Long userId = Long.parseLong(authentication.getName());
@@ -93,6 +98,7 @@ public class UserController {
                 ;
     }
 
+    // 유저 닉네임 변경
     @PatchMapping("/nickname")
     public CommonResponse updateNickname(Authentication authentication, @RequestBody NicknameRequest request) {
         Long userId = Long.parseLong(authentication.getName());
@@ -105,6 +111,7 @@ public class UserController {
                 ;
     }
 
+    // 유저 프로필 이미지 변경
     @PatchMapping("/image")
     public CommonResponse updateImage(Authentication authentication, @RequestPart(name = "image") @Nullable MultipartFile image) {
         Long userId = Long.parseLong(authentication.getName());
@@ -119,6 +126,7 @@ public class UserController {
 
     }
 
+    // 유저 닉네임 중복확인
     @GetMapping("/duplicate/nickname")
     public CommonResponse duplicateNickname(@RequestParam("query") String query) {
         CheckResponse check = userService.duplicateNickname(query);

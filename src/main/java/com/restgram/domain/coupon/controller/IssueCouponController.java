@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/coupon/issue")
+@RequestMapping("/api/v1/coupon/issue")
 @Slf4j
 public class IssueCouponController {
 

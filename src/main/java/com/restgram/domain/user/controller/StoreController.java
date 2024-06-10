@@ -20,12 +20,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/store")
+@RequestMapping("/api/v1/store")
 @Slf4j
 @RequiredArgsConstructor
 public class StoreController {
     private final StoreService storeService;
 
+    // 가게 회원 회원가입
     @PostMapping("/join")
     public CommonResponse join(@Valid @RequestBody StoreJoinRequest req) {
         storeService.join(req);
@@ -38,7 +39,7 @@ public class StoreController {
                 ;
     }
 
-
+    // 가게 회원 로그인
     @PostMapping("/login")
     public CommonResponse login(@Valid @RequestBody LoginRequest req, HttpServletResponse response) {
         LoginResponse res = storeService.login(req, response);
@@ -51,6 +52,7 @@ public class StoreController {
                 ;
     }
 
+    // 이름과 닉네임으로 가게 조회
     @GetMapping
     public CommonResponse searchByNameAndNickname(@RequestParam String name) {
         List<StoreInfoResponse> storeInfoResponseList = storeService.searchByName(name);
@@ -62,6 +64,7 @@ public class StoreController {
                 .build();
     }
 
+    // 가게 정보 변경
     @PatchMapping
     public CommonResponse updateStore(Authentication authentication, @RequestBody UpdateStoreRequest request) {
         Long userId = Long.parseLong(authentication.getName());

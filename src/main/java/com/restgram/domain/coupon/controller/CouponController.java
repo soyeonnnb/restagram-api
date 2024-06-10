@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/coupon")
+@RequestMapping("/api/v1/coupon")
 @Slf4j
 public class CouponController {
 
@@ -46,6 +46,7 @@ public class CouponController {
                 .build();
     }
 
+    // 발급 가능한 쿠폰 리스트 가져오기
     @GetMapping
     public CommonResponse getAvailableCouponList(Authentication authentication) {
         Long storeId = Long.parseLong(authentication.getName());
@@ -58,6 +59,7 @@ public class CouponController {
                 .build();
     }
 
+    // 발급 종료 쿠폰 리스트 가져오기
     @GetMapping("/finish")
     public CommonResponse getFinishCouponList(Authentication authentication) {
         Long storeId = Long.parseLong(authentication.getName());

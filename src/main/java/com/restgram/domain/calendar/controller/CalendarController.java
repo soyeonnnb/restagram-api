@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/calendar")
+@RequestMapping("/api/v1/calendar")
 @Slf4j
 public class CalendarController {
 
     private final CalendarService calendarService;
 
+    // 캘린더 동의 현황 변경
     @PatchMapping("/agree")
     public CommonResponse customerCalendarAgree(Authentication authentication, @RequestBody CalendarAgreeRequest request) {
         Long userId = Long.parseLong(authentication.getName());

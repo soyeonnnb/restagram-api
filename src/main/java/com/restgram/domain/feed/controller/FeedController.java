@@ -24,12 +24,13 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/feed")
+@RequestMapping("/api/v1/feed")
 @Slf4j
 public class FeedController {
 
     private final FeedService feedService;
 
+    // 게시물 작성
     @PostMapping
     public CommonResponse postFeed(Authentication authentication,
                                    @RequestPart @Valid AddFeedRequest req,
@@ -43,6 +44,7 @@ public class FeedController {
                 .build();
     }
 
+    // 게시물 삭제
     @DeleteMapping("/{feedId}")
     public CommonResponse deleteFeed(Authentication authentication, @PathVariable Long feedId) {
         Long userId = Long.parseLong(authentication.getName());
@@ -105,18 +107,4 @@ public class FeedController {
                 .message("피드 검색하기")
                 .build();
     }
-
-
-//    @PostMapping("/test")
-//    public CommonResponse test() {
-//
-//        for(int idx=315;idx<=100784;idx++) {
-//            feedService.test(idx);
-//        }
-//        return CommonResponse.builder()
-//                .success(true)
-//                .code(HttpStatus.OK.value())
-//                .message("피드 검색하기")
-//                .build();
-//    }
 }

@@ -19,7 +19,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/reservation")
+@RequestMapping("/api/v1/reservation")
 @Slf4j
 public class ReservationController {
 
@@ -75,7 +75,5 @@ public class ReservationController {
                 .build();
     }
     
-    // 예약 상세 가져오기
 
-    
 }

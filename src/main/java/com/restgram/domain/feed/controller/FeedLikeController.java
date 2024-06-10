@@ -14,7 +14,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/feed/like")
+@RequestMapping("/api/v1/feed/like")
 @Slf4j
 public class FeedLikeController {
 

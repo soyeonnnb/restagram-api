@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/reservation/form")
+@RequestMapping("/api/v1/reservation/form")
 @Slf4j
 public class ReservationFormController {
 

@@ -25,9 +25,10 @@ public class ChatController {
     private final ChatMessageService chatMessageService;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
+    // 메세지 전송
     @MessageMapping("/chat")
     public void chat(@Payload ChatMessageRequest request) {
-        log.info("채팅 들어옴");
+        log.info("채팅");
         ChatSendResponse sendResponse = chatMessageService.sendChat(request);
         MessageHeaders headers = new MessageHeaders(Collections.singletonMap(MessageHeaders.CONTENT_TYPE, MimeTypeUtils.APPLICATION_JSON_VALUE));
         for(Long userId : sendResponse.getUserIds())

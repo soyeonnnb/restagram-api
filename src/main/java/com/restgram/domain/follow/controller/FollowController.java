@@ -13,7 +13,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/follow")
+@RequestMapping("/api/v1/follow")
 @Slf4j
 public class FollowController {
 
@@ -43,6 +43,7 @@ public class FollowController {
                 .build();
     }
 
+    // 팔로우 리스트 가져오기
     @GetMapping("/following/{follower_id}")
     public CommonResponse getFollowingList(Authentication authentication, @PathVariable Long follower_id) {
         Long user_id = Long.parseLong(authentication.getName());
@@ -55,6 +56,7 @@ public class FollowController {
                 .build();
     }
 
+    // 팔로잉 리스트 가져오기
     @GetMapping("/follower/{following_id}")
     public CommonResponse getFollowerList(Authentication authentication, @PathVariable Long following_id) {
         Long user_id = Long.parseLong(authentication.getName());
