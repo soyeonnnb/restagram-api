@@ -2,12 +2,10 @@ package com.restgram.domain.reservation.dto.request;
 
 import com.restgram.domain.reservation.entity.Reservation;
 import com.restgram.domain.reservation.entity.ReservationForm;
-import com.restgram.domain.reservation.entity.ReservationFormState;
 import com.restgram.domain.reservation.entity.ReservationState;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
 import lombok.Getter;
-import org.joda.time.LocalDate;
 
 import java.time.LocalDateTime;
 

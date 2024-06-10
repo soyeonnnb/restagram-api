@@ -2,7 +2,6 @@ package com.restgram.domain.feed.entity;
 
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity

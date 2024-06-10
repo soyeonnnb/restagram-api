@@ -5,7 +5,6 @@ import com.restgram.domain.chat.dto.response.ChatMessageResponse;
 import com.restgram.domain.chat.dto.response.ChatSendResponse;
 import com.restgram.domain.chat.entity.ChatMember;
 import com.restgram.domain.chat.entity.ChatMessage;
-import com.restgram.domain.chat.entity.ChatMessageType;
 import com.restgram.domain.chat.entity.ChatRoom;
 import com.restgram.domain.chat.repository.ChatMessageRepository;
 import com.restgram.domain.chat.repository.ChatRoomRepository;

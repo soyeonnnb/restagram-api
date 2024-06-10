@@ -2,18 +2,12 @@ package com.restgram.global.sse.service;
 
 import com.restgram.domain.coupon.entity.Coupon;
 import com.restgram.domain.reservation.entity.Reservation;
-import com.restgram.domain.reservation.entity.ReservationCancel;
 import com.restgram.domain.user.entity.User;
 import com.restgram.global.sse.entity.Notification;
 import com.restgram.global.sse.entity.NotificationType;
-import com.restgram.global.sse.repository.EmitterRepositoryImpl;
-import org.springframework.http.MediaType;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public interface NotificationService {
 

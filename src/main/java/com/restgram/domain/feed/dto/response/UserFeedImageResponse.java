@@ -1,6 +1,5 @@
 package com.restgram.domain.feed.dto.response;
 
-import com.restgram.domain.feed.entity.Feed;
 import com.restgram.domain.feed.entity.FeedImage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

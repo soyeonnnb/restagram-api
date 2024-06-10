@@ -3,16 +3,11 @@ package com.restgram.domain.coupon.scheduler;
 import com.restgram.domain.coupon.entity.Coupon;
 import com.restgram.domain.coupon.repository.CouponRepository;
 import com.restgram.domain.follow.repository.FollowRepository;
-import com.restgram.domain.reservation.entity.Reservation;
-import com.restgram.domain.reservation.entity.ReservationState;
-import com.restgram.domain.reservation.repository.ReservationRepository;
-import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.User;
 import com.restgram.global.sse.entity.NotificationType;
 import com.restgram.global.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,6 +1,5 @@
 package com.restgram.global.jwt.filter;
 
-import com.nimbusds.oauth2.sdk.OAuth2Error;
 import com.restgram.global.exception.errorCode.JwtTokenErrorCode;
 import com.restgram.global.jwt.response.JwtErrorResponseSender;
 import com.restgram.global.jwt.token.JwtTokenProvider;

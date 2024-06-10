@@ -1,6 +1,5 @@
 package com.restgram.global.jwt.service;
 
-import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;

@@ -1,10 +1,7 @@
 package com.restgram.domain.reservation.dto.response;
 
 import com.restgram.domain.reservation.entity.Reservation;
-import com.restgram.domain.reservation.entity.ReservationForm;
 import com.restgram.domain.reservation.entity.ReservationState;
-import com.restgram.domain.user.entity.Customer;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;

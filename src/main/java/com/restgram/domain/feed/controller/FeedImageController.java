@@ -1,18 +1,13 @@
 package com.restgram.domain.feed.controller;
 
 import com.restgram.domain.feed.dto.response.FeedImageCursorResponse;
-import com.restgram.domain.feed.dto.response.UserFeedImageResponse;
 import com.restgram.domain.feed.service.FeedImageService;
 import com.restgram.global.exception.entity.CommonResponse;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController

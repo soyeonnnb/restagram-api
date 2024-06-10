@@ -2,7 +2,6 @@ package com.restgram.domain.reservation.dto.response;
 
 import com.restgram.domain.reservation.entity.ReservationForm;
 import com.restgram.domain.reservation.entity.ReservationFormState;
-import com.restgram.domain.user.entity.Store;
 import jakarta.persistence.*;
 import lombok.*;
 

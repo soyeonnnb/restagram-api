@@ -1,8 +1,6 @@
 package com.restgram.domain.feed.service.impl;
 
-import com.restgram.domain.feed.dto.response.FeedCursorResponse;
 import com.restgram.domain.feed.dto.response.FeedImageCursorResponse;
-import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.dto.response.UserFeedImageResponse;
 import com.restgram.domain.feed.entity.Feed;
 import com.restgram.domain.feed.entity.FeedImage;
@@ -19,13 +17,11 @@ import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

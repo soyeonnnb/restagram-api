@@ -1,14 +1,12 @@
 package com.restgram.domain.reservation.scheduler;
 
 import com.restgram.domain.reservation.entity.Reservation;
-import com.restgram.domain.reservation.entity.ReservationForm;
 import com.restgram.domain.reservation.entity.ReservationState;
 import com.restgram.domain.reservation.repository.ReservationRepository;
 import com.restgram.global.sse.entity.NotificationType;
 import com.restgram.global.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

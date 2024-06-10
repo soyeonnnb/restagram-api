@@ -2,7 +2,6 @@ package com.restgram.domain.user.dto.response;
 
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
-import com.restgram.domain.user.entity.User;
 import lombok.*;
 
 @Builder

@@ -1,6 +1,5 @@
 package com.restgram.domain.feed.entity;
 
-import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
 import com.restgram.global.entity.BaseEntity;

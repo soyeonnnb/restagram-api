@@ -2,7 +2,6 @@ package com.restgram.domain.chat.dto.response;
 
 import com.restgram.domain.chat.entity.ChatMessage;
 import com.restgram.domain.chat.entity.ChatMessageType;
-import com.restgram.domain.user.dto.response.UserInfoResponse;
 import lombok.Builder;
 import lombok.Getter;
 

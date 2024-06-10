@@ -1,9 +1,7 @@
 package com.restgram.domain.user.dto.response;
 
 import com.restgram.domain.user.entity.Customer;
-import jakarta.persistence.MappedSuperclass;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;

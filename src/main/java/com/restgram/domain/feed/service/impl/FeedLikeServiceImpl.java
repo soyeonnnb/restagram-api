@@ -1,6 +1,5 @@
 package com.restgram.domain.feed.service.impl;
 
-import com.restgram.domain.feed.dto.request.AddFeedRequest;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.entity.Feed;
 import com.restgram.domain.feed.entity.FeedLike;
@@ -16,7 +15,6 @@ import com.restgram.global.exception.errorCode.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;

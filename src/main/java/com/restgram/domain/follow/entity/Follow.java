@@ -1,6 +1,5 @@
 package com.restgram.domain.follow.entity;
 
-import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.User;
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;

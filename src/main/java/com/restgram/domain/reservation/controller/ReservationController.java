@@ -7,12 +7,10 @@ import com.restgram.domain.reservation.dto.response.StoreReservationResponse;
 import com.restgram.domain.reservation.service.ReservationService;
 import com.restgram.global.exception.entity.CommonResponse;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

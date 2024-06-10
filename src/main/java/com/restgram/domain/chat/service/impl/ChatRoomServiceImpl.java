@@ -2,7 +2,6 @@ package com.restgram.domain.chat.service.impl;
 
 import com.restgram.domain.chat.dto.response.ChatRoomResponse;
 import com.restgram.domain.chat.entity.ChatMember;
-import com.restgram.domain.chat.entity.ChatMessage;
 import com.restgram.domain.chat.entity.ChatRoom;
 import com.restgram.domain.chat.repository.ChatMemberRepository;
 import com.restgram.domain.chat.repository.ChatRoomRepository;

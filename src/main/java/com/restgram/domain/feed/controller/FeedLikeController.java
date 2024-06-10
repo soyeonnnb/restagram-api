@@ -2,7 +2,6 @@ package com.restgram.domain.feed.controller;
 
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.service.FeedLikeService;
-import com.restgram.domain.feed.service.FeedService;
 import com.restgram.global.exception.entity.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

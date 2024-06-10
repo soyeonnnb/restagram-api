@@ -1,10 +1,7 @@
 package com.restgram.domain.follow.repository;
 
 import com.restgram.domain.follow.entity.Follow;
-import com.restgram.domain.user.entity.Customer;
-import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

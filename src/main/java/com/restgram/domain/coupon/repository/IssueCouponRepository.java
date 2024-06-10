@@ -3,7 +3,6 @@ package com.restgram.domain.coupon.repository;
 import com.restgram.domain.coupon.entity.Coupon;
 import com.restgram.domain.coupon.entity.IssueCoupon;
 import com.restgram.domain.user.entity.Customer;
-import jakarta.persistence.Entity;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 

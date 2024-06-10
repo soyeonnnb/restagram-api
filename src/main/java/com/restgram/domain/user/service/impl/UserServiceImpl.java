@@ -1,10 +1,8 @@
 package com.restgram.domain.user.service.impl;
 
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
 import com.restgram.domain.coupon.repository.CouponRepository;
 import com.restgram.domain.feed.repository.FeedRepository;
 import com.restgram.domain.follow.repository.FollowRepository;
-import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.request.NicknameRequest;
 import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
 import com.restgram.domain.user.dto.response.*;
@@ -26,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;

@@ -1,6 +1,5 @@
 package com.restgram.domain.user.dto.request;
 
-import com.restgram.domain.user.entity.UserType;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

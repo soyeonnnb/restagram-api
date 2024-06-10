@@ -6,8 +6,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.DialectOverride;
-import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 

@@ -1,6 +1,5 @@
 package com.restgram.domain.user.controller;
 
-import com.restgram.domain.follow.dto.response.FollowUserResponse;
 import com.restgram.domain.user.dto.request.StoreJoinRequest;
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.request.UpdateStoreRequest;

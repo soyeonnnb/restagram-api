@@ -1,6 +1,5 @@
 package com.restgram.domain.user.controller;
 
-import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.request.NicknameRequest;
 import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
 import com.restgram.domain.user.dto.response.*;
@@ -9,7 +8,6 @@ import com.restgram.global.exception.entity.CommonResponse;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,7 +15,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.management.monitor.CounterMonitor;
 import java.util.List;
 
 @RestController

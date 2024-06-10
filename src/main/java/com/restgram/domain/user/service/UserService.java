@@ -1,7 +1,5 @@
 package com.restgram.domain.user.service;
 
-import com.nimbusds.openid.connect.sdk.claims.UserInfo;
-import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.request.NicknameRequest;
 import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
 import com.restgram.domain.user.dto.response.*;

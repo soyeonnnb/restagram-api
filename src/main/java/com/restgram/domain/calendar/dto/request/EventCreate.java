@@ -3,11 +3,8 @@ package com.restgram.domain.calendar.dto.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.restgram.domain.reservation.entity.Reservation;
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
 
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

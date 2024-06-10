@@ -24,10 +24,8 @@ import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.sse.entity.NotificationType;
 import com.restgram.global.sse.service.NotificationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

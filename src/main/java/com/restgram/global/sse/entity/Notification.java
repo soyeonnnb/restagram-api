@@ -3,7 +3,6 @@ package com.restgram.global.sse.entity;
 import com.restgram.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
