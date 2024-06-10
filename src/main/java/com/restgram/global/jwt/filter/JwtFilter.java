@@ -34,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("Jwt Filter process ..");
+        log.info("Jwt Filter 진행 ..");
         String accessToken = jwtTokenProvider.resolveToken(request, "access");
 
         // 만약 토큰이 존재하면 SecurityContextHolder에 권한을 생성하여 삽입
@@ -44,7 +44,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else return;
         } else {
-            // 토큰이 필요한 요청에서 토큰이 없다면 리턴
+            log.warn("JWT 토큰 없음");
+//             토큰이 필요한 요청에서 토큰이 없다면 리턴
             jwtErrorResponseSender.sendErrorResponse(response, JwtTokenErrorCode.DOES_NOT_EXIST_TOKEN);
             return;
         }
