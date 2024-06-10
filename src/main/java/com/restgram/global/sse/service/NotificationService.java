@@ -29,5 +29,4 @@ public interface NotificationService {
     Notification createNotification(User receiver, NotificationType type, Reservation reservation);
     // 쿠폰 발급 시작
     Notification createNotification(User receiver, NotificationType type, Coupon coupon);
-
 }

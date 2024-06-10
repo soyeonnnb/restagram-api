@@ -23,7 +23,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findAllByCustomerOrderByDatetimeDesc(Customer customer);
 
     @EntityGraph(attributePaths = {"customer"})
-    List<Reservation> findAllByStoreAndDatetimeGreaterThanEqualAndDatetimeLessThan(Store store, LocalDateTime startAt, LocalDateTime endAt);
+    List<Reservation> findAllByStoreAndDatetimeGreaterThanEqualAndDatetimeLessThanOrderByDatetime(Store store, LocalDateTime startAt, LocalDateTime endAt);
 
     @EntityGraph(attributePaths = {"customer"})
     List<Reservation> findAllByDatetimeAndState(LocalDateTime dateTime, ReservationState state);

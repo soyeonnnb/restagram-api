@@ -139,7 +139,7 @@ public class ReservationServiceImpl implements ReservationService{
         Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
         LocalDateTime startAt = LocalDateTime.of(year, month, 1, 0, 0);
         // 해당 가게의, 연도/월 검색
-        List<Reservation> reservationList = reservationRepository.findAllByStoreAndDatetimeGreaterThanEqualAndDatetimeLessThan(store, startAt, startAt.plusMonths(1));
+        List<Reservation> reservationList = reservationRepository.findAllByStoreAndDatetimeGreaterThanEqualAndDatetimeLessThanOrderByDatetime(store, startAt, startAt.plusMonths(1));
         List<StoreReservationResponse> storeReservationResponseList = new ArrayList<>();
         for(Reservation reservation : reservationList) {
             if (reservation.getState().equals(ReservationState.ACTIVE)) {

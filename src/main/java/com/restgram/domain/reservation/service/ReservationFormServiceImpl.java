@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -39,21 +40,26 @@ public class ReservationFormServiceImpl implements ReservationFormService{
         for(LocalDate date = request.getStartAt(); date.isBefore(request.getFinishAt().plusDays(1)); date = date.plusDays(1)) {
             // 만약 제외 날짜에 포함되어 있다면 패스
             if (request.getExceptDateList().contains(date)) continue;
-            // 이미 등록된 날짜라면 패스
-            if (reservationFormRepository.existsByStoreAndDate(store, date)) continue;
 
             for(ReservationFormDateRequest datetable : request.getWeekListMap().getOrDefault(date.getDayOfWeek(), new ArrayList<>())) {
-                ReservationForm form = ReservationForm.builder()
-                        .store(store)
-                        .date(date)
-                        .time(datetable.getTime())
-                        .quantity(datetable.getTable())
-                        .remainQuantity(datetable.getTable())
-                        .tablePerson(request.getTablePerson())
-                        .maxReservationPerson(request.getMaxReservationPerson())
-                        .state(ReservationFormState.ACTIVE)
-                        .build();
-                reservationFormRepository.save(form);
+                // 만약 해당 날짜 + 시간에 이미 예약폼이 존재한다면 테이블 수 늘리기
+                Optional<ReservationForm> optionalReservationForm = reservationFormRepository.findByStoreAndDateAndTime(store, date, datetable.getTime());
+                if (optionalReservationForm.isPresent()) {
+                    optionalReservationForm.get().updateRemainQuantity(datetable.getTable());
+                } else {
+                    ReservationForm form = ReservationForm.builder()
+                            .store(store)
+                            .date(date)
+                            .time(datetable.getTime())
+                            .quantity(datetable.getTable())
+                            .remainQuantity(datetable.getTable())
+                            .tablePerson(request.getTablePerson())
+                            .maxReservationPerson(request.getMaxReservationPerson())
+                            .state(ReservationFormState.ACTIVE)
+                            .build();
+                    reservationFormRepository.save(form);
+
+                }
             }
         }
     }
