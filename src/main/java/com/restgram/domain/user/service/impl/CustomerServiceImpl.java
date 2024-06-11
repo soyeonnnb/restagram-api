@@ -7,7 +7,6 @@ import com.restgram.domain.address.entity.SiggAddress;
 import com.restgram.domain.address.repository.EmdAddressRepository;
 import com.restgram.domain.address.repository.SidoAddressRepository;
 import com.restgram.domain.address.repository.SiggAddressRepository;
-import com.restgram.domain.user.dto.request.CustomerJoinRequest;
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
@@ -42,21 +41,6 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         LoginResponse res = LoginResponse.of(customer);
         return res;
-    }
-
-    @Override
-    @Transactional
-    public void join(CustomerJoinRequest req) {
-        // 중복 이메일 확인
-        if (customerRepository.existsByEmail(req.getEmail())) throw new RestApiException(UserErrorCode.EMAIL_DUPLICATED);
-
-        // 중복 닉네임 확인
-        if (userRepository.existsByNickname(req.getNickname())) throw new RestApiException(UserErrorCode.NICKNAME_DUPLICATED);
-
-        // 비밀번호 암호화
-        req.setPassword(passwordEncoder.encode(req.getPassword()));
-        // 저장
-        customerRepository.save(req.of());
     }
 
     @Override

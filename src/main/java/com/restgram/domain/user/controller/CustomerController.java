@@ -1,22 +1,17 @@
 package com.restgram.domain.user.controller;
 
-import com.restgram.domain.address.dto.response.AddressResponse;
-import com.restgram.domain.user.dto.request.CustomerJoinRequest;
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.service.CustomerService;
 import com.restgram.global.exception.entity.ApiResponse;
 import jakarta.annotation.Nullable;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,14 +28,6 @@ public class CustomerController {
         LoginResponse loginResponse = customerService.getUserInfo(userId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(loginResponse), HttpStatus.OK);
-    }
-
-    // 구매자 회원가입
-    @PostMapping("/join")
-    public ResponseEntity<ApiResponse<?>> customerJoin(@Valid @RequestBody CustomerJoinRequest req) {
-        customerService.join(req);
-
-        return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.CREATED);
     }
 
     // 유저 주소 업데이트
