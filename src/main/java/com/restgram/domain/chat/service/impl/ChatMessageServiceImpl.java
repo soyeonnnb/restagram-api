@@ -32,11 +32,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     @Transactional
     public ChatSendResponse sendChat(ChatMessageRequest request) {
-        User sender = userRepository.findById(request.getUserId()).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
-        ChatRoom chatRoom = chatRoomRepository.findById(request.getRoomId()).orElseThrow(() -> new RestApiException(ChatErrorCode.INVALID_CHATROOM_ID));
+        User sender = userRepository.findById(request.getUserId()).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID, "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID="+request.getUserId()+"]"));
+        ChatRoom chatRoom = chatRoomRepository.findById(request.getRoomId()).orElseThrow(() -> new RestApiException(ChatErrorCode.INVALID_CHATROOM_ID, "채팅방 ID가 유효하지 않습니다. [채팅방ID="+request.getRoomId()+"]"));
 
         // 해당 유저가 참가한 채팅방이 아니면
-        if (!chatRoom.getMembers().contains(sender)) throw new RestApiException(ChatErrorCode.NOT_USER_CHATROOM);
+        if (!chatRoom.getMembers().contains(sender)) throw new RestApiException(ChatErrorCode.NOT_USER_CHATROOM, "로그인 사용자가 참여한 채팅방이 아닙니다. [로그인 사용자ID="+request.getUserId()+", 채팅방ID="+request.getRoomId()+"]");
 
         // 메세지 저장
         ChatMessage message = request.of(sender, chatRoom);
@@ -48,11 +48,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         // 유저 id만 가져와서 저장
         List<Long> ids = new ArrayList<>();
         for(ChatMember user : chatRoom.getMembers()) ids.add(user.getUser().getId()); 
-        ChatSendResponse response = ChatSendResponse.builder()
+
+        return ChatSendResponse.builder()
                 .message(ChatMessageResponse.of(message))
                 .userIds(ids)
                 .build();
-
-        return response;
     }
 }
