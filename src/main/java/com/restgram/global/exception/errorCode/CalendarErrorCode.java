@@ -10,7 +10,6 @@ public enum CalendarErrorCode implements ErrorCode{
     INVALID_CALENDAR_ID(HttpStatus.BAD_REQUEST, "CALENDAR-001", "카카오 캘린더ID가 유효하지 않습니다."),
     INVALID_CALENDAR_EVENT_ID(HttpStatus.BAD_REQUEST, "CALENDAR-002", "카카오 일정 이벤트ID가 유효하지 않습니다."),
     CALENDER_NOT_AUTHORIZATION(HttpStatus.BAD_REQUEST, "CALENDAR-003", "카카오 내에서 캘린더 동의항목에 동의하지 않았습니다."),
-    DISAGREE_CALENDAR(HttpStatus.BAD_REQUEST, "CALENDAR-004", "카카오 캘린더에 동의하지 않았습니다.")
     ;
     
     private HttpStatus httpStatus;
