@@ -8,12 +8,13 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 @Getter
 public enum UserErrorCode implements ErrorCode{
-    INVALID_USER_ID(HttpStatus.BAD_REQUEST, "USER_001", "유효하지 않은 사용자 ID입니다."),
-    USER_DUPLICATED(HttpStatus.BAD_REQUEST, "USER_002", "이미 존재하는 사용자입니다."),
-    USER_MISMATCH(HttpStatus.BAD_REQUEST, "USER_003", "사용자가 일치하지 않습니다."),
-    PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "USER_004", "비밀번호가 일치하지 않습니다."),
-    EMAIL_DUPLICATED(HttpStatus.CONFLICT, "USER_005", "중복된 유저 이메일입니다."),
-    NICKNAME_DUPLICATED(HttpStatus.CONFLICT, "USER_006", "중복된 유저 닉네임입니다.")
+    INVALID_LOGIN_USER_ID(HttpStatus.BAD_REQUEST, "USER_001", "유효하지 않은 로그인 사용자 ID입니다."),
+    INVALID_USER_ID(HttpStatus.BAD_REQUEST, "USER_002", "유효하지 않은 사용자 ID입니다."),
+    USER_DUPLICATED(HttpStatus.BAD_REQUEST, "USER_003", "이미 존재하는 사용자입니다."),
+    USER_MISMATCH(HttpStatus.BAD_REQUEST, "USER_004", "사용자가 일치하지 않습니다."),
+    PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "USER_005", "비밀번호가 일치하지 않습니다."),
+    EMAIL_DUPLICATED(HttpStatus.CONFLICT, "USER_006", "중복된 유저 이메일입니다."),
+    NICKNAME_DUPLICATED(HttpStatus.CONFLICT, "USER_007", "중복된 유저 닉네임입니다.")
     ;
 
     private HttpStatus httpStatus;

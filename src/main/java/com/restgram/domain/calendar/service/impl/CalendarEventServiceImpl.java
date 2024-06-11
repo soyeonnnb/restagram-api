@@ -37,7 +37,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     @Async("kakaoAsyncExecutor")
     public void createCalendarEvent(Reservation reservation) {
         String calendarId = calendarRepository.findByCustomer(reservation.getCustomer())
-                .orElseThrow(() -> new RestApiException(CalendarErrorCode.INVALID_CALENDAR_ID))
+                .orElseThrow(() -> new RestApiException(CalendarErrorCode.CALENDER_NOT_AUTHORIZATION, "카카오 캘린더에 동의하지 않았습니다. [회원ID="+reservation.getCustomer().getId()+"]"))
                 .getCalendarId();
 
         // 일정 생성하기
@@ -50,7 +50,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     }
 
 
-    // 카카오 API를 이용한 서브 캘린더 생성
+    // 카카오 API를 이용한 일정 생성
     private String requestCreateCalenderEvent(Reservation reservation, String calendarId) {
         String url = "https://kapi.kakao.com/v2/api/calendar/create/event";
 
@@ -64,7 +64,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
         try {
             eventJson = objectMapper.writeValueAsString(eventCreate);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to convert EventCreate to JSON", e);
+            throw new RuntimeException("EventCreate를 JSON로 변환하는 데 실패했습니다.", e);
         }
 
         MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
@@ -83,7 +83,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
             String eventId = response.getBody().getEvent_id();
             return eventId;
         } else {
-            throw new RuntimeException("Calendar creation failed: " + response.getStatusCode());
+            throw new RuntimeException("카카오 일정 생성에 실패했습니다. : " + response.getStatusCode());
         }
     }
 
@@ -94,7 +94,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     public void deleteCalendarEvent(Reservation reservation) {
         CalendarEvent calendarEvent = calendarEventRepository
                 .findByReservation(reservation)
-                .orElseThrow(() -> new RestApiException(CalendarErrorCode.INVALID_CALENDAR_EVENT_ID));
+                .orElseThrow(() -> new RestApiException(CalendarErrorCode.CANNOT_FIND_CALENDAR_EVENT, "예약에 대한 카카오 일정을 찾을 수 없습니다. [예약ID="+reservation.getId()+"]"));
 
         // 일정 삭제하기
         requestDeleteCalenderEvent(reservation.getCustomer(), calendarEvent.getEventId());
@@ -102,7 +102,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
         calendarEventRepository.delete(calendarEvent);
     }
 
-    // 카카오 API를 이용한 서브 캘린더 삭제
+    // 카카오 API를 이용한 일정 삭제
     private boolean requestDeleteCalenderEvent(Customer customer, String eventId) {
         String url = "https://kapi.kakao.com/v2/api/calendar/delete/event?event_id="+eventId;
 
@@ -122,7 +122,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
         if (response.getStatusCode().is2xxSuccessful()) {
             return true;
         } else {
-            throw new RuntimeException("Calendar deletion failed: " + response.getStatusCode());
+            throw new RuntimeException("카카오 일정 삭제에 실패했습니다. : " + response.getStatusCode());
         }
     }
 }
