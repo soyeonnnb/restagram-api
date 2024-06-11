@@ -9,66 +9,95 @@ import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.FollowErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FollowServiceImpl implements FollowService {
 
-    private final UserRepository userRepository;
-    private final FollowRepository followRepository;
+  private final UserRepository userRepository;
+  private final FollowRepository followRepository;
 
 
-    @Override
-    @Transactional
-    public void follow(Long follower_id, Long following_id) {
-        if (following_id == follower_id) throw new RestApiException(FollowErrorCode.FOLLOW_FOLLOWING_IS_THE_SAME);
-        User follower = userRepository.findById(follower_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
-        User following = userRepository.findById(following_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
-        if (followRepository.existsByFollowerAndFollowing(follower, following)) throw new RestApiException(FollowErrorCode.ALREADY_FOLLOWED);
-        Follow follow = Follow.builder()
-                .follower(follower)
-                .following(following)
-                .build();
-        followRepository.save(follow);
+  @Override
+  @Transactional
+  public void follow(Long userId, Long followingId) {
+    if (followingId == userId) {
+      throw new RestApiException(FollowErrorCode.FOLLOW_FOLLOWING_IS_THE_SAME,
+          "팔로워 사용자ID와 팔로잉 사용자ID가 일치합니다. [아이디=" + userId + "]");
     }
 
-    @Override
-    @Transactional
-    public void delete_follow(Long follower_id, Long id) {
-        Follow follow = followRepository.findById(id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
-        if (follow.getFollower().getId() != follower_id) throw new RestApiException(UserErrorCode.USER_MISMATCH);
-        followRepository.deleteById(id);
+    User follower = userRepository.findById(userId)
+        .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
+            "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
+
+    User following = userRepository.findById(followingId)
+        .orElseThrow(() -> new RestApiException(FollowErrorCode.INVALID_FOLLOWING_ID,
+            "팔로잉 사용자ID가 유효하지 않습니다. [팔로잉 사용자ID=" + followingId + "]"));
+
+    if (followRepository.existsByFollowerAndFollowing(follower, following)) {
+      throw new RestApiException(FollowErrorCode.ALREADY_FOLLOWED,
+          "이미 팔로우한 사용자입니다. [로그인 사용자ID=" + userId + ", 팔로잉 사용자ID=" + followingId + "]");
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<FollowUserResponse> getFollowerList(Long user_id, Long following_id) {
-        User user = userRepository.findById(user_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
-        User following = userRepository.findById(following_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
-        List<Follow> followList = followRepository.findByFollowing(following);
-        List<FollowUserResponse> followUserResponseList = new ArrayList<>();
-        for(Follow follow : followList) {
-            followUserResponseList.add(FollowUserResponse.of(follow.getId(), follow.getFollower(), followRepository.existsByFollowerAndFollowing(user, follow.getFollower())));
-        }
-        return followUserResponseList;
+    followRepository.save(Follow.builder().follower(follower).following(following).build());
+  }
+
+  @Override
+  @Transactional
+  public void deleteFollow(Long userId, Long followId) {
+    Follow follow = followRepository.findById(followId)
+        .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
+            "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
+
+    if (follow.getFollower().getId() != userId) {
+      throw new RestApiException(UserErrorCode.USER_MISMATCH,
+          "로그인 사용자ID와 팔로워 사용자ID가 일치하지 않습니다. [로그인 사용자ID=" + userId + ", 팔로워 사용자ID="
+              + follow.getFollower().getId() + "]");
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<FollowUserResponse> getFollowingList(Long user_id, Long follower_id) {
-        User user = userRepository.findById(user_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
-        User follower = userRepository.findById(follower_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
-        List<Follow> followList = followRepository.findByFollower(follower);
-        List<FollowUserResponse> followUserResponseList = new ArrayList<>();
-        for(Follow follow : followList) {
-            followUserResponseList.add(FollowUserResponse.of(follow.getId(), follow.getFollowing(), followRepository.existsByFollowerAndFollowing(user, follow.getFollowing())));
-        }
-        return followUserResponseList;
-    }
+    followRepository.deleteById(followId);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<FollowUserResponse> getFollowerList(Long userId, Long followingId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
+            "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
+
+    User following = userRepository.findById(followingId)
+        .orElseThrow(() -> new RestApiException(FollowErrorCode.INVALID_FOLLOWING_ID,
+            "팔로잉 사용자ID가 유효하지 않습니다. [팔로잉 사용자ID=" + followingId + "]"));
+
+    List<Follow> followList = followRepository.findByFollowing(following);
+
+    return followList.stream()
+        .map(follow -> FollowUserResponse.of(follow.getId(), follow.getFollower(),
+            followRepository.existsByFollowerAndFollowing(user, follow.getFollower()))).collect(
+            Collectors.toList());
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public List<FollowUserResponse> getFollowingList(Long userId, Long followerId) {
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
+            "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
+
+    User follower = userRepository.findById(followerId)
+        .orElseThrow(() -> new RestApiException(FollowErrorCode.INVALID_FOLLOWER_ID,
+            "팔로워 사용자ID가 유효하지 않습니다. [팔로워 사용자ID=" + followerId + "]"));
+
+    List<Follow> followList = followRepository.findByFollower(follower);
+
+    return followList.stream()
+        .map(follow -> FollowUserResponse.of(follow.getId(), follow.getFollowing(),
+            followRepository.existsByFollowerAndFollowing(user, follow.getFollowing()))).collect(
+            Collectors.toList());
+  }
 }

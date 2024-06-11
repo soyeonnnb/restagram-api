@@ -8,8 +8,14 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum FollowErrorCode implements ErrorCode {
   INVALID_FOLLOW_ID(HttpStatus.BAD_REQUEST, "FOLLOW-001",
-      "팔로우 ID가 유효하지 않습니다."), FOLLOW_FOLLOWING_IS_THE_SAME(HttpStatus.BAD_REQUEST, "FOLLOW-002",
-      "팔로워 사용자와 팔로잉 사용자가 같습니다."), ALREADY_FOLLOWED(HttpStatus.BAD_REQUEST, "FOLLOW-003",
+      "팔로우 ID가 유효하지 않습니다."),
+  INVALID_FOLLOWER_ID(HttpStatus.BAD_REQUEST, "FOLLOW-002",
+      "팔로워 ID가 유효하지 않습니다."),
+  INVALID_FOLLOWING_ID(HttpStatus.BAD_REQUEST, "FOLLOW-003",
+      "팔로잉 ID가 유효하지 않습니다."),
+  FOLLOW_FOLLOWING_IS_THE_SAME(HttpStatus.BAD_REQUEST, "FOLLOW-004",
+      "팔로워 사용자와 팔로잉 사용자가 같습니다."),
+  ALREADY_FOLLOWED(HttpStatus.BAD_REQUEST, "FOLLOW-005",
       "이미 팔로우한 사용자입니다");
 
   private HttpStatus httpStatus;

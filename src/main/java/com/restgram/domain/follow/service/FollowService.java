@@ -1,12 +1,15 @@
 package com.restgram.domain.follow.service;
 
 import com.restgram.domain.follow.dto.response.FollowUserResponse;
-
 import java.util.List;
 
 public interface FollowService {
-    void follow(Long follower_id, Long following_id);
-    void delete_follow(Long follower_id, Long id);
-    List<FollowUserResponse> getFollowerList(Long user_id, Long following_id);
-    List<FollowUserResponse> getFollowingList(Long user_id, Long follower_id);
+
+  void follow(Long userId, Long followingId);
+
+  void deleteFollow(Long followerId, Long followId);
+
+  List<FollowUserResponse> getFollowerList(Long userId, Long followingId);
+
+  List<FollowUserResponse> getFollowingList(Long userId, Long followerId);
 }
