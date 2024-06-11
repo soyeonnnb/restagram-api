@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,14 +32,24 @@ public class GlobalExceptionHandler { // extends ResponseEntityExceptionHandler 
   @ExceptionHandler(RestApiException.class)
   public ResponseEntity<ApiResponse<?>> handleRestApiException(RestApiException e,
       HttpServletRequest request) {
-    log.error("요청 실패 -> 요청 경로: {}, 로그메세지: {}", request.getRequestURL(), e.getLog());
+
+    // 발생 시간
+    LocalDateTime now = LocalDateTime.now();
+
+    // 발생 위치 (스택 트레이스의 첫 번째 요소)
+    StackTraceElement location = Arrays.stream(e.getStackTrace())
+        .findFirst()
+        .orElse(null);
+
+    log.warn("요청 실패 => 요청 경로: {}, 발생 시간: {}, 발생 위치: {}, 오류메세지: {}", request.getRequestURL(), now,
+        location, e.getLog());
 
     return ResponseEntity.status(e.getErrorCode().getHttpStatus())
         .body(ApiResponse.createError(e.getErrorCode().getCode(), e.getErrorCode().getMessage()));
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ApiResponse<?>> handleMethodArgumentNotValidException(
+  public ResponseEntity<ApiResponse<List<ValidationError>>> handleMethodArgumentNotValidException(
       MethodArgumentNotValidException e) {
     List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
     List<ValidationError> errors = fieldErrors.stream()
@@ -76,7 +88,17 @@ public class GlobalExceptionHandler { // extends ResponseEntityExceptionHandler 
   @ExceptionHandler(HttpMessageNotReadableException.class)
   public ResponseEntity<ApiResponse<?>> handleHttpMessageNotReadableException(
       HttpMessageNotReadableException e, HttpServletRequest request) {
-    log.error("요청 실패 => 요청 경로: {}, 오류메세지: {}", request.getRequestURL(), e.getMessage());
+
+    // 발생 시간
+    LocalDateTime now = LocalDateTime.now();
+
+    // 발생 위치 (스택 트레이스의 첫 번째 요소)
+    StackTraceElement location = Arrays.stream(e.getStackTrace())
+        .findFirst()
+        .orElse(null);
+
+    log.warn("요청 실패 => 요청 경로: {}, 발생 시간: {}, 발생 위치: {}, 오류메세지: {}", request.getRequestURL(), now,
+        location, e.getMessage());
 
     // 사용자에게 전달할 에러 메시지를 설정
     String errorMessage = "잘못된 요청 본문 형식입니다. 입력 데이터를 확인해주세요.";
