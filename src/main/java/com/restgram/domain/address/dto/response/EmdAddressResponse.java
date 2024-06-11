@@ -12,16 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EmdAddressResponse {
     private Long id;
-    private String emd_name;
-    private String sigg_name;
-    private String sido_name;
+    private String emdName;
+    private String siggName;
+    private String sidoName;
 
     public static EmdAddressResponse of(EmdAddress emdAddress) {
         return EmdAddressResponse.builder()
                 .id(emdAddress.getId())
-                .emd_name(emdAddress.getName())
-                .sigg_name(emdAddress.getSiggAddress().getName())
-                .sido_name(emdAddress.getSiggAddress().getSidoAddress().getName())
+                .emdName(emdAddress.getName())
+                .siggName(emdAddress.getSiggAddress().getName())
+                .sidoName(emdAddress.getSiggAddress().getSidoAddress().getName())
                 .build();
     }
 }

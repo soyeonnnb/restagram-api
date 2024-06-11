@@ -14,7 +14,8 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SidoAddress {
     @Id
-    private Long id;
-    @Column(nullable = false)
-    private String name;
+    private Long id; // 시도 ID
+
+    @Column(nullable = false, length = 30)
+    private String name; // 시도 이름
 }
