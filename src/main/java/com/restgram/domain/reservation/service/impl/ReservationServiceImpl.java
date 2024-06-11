@@ -18,7 +18,6 @@ import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
-import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.ReservationErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.sse.entity.NotificationType;
@@ -48,8 +47,8 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public void addReservation(Long userId, AddReservationRequest request) {
-        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        ReservationForm form = reservationFormRepository.findById(request.getReservationFormId()).orElseThrow(() -> new RestApiException(ReservationErrorCode.RESERVATION_FORM_NOT_FOUND));
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
+        ReservationForm form = reservationFormRepository.findById(request.getReservationFormId()).orElseThrow(() -> new RestApiException(ReservationErrorCode.INVALID_RESERVATION_FORM_ID));
         // 예약 일자 확인
         LocalDateTime formDate = LocalDateTime.of(form.getDate(), form.getTime());
         if (formDate.isBefore(LocalDateTime.now())) throw new RestApiException(ReservationErrorCode.RESERVATION_IS_BEFORE_NOW);
@@ -81,15 +80,15 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public void cancelReservation(Long userId, DeleteReservationRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        Reservation reservation = reservationRepository.findById(request.getReservationId()).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
+        Reservation reservation = reservationRepository.findById(request.getReservationId()).orElseThrow(() -> new RestApiException(ReservationErrorCode.INVALID_RESERVATION_ID));
         // 만약 해당 유저와 관계 없는 예약이면 삭제 취소 불가
         if ((request.getState().equals(ReservationCancelState.CUSTOMER) && reservation.getCustomer().getId() != userId)
             || (request.getState().equals(ReservationCancelState.STORE) && reservation.getStore().getId() != userId))
             throw new RestApiException(UserErrorCode.USER_MISMATCH);
 
         // 이미 취소처리되었거나 기간이 지났으면 예약이면 취소 불가
-        if (!reservation.getState().equals(ReservationState.ACTIVE) || reservation.getDatetime().isBefore(LocalDateTime.now())) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
+        if (!reservation.getState().equals(ReservationState.ACTIVE) || reservation.getDatetime().isBefore(LocalDateTime.now())) throw new RestApiException(ReservationErrorCode.RESERVATION_CANCEL_DISABLE);
 
         ReservationCancel reservationCancel = request.of(reservation);
 
@@ -119,14 +118,14 @@ public class ReservationServiceImpl implements ReservationService {
     // 구매자 예약 리스트
     @Override
     public List<CustomerReservationResponse> getCustomerReservations(Long userId) {
-        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         List<Reservation> reservationList = reservationRepository.findAllByCustomerOrderByDatetimeDesc(customer);
         List<CustomerReservationResponse> customerReservationResponseList = new ArrayList<>();
         for(Reservation reservation : reservationList) {
             if (reservation.getState().equals(ReservationState.ACTIVE)) {
                 customerReservationResponseList.add(CustomerReservationResponse.of(reservation));
             } else {
-                ReservationCancel reservationCancel = reservationCancelRepository.findByReservation(reservation).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+                ReservationCancel reservationCancel = reservationCancelRepository.findByReservation(reservation).orElseThrow(() -> new RestApiException(ReservationErrorCode.INVALID_RESERVATION_CANCEL_ID));
                 customerReservationResponseList.add(CustomerReservationResponse.of(reservation, reservationCancel.getMemo()));
             }
         }
@@ -135,7 +134,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<StoreReservationResponse> getStoreReservations(Long userId, Integer year, Integer month) {
-        Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         LocalDateTime startAt = LocalDateTime.of(year, month, 1, 0, 0);
         // 해당 가게의, 연도/월 검색
         List<Reservation> reservationList = reservationRepository.findAllByStoreAndDatetimeGreaterThanEqualAndDatetimeLessThanOrderByDatetime(store, startAt, startAt.plusMonths(1));
@@ -144,7 +143,7 @@ public class ReservationServiceImpl implements ReservationService {
             if (reservation.getState().equals(ReservationState.ACTIVE)) {
                 storeReservationResponseList.add(StoreReservationResponse.of(reservation));
             } else {
-                ReservationCancel reservationCancel = reservationCancelRepository.findByReservation(reservation).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+                ReservationCancel reservationCancel = reservationCancelRepository.findByReservation(reservation).orElseThrow(() -> new RestApiException(ReservationErrorCode.INVALID_RESERVATION_CANCEL_ID));
                 storeReservationResponseList.add(StoreReservationResponse.of(reservation, reservationCancel.getMemo()));
             }
         }

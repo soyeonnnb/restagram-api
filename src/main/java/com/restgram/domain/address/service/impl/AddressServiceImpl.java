@@ -9,7 +9,7 @@ import com.restgram.domain.address.repository.SidoAddressRepository;
 import com.restgram.domain.address.repository.SiggAddressRepository;
 import com.restgram.domain.address.service.AddressService;
 import com.restgram.global.exception.entity.RestApiException;
-import com.restgram.global.exception.errorCode.CommonErrorCode;
+import com.restgram.global.exception.errorCode.AddressErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +36,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<AddressResponse> getSiggList(Long sidoId) {
-        SidoAddress sidoAddress = sidoAddressRepository.findById(sidoId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+        SidoAddress sidoAddress = sidoAddressRepository.findById(sidoId).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_SIDO_ID, "시도 ID가 유효하지 않습니다. [ID="+sidoId+"]"));
         List<SiggAddress> siggAddressList = siggAddressRepository.findALlBySidoAddressOrderByName(sidoAddress);
         List<AddressResponse> addressResponseList = new ArrayList<>();
         for(SiggAddress siggAddress : siggAddressList) {
@@ -47,7 +47,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<AddressResponse> getEmdList(Long siggId) {
-        SiggAddress siggAddress = siggAddressRepository.findById(siggId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+        SiggAddress siggAddress = siggAddressRepository.findById(siggId).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_SIGG_ID, "시군구 ID가 유효하지 않습니다. [ID="+siggId+"]"));
         List<EmdAddress> emdAddressList = emdAddressRepository.findAllBySiggAddressOrderByName(siggAddress);
         List<AddressResponse> addressResponseList = new ArrayList<>();
         for(EmdAddress emdAddress : emdAddressList) {

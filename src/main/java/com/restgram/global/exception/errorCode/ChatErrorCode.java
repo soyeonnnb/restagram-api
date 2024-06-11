@@ -7,10 +7,17 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 @Getter
 public enum ChatErrorCode implements ErrorCode{
-    CHATROOM_NOT_FOUND(HttpStatus.BAD_REQUEST, "Chat room not found"),
-    NOT_USERS_CHATROOM(HttpStatus.BAD_REQUEST, "User not participated this chat room")
+    INVALID_CHATROOM_ID(HttpStatus.BAD_REQUEST, "CHAT-001", "채팅방 ID가 유효하지 않습니다."),
+    NOT_USER_CHATROOM(HttpStatus.BAD_REQUEST, "CHAT-002", "로그인 유저가 참여한 채팅방이 아닙니다")
     ;
+    
+    private HttpStatus httpStatus;
+    private String code;
+    private String message;
 
-    private final HttpStatus httpStatus;
-    private final String message;
+    ChatErrorCode(HttpStatus httpStatus, String code, String message) {
+        this.httpStatus = httpStatus;
+        this.code = code;
+        this.message = message;
+    }
 }

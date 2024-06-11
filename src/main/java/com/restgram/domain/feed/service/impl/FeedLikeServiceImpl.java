@@ -10,7 +10,7 @@ import com.restgram.domain.feed.service.FeedLikeService;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
-import com.restgram.global.exception.errorCode.CommonErrorCode;
+import com.restgram.global.exception.errorCode.FeedErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,11 +32,11 @@ public class FeedLikeServiceImpl implements FeedLikeService {
     @Transactional
     public void postFeedLike(Long userId, Long feedId) {
         // 유저
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         // 피드
-        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new RestApiException(FeedErrorCode.INVALID_FEED_ID));
         // 이전에 좋아요 했는지 확인
-        if (feedLikeRepository.existsByFeedAndUser(feed, user)) throw new RestApiException(CommonErrorCode.ENTITY_ALREADY_EXISTS);
+        if (feedLikeRepository.existsByFeedAndUser(feed, user)) throw new RestApiException(FeedErrorCode.ALREADY_FEED_LIKE);
         FeedLike feedLike = FeedLike.builder()
                 .user(user)
                 .feed(feed)
@@ -48,9 +48,9 @@ public class FeedLikeServiceImpl implements FeedLikeService {
     @Transactional
     public void deleteFeedLike(Long userId, Long feedId) {
         // 유저
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         // 피드
-        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new RestApiException(FeedErrorCode.INVALID_FEED_ID));
         feedLikeRepository.deleteByFeedAndUser(feed, user);
     }
 
@@ -58,7 +58,7 @@ public class FeedLikeServiceImpl implements FeedLikeService {
     @Transactional(readOnly = true)
     public List<FeedResponse> getUsersFeedLikeList(Long userId) {
         // 유저
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         List<FeedLike> feedList = feedLikeRepository.findAlllByUserOrderByCreatedAtDesc(user);
         List<FeedResponse> feedResponseList = new ArrayList<>();
         for(FeedLike feedLike : feedList) {

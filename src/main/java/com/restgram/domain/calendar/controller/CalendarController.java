@@ -1,17 +1,21 @@
 package com.restgram.domain.calendar.controller;
 
+import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.calendar.dto.request.CalendarAgreeRequest;
 import com.restgram.domain.calendar.dto.response.CalendarAgreeResponse;
 import com.restgram.domain.calendar.service.CalendarService;
-import com.restgram.global.exception.entity.CommonResponse;
+import com.restgram.global.exception.entity.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,14 +27,10 @@ public class CalendarController {
 
     // 캘린더 동의 현황 변경
     @PatchMapping("/agree")
-    public CommonResponse customerCalendarAgree(Authentication authentication, @RequestBody CalendarAgreeRequest request) {
+    public ResponseEntity<ApiResponse<CalendarAgreeResponse>> customerCalendarAgree(Authentication authentication, @RequestBody CalendarAgreeRequest request) {
         Long userId = Long.parseLong(authentication.getName());
-        CalendarAgreeResponse response = calendarService.agreeCalendar(userId, request);
-        return CommonResponse.builder()
-                .data(response)
-                .code(HttpStatus.OK.value())
-                .success(true)
-                .message("캘린더 정보 업데이트 완료")
-                .build();
+        CalendarAgreeResponse calendarAgreeResponse = calendarService.agreeCalendar(userId, request);
+
+        return new ResponseEntity<>(ApiResponse.createSuccess(calendarAgreeResponse), HttpStatus.CREATED);
     }
 }

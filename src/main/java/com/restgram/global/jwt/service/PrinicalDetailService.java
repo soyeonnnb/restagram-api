@@ -25,7 +25,7 @@ public class PrinicalDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
         log.info("load user by username");
-        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         return createUser(user);
     }
 

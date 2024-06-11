@@ -15,7 +15,7 @@ public class JwtErrorResponseSender {
     public static void sendErrorResponse(HttpServletResponse response, ErrorCode errorCode) {
         try {
             ErrorResponse errorResponse = ErrorResponse.builder()
-                    .code(errorCode.name())
+                    .code(errorCode.getCode())
                     .status(errorCode.getHttpStatus().value())
                     .message(errorCode.getMessage())
                     .build();

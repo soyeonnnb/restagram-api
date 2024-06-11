@@ -13,7 +13,6 @@ import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.domain.user.service.UserService;
 import com.restgram.global.exception.entity.RestApiException;
-import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.JwtTokenErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.jwt.token.JwtTokenProvider;
@@ -68,8 +67,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public FeedUserInfoResponse getFeedUser(Long myId, Long userId) {
-        User me = userRepository.findById(myId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User me = userRepository.findById(myId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         if (user.getType().equals(UserType.STORE.toString())) {
             return getFeedStore(me, userId);
         } else {
@@ -80,11 +79,11 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updatePassword(Long userId, UpdatePasswordRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         if (user.getType().toString().equals(UserType.CUSTOMER)) {
             Customer c = (Customer) user;
             // 소셜 로그인의 경우에는 비밀번호가 없음
-            if (c.getLoginMethod().toString().equals(LoginMethod.KAKAO)) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
+            if (c.getLoginMethod().toString().equals(LoginMethod.KAKAO)) throw new RestApiException(UserErrorCode.USER_MISMATCH);
         }
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) throw new RestApiException(UserErrorCode.PASSWORD_MISMATCH);
         user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
@@ -94,7 +93,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateNickname(Long userId, NicknameRequest request) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         if (userRepository.existsByNickname(request.getNickname())) throw new RestApiException(UserErrorCode.NICKNAME_DUPLICATED);
         user.updateNickname(request.getNickname());
         userRepository.save(user);
@@ -103,7 +102,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserProfileResponse updateProfileImage(Long userId, MultipartFile image) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         String url = null;
         if (image != null) {
             url = s3Service.uploadFile(image, "user/profile/" + user.getId());
@@ -127,7 +126,7 @@ public class UserServiceImpl implements UserService {
 
 
     private FeedStoreInfoResponse getFeedStore(User me, Long userId) {
-        Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         Integer feedNum = feedRepository.countAllByWriter(store);
         Integer followingNum = followRepository.countAllByFollowing(store);
         Integer reviewNum = feedRepository.countAllByStore(store);
@@ -138,7 +137,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private FeedCustomerInfoResponse getFeedCustomer(User me, Long userId) {
-        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         Integer feedNum = feedRepository.countAllByWriter(customer);
         Integer followerNum = followRepository.countAllByFollower(customer);
         Integer followingNum = followRepository.countAllByFollowing(customer);
@@ -162,7 +161,7 @@ public class UserServiceImpl implements UserService {
 
         // refresh token 유효기간 확인
         if (!tokenProvider.checkExpiredToken(refreshToken)) throw new RestApiException(JwtTokenErrorCode.EXPIRED_TOKEN);
-        User user = userRepository.findById(tokenProvider.getUserId(refreshToken, response)).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(tokenProvider.getUserId(refreshToken, response)).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
 
         // 존재한다면 우선 토큰 삭제
         tokenProvider.tokenRemove(response, accessToken, refreshToken);

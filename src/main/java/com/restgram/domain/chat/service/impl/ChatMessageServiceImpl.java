@@ -32,11 +32,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     @Override
     @Transactional
     public ChatSendResponse sendChat(ChatMessageRequest request) {
-        User sender = userRepository.findById(request.getUserId()).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        ChatRoom chatRoom = chatRoomRepository.findById(request.getRoomId()).orElseThrow(() -> new RestApiException(ChatErrorCode.CHATROOM_NOT_FOUND));
+        User sender = userRepository.findById(request.getUserId()).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
+        ChatRoom chatRoom = chatRoomRepository.findById(request.getRoomId()).orElseThrow(() -> new RestApiException(ChatErrorCode.INVALID_CHATROOM_ID));
 
         // 해당 유저가 참가한 채팅방이 아니면
-        if (!chatRoom.getMembers().contains(sender)) throw new RestApiException(ChatErrorCode.NOT_USERS_CHATROOM);
+        if (!chatRoom.getMembers().contains(sender)) throw new RestApiException(ChatErrorCode.NOT_USER_CHATROOM);
 
         // 메세지 저장
         ChatMessage message = request.of(sender, chatRoom);

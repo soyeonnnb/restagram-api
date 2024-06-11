@@ -1,10 +1,12 @@
 package com.restgram.domain.chat.controller;
 
+import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.chat.dto.response.ChatRoomResponse;
 import com.restgram.domain.chat.service.ChatRoomService;
-import com.restgram.global.exception.entity.CommonResponse;
+import com.restgram.global.exception.entity.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,28 +21,20 @@ public class ChatRoomController {
 
     // 채팅방 가져오기 -> 없으면 생성
     @PostMapping
-    public CommonResponse getChatRoom(Authentication authentication, @RequestParam("receiver-id") Long receiverId) {
+    public ResponseEntity<ApiResponse<ChatRoomResponse>> getChatRoom(Authentication authentication, @RequestParam("receiver-id") Long receiverId) {
         Long userId = Long.parseLong(authentication.getName());
-        ChatRoomResponse response = chatRoomService.getChatRoom(userId, receiverId);
-        return CommonResponse.builder()
-                .message("특정 채팅방 가져오기")
-                .data(response)
-                .code(HttpStatus.OK.value())
-                .success(true)
-                .build();
+        ChatRoomResponse chatRoomResponse = chatRoomService.getChatRoom(userId, receiverId);
+
+        return new ResponseEntity<>(ApiResponse.createSuccess(chatRoomResponse), HttpStatus.OK);
     }
 
     // 내 채팅방 리스트 가져오기
     @GetMapping
-    public CommonResponse getChatRoomList(Authentication authentication) {
+    public ResponseEntity<ApiResponse<List<ChatRoomResponse>>> getChatRoomList(Authentication authentication) {
         Long userId = Long.parseLong(authentication.getName());
-        List<ChatRoomResponse> response = chatRoomService.getChatRoomList(userId);
-        return CommonResponse.builder()
-                .message("채팅방 가져오기")
-                .data(response)
-                .code(HttpStatus.OK.value())
-                .success(true)
-                .build();
+        List<ChatRoomResponse> chatRoomResponseList = chatRoomService.getChatRoomList(userId);
+
+        return new ResponseEntity<>(ApiResponse.createSuccess(chatRoomResponseList), HttpStatus.OK);
     }
 
 }

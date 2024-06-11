@@ -23,7 +23,8 @@ import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
-import com.restgram.global.exception.errorCode.CommonErrorCode;
+import com.restgram.global.exception.errorCode.AddressErrorCode;
+import com.restgram.global.exception.errorCode.FeedErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -58,8 +59,8 @@ public class FeedServiceImpl implements FeedService {
     @Override
     @Transactional
     public void addFeed(Long userId, AddFeedRequest req, List<MultipartFile> images) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        Store store = storeRepository.findById(req.getStoreId()).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
+        Store store = storeRepository.findById(req.getStoreId()).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         // 피드 생성
         Feed feed = Feed.builder()
                 .writer(user)
@@ -76,7 +77,7 @@ public class FeedServiceImpl implements FeedService {
     @Override
     @Transactional(readOnly = true)
     public List<FeedResponse> getFeeds(Long userId, Pageable pageable) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         // 팔로우 리스트 가져오기
         List<User> followUserList = followRepository.findFollowingsByFollower(user);
         followUserList.add(user);
@@ -93,18 +94,18 @@ public class FeedServiceImpl implements FeedService {
     @Override
     @Transactional(readOnly = true)
     public List<FeedResponse> searchFeeds(Long userId, Long addressId, Integer addressRange, String query, Pageable pageable) {
-        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         List<EmdAddress> emdAddressList = new ArrayList<>();
         List<Feed> feedList;
         switch (addressRange) {
             case 1:
-                emdAddressList = emdAddressRepository.findAllBySidoAddress(sidoAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)));
+                emdAddressList = emdAddressRepository.findAllBySidoAddress(sidoAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_SIDO_ID)));
                 break;
             case 2:
-                emdAddressList = emdAddressRepository.findAllBySiggAddress(siggAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)));
+                emdAddressList = emdAddressRepository.findAllBySiggAddress(siggAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_SIGG_ID)));
                 break;
             case 3:
-                emdAddressList.add(emdAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)));
+                emdAddressList.add(emdAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_EMD_ID)));
                 break;
         }
         if (addressRange == 0) feedList = feedRepository.searchByQuery(query, pageable);
@@ -122,8 +123,8 @@ public class FeedServiceImpl implements FeedService {
     @Override
     @Transactional
     public void deleteFeed(Long userId, Long feedId) {
-        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
-        if (feed.getWriter().getId() != userId) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
+        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new RestApiException(FeedErrorCode.INVALID_FEED_ID));
+        if (feed.getWriter().getId() != userId) throw new RestApiException(UserErrorCode.USER_MISMATCH);
         List<FeedImage> feedImageList = feedImageRepository.findAllByFeed(feed);
         for(FeedImage feedImage : feedImageList) {
             feedImageRepository.delete(feedImage);
@@ -134,7 +135,7 @@ public class FeedServiceImpl implements FeedService {
     @Override
     @Transactional
     public void updateFeed(Long userId, UpdateFeedRequest request) {
-        Feed feed = feedRepository.findById(request.getFeedId()).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+        Feed feed = feedRepository.findById(request.getFeedId()).orElseThrow(() -> new RestApiException(FeedErrorCode.INVALID_FEED_ID));
         if (feed.getWriter().getId() != userId) throw new RestApiException(UserErrorCode.USER_MISMATCH);
         feed.updateContent(request.getContent());
         feedRepository.save(feed);
@@ -143,11 +144,11 @@ public class FeedServiceImpl implements FeedService {
     @Override
     @Transactional(readOnly = true)
     public FeedCursorResponse getFeedsCursor(Long userId, Long cursorId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         // 팔로우 리스트 가져오기
         List<User> searchUserList = followRepository.findFollowingsByFollower(user);
         if (cursorId == null) {
-            cursorId = feedRepository.findTopByOrderByIdDesc().orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)).getId();
+            cursorId = feedRepository.findTopByOrderByIdDesc().orElseThrow(() -> new RestApiException(FeedErrorCode.FEED_EMPTY)).getId();
         }
         searchUserList.add(user);
         // 내 + 팔로우한 사람들의 피드 리스트 가져오기

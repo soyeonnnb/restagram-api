@@ -11,7 +11,6 @@ import com.restgram.domain.reservation.service.ReservationFormService;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.global.exception.entity.RestApiException;
-import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.ReservationErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +33,7 @@ public class ReservationFormServiceImpl implements ReservationFormService {
     @Override
     @Transactional
     public void addReservationForm(Long userId, ReservationFormRequest request) {
-        Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
 
         // 하루씩 키워나가면서
         for(LocalDate date = request.getStartAt(); date.isBefore(request.getFinishAt().plusDays(1)); date = date.plusDays(1)) {
@@ -67,7 +66,7 @@ public class ReservationFormServiceImpl implements ReservationFormService {
     @Override
     @Transactional(readOnly = true)
     public List<ReservationFormResponse> getReservationForm(Long storeId, Integer year, Integer month) {
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         LocalDate date = LocalDate.of(year, month, 1);
         List<ReservationForm> reservationFormList = reservationFormRepository.findAllByStoreAndDateBetweenAndStateEquals(store, date, date.plusMonths(1).minusDays(1), ReservationFormState.ACTIVE);
         List<ReservationFormResponse> customerReservationFormResponseList = new ArrayList<>();
@@ -80,7 +79,7 @@ public class ReservationFormServiceImpl implements ReservationFormService {
     @Override
     @Transactional(readOnly = true)
     public List<ReservationFormResponse> getStoreReservationForm(Long storeId, Integer year, Integer month) {
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         LocalDate date = LocalDate.of(year, month, 1);
         List<ReservationForm> reservationFormList = reservationFormRepository.findAllByStoreAndDateBetween(store, date, date.plusMonths(1).minusDays(1));
         List<ReservationFormResponse> storeReservationFormResponseList = new ArrayList<>();
@@ -94,7 +93,7 @@ public class ReservationFormServiceImpl implements ReservationFormService {
     @Override
     @Transactional
     public void updateReservationState(Long storeId, UpdateReservationFormRequest request) {
-        ReservationForm form = reservationFormRepository.findById(request.getId()).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+        ReservationForm form = reservationFormRepository.findById(request.getId()).orElseThrow(() -> new RestApiException(ReservationErrorCode.INVALID_RESERVATION_FORM_ID));
         // 유저 일치 확인
         if (form.getStore().getId() != storeId) throw new RestApiException(UserErrorCode.USER_MISMATCH);
         LocalDateTime formDateTime = LocalDateTime.of(form.getDate(), form .getTime());

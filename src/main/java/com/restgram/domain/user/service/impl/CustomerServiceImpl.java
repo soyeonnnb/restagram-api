@@ -16,7 +16,7 @@ import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.domain.user.service.CustomerService;
 import com.restgram.global.exception.entity.RestApiException;
-import com.restgram.global.exception.errorCode.CommonErrorCode;
+import com.restgram.global.exception.errorCode.AddressErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,7 +39,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional(readOnly = true)
     public LoginResponse getUserInfo(Long userId) {
-        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         LoginResponse res = LoginResponse.of(customer);
         return res;
     }
@@ -62,21 +62,21 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public void updateUserAddress(Long userId, Long addressId, Integer range) {
-        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         EmdAddress emdAddress = null;
         SiggAddress siggAddress = null;
         SidoAddress sidoAddress = null;
         // range가 0이면 시도도 전체
         switch (range) {
             case 1: // 시도 아이디 들어옴
-                sidoAddress = sidoAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+                sidoAddress = sidoAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_SIDO_ID));
                 break;
             case 2: // 시군구 아이디 들어옴
-                siggAddress = siggAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+                siggAddress = siggAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_SIGG_ID));
                 sidoAddress = siggAddress.getSidoAddress();
                 break;
             case 3: // 읍면동 아이디 들어옴
-                emdAddress = emdAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+                emdAddress = emdAddressRepository.findById(addressId).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_EMD_ID));
                 siggAddress = emdAddress.getSiggAddress();
                 sidoAddress = emdAddress.getSiggAddress().getSidoAddress();
                 break;
@@ -89,7 +89,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public void updateCustomer(Long userId, UpdateCustomerRequest request) {
-        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         customer.updateDescription(request.getDescription());
         customer.updatePhone(request.getPhone());
         customerRepository.save(customer);
@@ -97,7 +97,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public UserAddressListResponse getUserAddressList(Long userId) {
-        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         int range = customer.getAddressRange();
 
         List<AddressResponse> addressResponseList = new ArrayList<>();

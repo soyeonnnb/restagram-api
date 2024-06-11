@@ -12,7 +12,7 @@ import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
-import com.restgram.global.exception.errorCode.CommonErrorCode;
+import com.restgram.global.exception.errorCode.FeedErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -39,9 +39,9 @@ public class FeedImageServiceImpl implements FeedImageService {
     // 피드리스트에서 첫번째 피드 리스트만 가져오기
     @Override
     public FeedImageCursorResponse getFeedImageList(Long userId, Long cursorId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         if (cursorId == null) {
-            cursorId = feedRepository.findTopByOrderByIdDesc().orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)).getId();
+            cursorId = feedRepository.findTopByOrderByIdDesc().orElseThrow(() -> new RestApiException(FeedErrorCode.FEED_EMPTY)).getId();
         }
         List<FeedImage> feedImageList = feedImageRepository.findByFeedWriterAndNumberAndIdLessThanOrderByIdDesc(user, 0, cursorId, PageRequest.of(0, 20));
         List<UserFeedImageResponse> userFeedImageResponseList = feedImageList.stream()
@@ -63,9 +63,9 @@ public class FeedImageServiceImpl implements FeedImageService {
 
     @Override
     public FeedImageCursorResponse getReviewImageList(Long userId, Long cursorId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         if (cursorId == null) {
-            cursorId = feedRepository.findTopByOrderByIdDesc().orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)).getId();
+            cursorId = feedRepository.findTopByOrderByIdDesc().orElseThrow(() -> new RestApiException(FeedErrorCode.FEED_EMPTY)).getId();
         }
         List<FeedImage> feedImageList = feedImageRepository.findByFeedStoreAndNumberOrderByIdDesc(user, 0, cursorId, PageRequest.of(0, 20));
         List<UserFeedImageResponse> userFeedImageResponseList = feedImageList.stream()

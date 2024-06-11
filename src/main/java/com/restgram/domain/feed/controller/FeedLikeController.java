@@ -1,11 +1,13 @@
 package com.restgram.domain.feed.controller;
 
+import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.service.FeedLikeService;
-import com.restgram.global.exception.entity.CommonResponse;
+import com.restgram.global.exception.entity.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,38 +23,28 @@ public class FeedLikeController {
 
     // 좋아요 누르기
     @PostMapping("/{feedId}")
-    public CommonResponse postFeedLike(Authentication authentication, @PathVariable Long feedId) {
+    public ResponseEntity<ApiResponse<?>> postFeedLike(Authentication authentication, @PathVariable Long feedId) {
         Long userId = Long.parseLong(authentication.getName());
         feedLikeService.postFeedLike(userId, feedId);
-        return CommonResponse.builder()
-                .success(true)
-                .code(HttpStatus.CREATED.value())
-                .message("피드 좋아요")
-                .build();
+
+        return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.CREATED);
     }
 
     // 좋아요 취소
     @DeleteMapping("/{feedId}")
-    public CommonResponse deleteFeedLike(Authentication authentication, @PathVariable Long feedId) {
+    public ResponseEntity<?> deleteFeedLike(Authentication authentication, @PathVariable Long feedId) {
         Long userId = Long.parseLong(authentication.getName());
         feedLikeService.deleteFeedLike(userId, feedId);
-        return CommonResponse.builder()
-                .success(true)
-                .code(HttpStatus.OK.value())
-                .message("피드 좋아요 취소")
-                .build();
+
+        return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.OK);
     }
 
     // 좋아요한 피드 리스트
     @GetMapping("/{userId}")
-    public CommonResponse getFeedLikeList(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<List<FeedResponse>>> getFeedLikeList(@PathVariable Long userId) {
         List<FeedResponse> feedResponseList = feedLikeService.getUsersFeedLikeList(userId);
-        return CommonResponse.builder()
-                .success(true)
-                .data(feedResponseList)
-                .code(HttpStatus.OK.value())
-                .message("피드 좋아요 리스트 가져오기")
-                .build();
+
+        return new ResponseEntity<>(ApiResponse.createSuccess(feedResponseList), HttpStatus.OK);
     }
 
 }

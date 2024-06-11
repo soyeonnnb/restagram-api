@@ -7,7 +7,7 @@ import com.restgram.domain.follow.service.FollowService;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
-import com.restgram.global.exception.errorCode.CommonErrorCode;
+import com.restgram.global.exception.errorCode.FollowErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,10 +27,10 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional
     public void follow(Long follower_id, Long following_id) {
-        if (following_id == follower_id) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
-        User follower = userRepository.findById(follower_id).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        User following = userRepository.findById(following_id).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        if (followRepository.existsByFollowerAndFollowing(follower, following)) throw new RestApiException(CommonErrorCode.ENTITY_ALREADY_EXISTS);
+        if (following_id == follower_id) throw new RestApiException(FollowErrorCode.FOLLOW_FOLLOWING_IS_THE_SAME);
+        User follower = userRepository.findById(follower_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
+        User following = userRepository.findById(following_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
+        if (followRepository.existsByFollowerAndFollowing(follower, following)) throw new RestApiException(FollowErrorCode.ALREADY_FOLLOWED);
         Follow follow = Follow.builder()
                 .follower(follower)
                 .following(following)
@@ -41,7 +41,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional
     public void delete_follow(Long follower_id, Long id) {
-        Follow follow = followRepository.findById(id).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND));
+        Follow follow = followRepository.findById(id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         if (follow.getFollower().getId() != follower_id) throw new RestApiException(UserErrorCode.USER_MISMATCH);
         followRepository.deleteById(id);
     }
@@ -49,8 +49,8 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional(readOnly = true)
     public List<FollowUserResponse> getFollowerList(Long user_id, Long following_id) {
-        User user = userRepository.findById(user_id).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        User following = userRepository.findById(following_id).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(user_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
+        User following = userRepository.findById(following_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         List<Follow> followList = followRepository.findByFollowing(following);
         List<FollowUserResponse> followUserResponseList = new ArrayList<>();
         for(Follow follow : followList) {
@@ -62,8 +62,8 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional(readOnly = true)
     public List<FollowUserResponse> getFollowingList(Long user_id, Long follower_id) {
-        User user = userRepository.findById(user_id).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        User follower = userRepository.findById(follower_id).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(user_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
+        User follower = userRepository.findById(follower_id).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         List<Follow> followList = followRepository.findByFollower(follower);
         List<FollowUserResponse> followUserResponseList = new ArrayList<>();
         for(Follow follow : followList) {

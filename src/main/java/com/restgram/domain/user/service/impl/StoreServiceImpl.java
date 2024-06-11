@@ -68,10 +68,10 @@ public class StoreServiceImpl implements StoreService {
     @Override
     @Transactional
     public void updateStore(Long userId, UpdateStoreRequest request) {
-        Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Store store = storeRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         store.updateDescription(request.getDescription());
         store.updatePhone(request.getPhone());
-        store.updateStoreInfo(request, emdAddressRepository.findById(request.getBcode()).orElseThrow(() -> new RestApiException(CommonErrorCode.ENTITY_NOT_FOUND)));
+        store.updateStoreInfo(request, emdAddressRepository.findById(request.getBcode()).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_BCODE)));
         storeRepository.save(store);
     }
 
@@ -79,7 +79,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     @Transactional
     public LoginResponse login(LoginRequest req, HttpServletResponse response) {
-        Store store = storeRepository.findByEmail(req.getEmail()).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Store store = storeRepository.findByEmail(req.getEmail()).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         // 비밀번호 확인
         if (!passwordEncoder.matches(req.getPassword(), store.getPassword())) throw new RestApiException(UserErrorCode.PASSWORD_MISMATCH);
         tokenProvider.createTokens(store.getId(), UserType.STORE.getName(), response);

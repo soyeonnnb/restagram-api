@@ -8,4 +8,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RestApiException extends RuntimeException{
     private final ErrorCode errorCode;
+    private String log;
+
+    public RestApiException(ErrorCode errorCode, String log) {
+        this.errorCode = errorCode;
+        this.log = log;
+    }
 }

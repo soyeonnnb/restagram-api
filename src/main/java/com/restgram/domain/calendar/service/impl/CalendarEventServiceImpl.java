@@ -37,7 +37,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     @Async("kakaoAsyncExecutor")
     public void createCalendarEvent(Reservation reservation) {
         String calendarId = calendarRepository.findByCustomer(reservation.getCustomer())
-                .orElseThrow(() -> new RestApiException(CalendarErrorCode.CALENDAR_NOT_FOUND))
+                .orElseThrow(() -> new RestApiException(CalendarErrorCode.INVALID_CALENDAR_ID))
                 .getCalendarId();
 
         // 일정 생성하기
@@ -94,7 +94,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     public void deleteCalendarEvent(Reservation reservation) {
         CalendarEvent calendarEvent = calendarEventRepository
                 .findByReservation(reservation)
-                .orElseThrow(() -> new RestApiException(CalendarErrorCode.CALENDAR_EVENT_NOT_FOUND));
+                .orElseThrow(() -> new RestApiException(CalendarErrorCode.INVALID_CALENDAR_EVENT_ID));
 
         // 일정 삭제하기
         requestDeleteCalenderEvent(reservation.getCustomer(), calendarEvent.getEventId());

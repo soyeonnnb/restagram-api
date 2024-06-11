@@ -7,15 +7,21 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 @Getter
 public enum JwtTokenErrorCode implements ErrorCode {
-    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "Token is expired"), // 만료된 토큰
-    EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "Refresh token is expired"),
-    INVALID_TOKEN_SIGNATURE(HttpStatus.UNAUTHORIZED, "Invalid token signature"),// 잘못된 토큰 서명
-    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "Unsupported token format"), // 토큰 포맷이 잘못됨
-    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "Invalid Token"), // 잘못된 토큰
-    DOES_NOT_EXIST_TOKEN(HttpStatus.UNAUTHORIZED, "Does not exist token") // 잘못된 토큰
+    DOES_NOT_EXIST_TOKEN(HttpStatus.UNAUTHORIZED, "JWT-001", "JWT 토큰이 존재하지 않습니다."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "JWT-002", "만료된 JWT 토큰입니다"),
+    EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "JWT-003", "만료된 리프레시 토큰입니다."),
+    INVALID_TOKEN_SIGNATURE(HttpStatus.UNAUTHORIZED, "JWT-004", "JWT 토큰 서명이 잘못되었습니다."),
+    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "JWT-005", "JWT 토큰 포맷이 잘못되었습니다."),
+    INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "JWT-006", "유효하지 않은 JWT 토큰입니다."),
     ;
+    
+    private HttpStatus httpStatus;
+    private String code;
+    private String message;
 
-    private final HttpStatus httpStatus;
-    private final String message;
-
+    JwtTokenErrorCode(HttpStatus httpStatus, String code, String message) {
+        this.httpStatus = httpStatus;
+        this.code = code;
+        this.message = message;
+    }
 }

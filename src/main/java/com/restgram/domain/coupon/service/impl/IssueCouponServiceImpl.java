@@ -25,7 +25,7 @@ public class IssueCouponServiceImpl implements IssueCouponService {
     // 사용가능한 발급완료쿠폰
     @Override
     public List<IssueCouponResponse> getCustomerCouponList(Long customerId) {
-        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         List<IssueCoupon> issueCouponList = issueCouponRepository.findAllByCustomerAndIsUsedAndExpiredAtAfter(customer, false, LocalDateTime.now());
         List<IssueCouponResponse> issueCouponResponseList = new ArrayList<>();
         for(IssueCoupon issueCoupon : issueCouponList) {

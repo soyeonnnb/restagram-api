@@ -41,7 +41,7 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     @Transactional
     public CalendarAgreeResponse agreeCalendar(Long userId, CalendarAgreeRequest request) {
-        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
 
         // 이전에 동의한 경험이 없다면 생성 불가
         if (!calendarRepository.existsByCustomer(customer)) throw new RestApiException(CalendarErrorCode.CALENDER_NOT_AUTHORIZATION);

@@ -9,7 +9,6 @@ import com.restgram.domain.chat.service.ChatRoomService;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.exception.entity.RestApiException;
-import com.restgram.global.exception.errorCode.CommonErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,9 +31,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     @Transactional
     public ChatRoomResponse getChatRoom(Long userId, Long receiverId) {
-        if (userId == receiverId) throw new RestApiException(CommonErrorCode.INVALID_PARAMETER);
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
-        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        if (userId == receiverId) throw new RestApiException(UserErrorCode.INVALID_USER_ID);
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
+        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
 
         Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByUsers(user, receiver);
         ChatRoom chatRoom;
@@ -67,7 +66,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public List<ChatRoomResponse> getChatRoomList(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
         List<ChatRoom> chatRoomList = chatRoomRepository.findAllByUser(user);
         List<ChatRoomResponse> chatRoomResponseList = new ArrayList<>();
         for(ChatRoom chatRoom : chatRoomList) {

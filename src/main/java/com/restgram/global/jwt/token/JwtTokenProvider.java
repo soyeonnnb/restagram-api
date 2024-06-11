@@ -238,7 +238,7 @@ public class JwtTokenProvider implements InitializingBean {
         }
         // db에 있는 값인지 확인한 후, db에 없으면 유효하지 않다고 판단 -> 재로그인 요청
         if (!refreshTokenRepository.existsByAccessTokenAndRefreshToken(accessToken, refreshToken)) throw new RestApiException(JwtTokenErrorCode.INVALID_TOKEN);
-        com.restgram.domain.user.entity.User user = userRepository.findById(getUserId(refreshToken, response)).orElseThrow(() -> new RestApiException(UserErrorCode.USER_NOT_FOUND));
+        com.restgram.domain.user.entity.User user = userRepository.findById(getUserId(refreshToken, response)).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
 
         // 존재한다면 우선 토큰 삭제
         tokenRemove(response, accessToken, refreshToken);
