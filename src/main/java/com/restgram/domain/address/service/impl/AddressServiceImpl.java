@@ -12,9 +12,10 @@ import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.AddressErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,34 +26,37 @@ public class AddressServiceImpl implements AddressService {
     private final SidoAddressRepository sidoAddressRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<AddressResponse> getSidoList() {
+        // 전체 시도 리스트 반환
         List<SidoAddress> sidoAddressList = sidoAddressRepository.findAllByOrderByName();
-        List<AddressResponse> addressResponseList = new ArrayList<>();
-        for(SidoAddress sidoAddress : sidoAddressList) {
-            addressResponseList.add(AddressResponse.of(sidoAddress));
-        }
-        return addressResponseList;
+
+        return sidoAddressList.stream()
+                .map(AddressResponse::of)
+                .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AddressResponse> getSiggList(Long sidoId) {
+        // 시도 엔티티를 이용해 시군구 리스트 반환
         SidoAddress sidoAddress = sidoAddressRepository.findById(sidoId).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_SIDO_ID, "시도 ID가 유효하지 않습니다. [ID="+sidoId+"]"));
         List<SiggAddress> siggAddressList = siggAddressRepository.findALlBySidoAddressOrderByName(sidoAddress);
-        List<AddressResponse> addressResponseList = new ArrayList<>();
-        for(SiggAddress siggAddress : siggAddressList) {
-            addressResponseList.add(AddressResponse.of(siggAddress));
-        }
-        return addressResponseList;
+
+        return siggAddressList.stream()
+                .map(AddressResponse::of)
+                .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<AddressResponse> getEmdList(Long siggId) {
+        // 시군구 엔티티를 이용해 시군구 리스트 반환
         SiggAddress siggAddress = siggAddressRepository.findById(siggId).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_SIGG_ID, "시군구 ID가 유효하지 않습니다. [ID="+siggId+"]"));
         List<EmdAddress> emdAddressList = emdAddressRepository.findAllBySiggAddressOrderByName(siggAddress);
-        List<AddressResponse> addressResponseList = new ArrayList<>();
-        for(EmdAddress emdAddress : emdAddressList) {
-            addressResponseList.add(AddressResponse.of(emdAddress));
-        }
-        return addressResponseList;
+
+        return emdAddressList.stream()
+                .map(AddressResponse::of)
+                .collect(Collectors.toList());
     }
 }

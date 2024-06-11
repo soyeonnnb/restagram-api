@@ -4,6 +4,7 @@ import com.restgram.domain.address.entity.EmdAddress;
 import lombok.*;
 
 @Builder
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmdAddressResponse {
