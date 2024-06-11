@@ -2,17 +2,14 @@ package com.restgram.domain.coupon.dto.response;
 
 import com.restgram.domain.coupon.entity.IssueCoupon;
 import com.restgram.domain.user.dto.response.StoreInfoResponse;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class IssueCouponResponse {
     private Long id;
     private Boolean isUsed;

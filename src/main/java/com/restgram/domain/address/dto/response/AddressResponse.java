@@ -3,15 +3,11 @@ package com.restgram.domain.address.dto.response;
 import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.address.entity.SidoAddress;
 import com.restgram.domain.address.entity.SiggAddress;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AddressResponse {
 
     private Long id;

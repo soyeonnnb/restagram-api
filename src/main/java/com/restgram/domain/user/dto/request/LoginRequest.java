@@ -4,11 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class LoginRequest {
     @NotNull(message = "이메일은 필수 입력값입니다.")
     @Email(message = "이메일 형식이 아닙니다.")

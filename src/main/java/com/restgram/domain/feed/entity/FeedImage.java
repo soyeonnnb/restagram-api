@@ -16,12 +16,12 @@ public class FeedImage extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    private String url;
+    private String url; // URL
 
     @Column(nullable = false)
     private Integer number; // 순서
 
     @JoinColumn(name = "feed_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Feed feed;
+    private Feed feed; // 피드
 }

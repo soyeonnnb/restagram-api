@@ -1,17 +1,14 @@
 package com.restgram.domain.coupon.dto.response;
 
 import com.restgram.domain.coupon.entity.Coupon;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CustomerCouponResponse {
     private Long id;
     private LocalDateTime startAt;

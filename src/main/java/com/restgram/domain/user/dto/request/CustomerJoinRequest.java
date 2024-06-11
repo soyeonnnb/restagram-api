@@ -6,11 +6,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class CustomerJoinRequest {
     @Email(message = "이메일 형식이 아닙니다.")
     @NotBlank(message = "이메일은 필수값입니다.")
@@ -27,7 +26,6 @@ public class CustomerJoinRequest {
 
     @NotBlank(message = "전화번호는 필수값입니다.")
     private String phone;
-
 
     public Customer of() {
         return Customer.builder()

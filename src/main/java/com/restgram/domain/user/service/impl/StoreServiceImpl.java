@@ -46,13 +46,13 @@ public class StoreServiceImpl implements StoreService {
         if (userRepository.existsByNickname(req.getNickname())) throw new RestApiException(UserErrorCode.NICKNAME_DUPLICATED);
 
         // 비밀번호 암호화
-        req.setPassword(passwordEncoder.encode(req.getPassword()));
+        String encodedPassword = passwordEncoder.encode(req.getPassword());
 
         // 주소 가져오기
         EmdAddress emdAddress = emdAddressRepository.findById(req.getBcode()).orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_BCODE));
 
         // 저장
-        storeRepository.save(req.of(emdAddress));
+        storeRepository.save(req.of(emdAddress, encodedPassword));
     }
 
     @Override

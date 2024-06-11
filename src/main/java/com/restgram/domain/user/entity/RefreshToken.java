@@ -17,12 +17,12 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date expiredAt;
+    private Date expiredAt; // 만료일
 
     @Column(unique = true, nullable = false)
-    private String accessToken;
+    private String accessToken; // 액세스 토큰
 
     @Column(unique = true, nullable = false)
-    private String refreshToken;
+    private String refreshToken; // 리프레시 토큰
 
 }

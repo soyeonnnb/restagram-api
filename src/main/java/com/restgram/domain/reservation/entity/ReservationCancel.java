@@ -15,11 +15,11 @@ public class ReservationCancel {
 
     @OneToOne
     @JoinColumn(name = "reservation_id", nullable = false)
-    private Reservation reservation;
+    private Reservation reservation; // 예약
 
     @Enumerated(EnumType.STRING)
-    private ReservationCancelState state;
+    private ReservationCancelState state; // 취소 상태
 
-    private String memo;
+    private String memo; // 취소 사유
 
 }

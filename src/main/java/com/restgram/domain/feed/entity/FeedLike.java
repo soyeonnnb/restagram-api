@@ -20,9 +20,9 @@ public class FeedLike extends BaseEntity {
 
     @JoinColumn(name = "feed_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Feed feed;
+    private Feed feed; // 피드
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    private User user; // 피드 유저
 }

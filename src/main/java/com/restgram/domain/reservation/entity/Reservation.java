@@ -23,17 +23,17 @@ public class Reservation extends BaseEntity {
 
     @JoinColumn(name = "reservation_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private ReservationForm reservationForm;
+    private ReservationForm reservationForm; // 예약폼
 
     @JoinColumn(name = "store_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Store store;
+    private Store store; // 가게
 
     @JoinColumn(name = "customer_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Customer customer;
+    private Customer customer; // 예약자
 
-    private LocalDateTime datetime;
+    private LocalDateTime datetime; // 예약 시간
 
     @Column(nullable = false)
     @ColumnDefault("2")
@@ -45,7 +45,7 @@ public class Reservation extends BaseEntity {
     private String memo; // 메세지
 
     @Enumerated(EnumType.STRING)
-    private ReservationState state;
+    private ReservationState state; // 예약 상태
 
     public void updateState(ReservationState state) {
         this.state = state;

@@ -2,16 +2,13 @@ package com.restgram.domain.chat.entity;
 
 import com.restgram.domain.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ChatMember {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +16,11 @@ public class ChatMember {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User user; // 채팅 유저
 
     @ManyToOne
     @JoinColumn(name = "chatroom_id", nullable = false)
-    private ChatRoom chatRoom;
+    private ChatRoom chatRoom; // 채팅방
 
     public void setChatRoom(ChatRoom chatRoom) {
         this.chatRoom = chatRoom;

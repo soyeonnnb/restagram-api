@@ -1,15 +1,11 @@
 package com.restgram.domain.address.dto.response;
 
 import com.restgram.domain.address.entity.EmdAddress;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EmdAddressResponse {
     private Long id;
     private String emdName;

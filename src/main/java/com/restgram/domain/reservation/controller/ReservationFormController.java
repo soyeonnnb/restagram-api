@@ -1,8 +1,7 @@
 package com.restgram.domain.reservation.controller;
 
-import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.reservation.dto.request.ReservationFormRequest;
-import com.restgram.domain.reservation.dto.request.UpdateReservationFormRequest;
+import com.restgram.domain.reservation.dto.request.UpdateReservationFormStateRequest;
 import com.restgram.domain.reservation.dto.response.ReservationFormResponse;
 import com.restgram.domain.reservation.service.ReservationFormService;
 import com.restgram.global.exception.entity.ApiResponse;
@@ -52,7 +51,7 @@ public class ReservationFormController {
 
     // 예약 상태 변경
     @PatchMapping
-    public ResponseEntity<ApiResponse<?>> getUserReservationFormState(Authentication authentication, @RequestBody UpdateReservationFormRequest request) {
+    public ResponseEntity<ApiResponse<?>> getUserReservationFormState(Authentication authentication, @RequestBody UpdateReservationFormStateRequest request) {
         Long storeId = Long.parseLong(authentication.getName());
         reservationFormService.updateReservationState(storeId, request);
 

@@ -1,6 +1,5 @@
 package com.restgram.domain.follow.controller;
 
-import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.follow.dto.response.FollowUserResponse;
 import com.restgram.domain.follow.service.FollowService;
 import com.restgram.global.exception.entity.ApiResponse;

@@ -20,23 +20,22 @@ public class IssueCoupon extends BaseEntity {
 
     @JoinColumn(name = "customer_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Customer customer;
+    private Customer customer; // 쿠폰 발급 회원
 
     @JoinColumn(name = "coupon_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Coupon coupon;
+    private Coupon coupon; // 쿠폰
 
     @Column(nullable = false)
-    private LocalDateTime expiredAt;
+    private LocalDateTime expiredAt; // 만료시간
 
     @Column(nullable = false)
     @ColumnDefault("false")
-    private Boolean isUsed;
+    private Boolean isUsed; // 사용여부
 
-    @Column(nullable = false)
-    private LocalDateTime usedAt;
+    private LocalDateTime usedAt; // 사용시간
 
-    private String qrImage;
+    private String qrImage; // qr 이미지
 
     public void setQrImage(String qrImage) {
         this.qrImage = qrImage;

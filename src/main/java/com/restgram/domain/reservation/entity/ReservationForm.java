@@ -22,23 +22,21 @@ public class ReservationForm extends BaseEntity {
 
     @JoinColumn(name = "store_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Store store;
+    private Store store; // 가게
 
     @Column(nullable = false)
-    private LocalDate date;
+    private LocalDate date; // 날짜
 
     @Column(nullable = false)
-    private LocalTime time;
+    private LocalTime time; // 시간
 
     @Column(nullable = false)
-    @ColumnDefault("1")
-    @Min(0)
-    private Integer quantity;
+    @ColumnDefault("0")
+    private Integer quantity; // 수량
 
     @Column(nullable = false)
-    @ColumnDefault("1")
-    @Min(0)
-    private Integer remainQuantity;
+    @ColumnDefault("0")
+    private Integer remainQuantity; // 잔여 수량
 
     @Column(nullable = false)
     @ColumnDefault("4")
@@ -50,7 +48,7 @@ public class ReservationForm extends BaseEntity {
     private Integer maxReservationPerson; // 최대 예약 인원수
 
     @Enumerated(EnumType.STRING)
-    private ReservationFormState state;
+    private ReservationFormState state; // 예약폼 상태
 
     public void updateRemainQuantity(Integer tableNum) {
         this.remainQuantity += tableNum;

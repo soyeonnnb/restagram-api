@@ -2,7 +2,7 @@ package com.restgram.domain.reservation.service.impl;
 
 import com.restgram.domain.reservation.dto.request.ReservationFormDateRequest;
 import com.restgram.domain.reservation.dto.request.ReservationFormRequest;
-import com.restgram.domain.reservation.dto.request.UpdateReservationFormRequest;
+import com.restgram.domain.reservation.dto.request.UpdateReservationFormStateRequest;
 import com.restgram.domain.reservation.dto.response.ReservationFormResponse;
 import com.restgram.domain.reservation.entity.ReservationForm;
 import com.restgram.domain.reservation.entity.ReservationFormState;
@@ -92,7 +92,7 @@ public class ReservationFormServiceImpl implements ReservationFormService {
     // 예약 폼 변경
     @Override
     @Transactional
-    public void updateReservationState(Long storeId, UpdateReservationFormRequest request) {
+    public void updateReservationState(Long storeId, UpdateReservationFormStateRequest request) {
         ReservationForm form = reservationFormRepository.findById(request.getId()).orElseThrow(() -> new RestApiException(ReservationErrorCode.INVALID_RESERVATION_FORM_ID));
         // 유저 일치 확인
         if (form.getStore().getId() != storeId) throw new RestApiException(UserErrorCode.USER_MISMATCH);

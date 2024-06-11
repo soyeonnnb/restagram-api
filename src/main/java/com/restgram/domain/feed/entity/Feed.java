@@ -4,6 +4,7 @@ import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -22,13 +23,14 @@ public class Feed extends BaseEntity {
 
     @JoinColumn(name = "store_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Store store;
+    private Store store; // 피드 가게
 
     @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private User writer;
+    private User writer; // 피드 작성자
 
-    private String content;
+    @Column(length = 2000)
+    private String content; // 피드 내용
 
     @OneToMany(mappedBy = "feed")
     List<FeedImage> feedImageList = new ArrayList<>();

@@ -21,40 +21,36 @@ public class Coupon extends BaseEntity {
 
     @JoinColumn(name = "store_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Store store;
+    private Store store; // 쿠폰 발급 가게
 
     @Column(nullable = false)
-    private LocalDateTime startAt;
+    private LocalDateTime startAt; // 쿠폰 발급 시작시간
 
     @Column(nullable = false)
-    private LocalDateTime finishAt;
+    private LocalDateTime finishAt; // 쿠폰 발급 만료시간
 
     @Column(nullable = false)
-    @ColumnDefault("0")
-    @Min(0)
-    private Long quantity;
-
-    @Column(nullable = false)
-    @ColumnDefault("0")
-    @Min(0)
-    private Long remainQuantity;
+    @ColumnDefault("1")
+    private Long quantity; // 쿠폰 개수
 
     @Column(nullable = false)
     @ColumnDefault("0")
-    @Min(0)
-    private Integer discountMoney;
+    private Long remainQuantity; // 쿠폰 남은 개수
+
+    @Column(nullable = false)
+    @ColumnDefault("1")
+    private Integer discountMoney; // 할인 금액
 
     @Column(nullable = false)
     @ColumnDefault("0")
-    @Min(0)
-    private Integer payMoney;
+    private Integer payMoney; // 최소 주문 금액
 
     @Column(nullable = false)
     @ColumnDefault("0")
-    private Long expiredMinute;
+    private Long expiredMinute; // 만료 시간
 
     @ColumnDefault("false")
-    private Boolean disable;
+    private Boolean disable; // 쿠폰 발급 가능상태
 
     public void setDisable(boolean disable) {
         this.disable = disable;
