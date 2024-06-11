@@ -2,7 +2,6 @@ package com.restgram.domain.calendar.service.impl;
 
 import com.restgram.domain.calendar.dto.request.CalendarAgreeRequest;
 import com.restgram.domain.calendar.service.CalendarService;
-import com.restgram.domain.user.dto.request.CreateCalenderRequest;
 import com.restgram.domain.calendar.dto.response.CalendarAgreeResponse;
 import com.restgram.domain.calendar.dto.response.CreateCalendarResponse;
 import com.restgram.domain.user.entity.Customer;
@@ -14,7 +13,6 @@ import com.restgram.global.exception.errorCode.CalendarErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -34,9 +32,6 @@ public class CalendarServiceImpl implements CalendarService {
     private final CustomerRepository customerRepository;
     private final RestTemplate restTemplate;
 
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
-    private String secret;
-
     // 유저 캘린더 상태 변경
     @Override
     @Transactional
@@ -47,18 +42,16 @@ public class CalendarServiceImpl implements CalendarService {
         if (!calendarRepository.existsByCustomer(customer)) throw new RestApiException(CalendarErrorCode.CALENDER_NOT_AUTHORIZATION);
 
         boolean isAgree = customer.updateCalendarAgree(request.isAgree());
-        customerRepository.save(customer);
         return CalendarAgreeResponse.builder()
                 .agree(isAgree)
                 .build();
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void createCalendar(Customer customer) {
         // 캘린더 생성하기
         String calenderId = requestCreateCalender(customer);
-        log.info("사용자 캘린더 생성완료 : " + calenderId);
         calendarRepository.save(Calendar.builder()
                 .customer(customer)
                 .calendarId(calenderId)
