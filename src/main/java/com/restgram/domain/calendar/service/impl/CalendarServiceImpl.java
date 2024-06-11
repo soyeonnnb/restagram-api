@@ -36,7 +36,7 @@ public class CalendarServiceImpl implements CalendarService {
     @Override
     @Transactional
     public CalendarAgreeResponse agreeCalendar(Long userId, CalendarAgreeRequest request) {
-        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID, "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID="+userId+"]"));
+        Customer customer = customerRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID, "[일반] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID="+userId+"]"));
 
         // 이전에 동의한 경험이 없다면 생성 불가
         if (!calendarRepository.existsByCustomer(customer)) throw new RestApiException(CalendarErrorCode.CALENDER_NOT_AUTHORIZATION, "카카오 캘린더에 동의하지 않았습니다. [회원ID="+customer.getId()+"]");

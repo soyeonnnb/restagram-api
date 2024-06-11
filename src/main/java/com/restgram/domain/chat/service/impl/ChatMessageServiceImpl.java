@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,13 +46,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         // 메세지 설정
         chatRoom.updateLastMessage(message);
 
-        // 유저 id만 가져와서 저장
-        List<Long> ids = new ArrayList<>();
-        for(ChatMember user : chatRoom.getMembers()) ids.add(user.getUser().getId()); 
-
         return ChatSendResponse.builder()
                 .message(ChatMessageResponse.of(message))
-                .userIds(ids)
+                .userIds(chatRoom.getMembers().stream().map(user -> user.getUser().getId()).collect(Collectors.toList()))
                 .build();
     }
 }

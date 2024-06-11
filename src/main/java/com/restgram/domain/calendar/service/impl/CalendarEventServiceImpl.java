@@ -37,7 +37,7 @@ public class CalendarEventServiceImpl implements CalendarEventService {
     @Async("kakaoAsyncExecutor")
     public void createCalendarEvent(Reservation reservation) {
         String calendarId = calendarRepository.findByCustomer(reservation.getCustomer())
-                .orElseThrow(() -> new RestApiException(CalendarErrorCode.CALENDER_NOT_AUTHORIZATION, "카카오 캘린더에 동의하지 않았습니다. [회원ID="+reservation.getCustomer().getId()+"]"))
+                .orElseThrow(() -> new RestApiException(CalendarErrorCode.CALENDER_NOT_AUTHORIZATION, "카카오 캘린더에 동의하지 않았습니다. [사용자ID="+reservation.getCustomer().getId()+"]"))
                 .getCalendarId();
 
         // 일정 생성하기
