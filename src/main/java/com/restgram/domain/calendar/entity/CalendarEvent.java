@@ -16,8 +16,8 @@ public class CalendarEvent {
 
     @OneToOne
     @JoinColumn(name = "reservation_id", nullable = false)
-    private Reservation reservation;
+    private Reservation reservation; // 캘린더와 관련된 예약
 
     @Column(nullable = false)
-    private String eventId;
+    private String eventId; // 일정 ID
 }

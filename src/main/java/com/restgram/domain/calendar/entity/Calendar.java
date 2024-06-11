@@ -17,8 +17,8 @@ public class Calendar {
 
     @JoinColumn(name = "customer_id", nullable = false)
     @OneToOne
-    private Customer customer;
+    private Customer customer; // 캘린더 소유 사용자
 
     @Column(name = "calendar_id", nullable = false)
-    private String calendarId;
+    private String calendarId; // 캘린더 ID
 }
