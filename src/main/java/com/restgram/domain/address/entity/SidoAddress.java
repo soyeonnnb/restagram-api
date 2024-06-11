@@ -1,10 +1,9 @@
 package com.restgram.domain.address.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "address_sido")
@@ -18,4 +17,7 @@ public class SidoAddress {
 
     @Column(nullable = false, length = 30)
     private String name; // 시도 이름
+
+    @OneToMany(mappedBy = "sidoAddress")
+    private List<SiggAddress> siggAddressList; // 시군구 엔티티 리스트
 }
