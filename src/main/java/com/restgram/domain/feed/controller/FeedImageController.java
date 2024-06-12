@@ -1,6 +1,5 @@
 package com.restgram.domain.feed.controller;
 
-import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.feed.dto.response.FeedImageCursorResponse;
 import com.restgram.domain.feed.service.FeedImageService;
 import com.restgram.global.exception.entity.ApiResponse;
@@ -10,8 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,7 +20,7 @@ public class FeedImageController {
 
     // 유저 피드 이미지 리스트 가져오기
     @GetMapping("/image/{userId}")
-    public ResponseEntity<ApiResponse<FeedImageCursorResponse>> userFeedList(@PathVariable Long userId, @RequestParam("cursorId") @Nullable Long cursorId) {
+    public ResponseEntity<ApiResponse<FeedImageCursorResponse>> userFeedList(@PathVariable("userId") Long userId, @RequestParam("cursorId") @Nullable Long cursorId) {
         FeedImageCursorResponse feedImageCursorResponse = feedImageService.getFeedImageList(userId, cursorId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(feedImageCursorResponse), HttpStatus.OK);
@@ -31,7 +28,7 @@ public class FeedImageController {
 
     // 유저 리뷰 이미지 리스트 가져오기
     @GetMapping("/image/review/{userId}")
-    public ResponseEntity<ApiResponse<FeedImageCursorResponse>> userReviewFeedList(@PathVariable Long userId, @RequestParam("cursorId") @Nullable Long cursorId) {
+    public ResponseEntity<ApiResponse<FeedImageCursorResponse>> userReviewFeedList(@PathVariable("userId") Long userId, @RequestParam("cursorId") @Nullable Long cursorId) {
         FeedImageCursorResponse feedImageCursorResponse = feedImageService.getReviewImageList(userId, cursorId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(feedImageCursorResponse), HttpStatus.OK);

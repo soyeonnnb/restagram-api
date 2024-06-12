@@ -5,6 +5,6 @@ import com.restgram.domain.user.entity.User;
 
 import java.util.List;
 
-public interface FeedQuerydslRepository {
+public interface FeedRepositoryCustom {
     List<FeedResponse> findByIdLessThanAndWriterInOrderByIdDescQuerydsl(Long cursorId, List<User> userList, User loginUser);
 }

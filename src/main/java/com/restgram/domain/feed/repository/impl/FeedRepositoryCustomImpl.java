@@ -3,9 +3,8 @@ package com.restgram.domain.feed.repository.impl;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.entity.Feed;
-import com.restgram.domain.feed.repository.FeedImageRepository;
 import com.restgram.domain.feed.repository.FeedLikeRepository;
-import com.restgram.domain.feed.repository.FeedQuerydslRepository;
+import com.restgram.domain.feed.repository.FeedRepositoryCustom;
 import com.restgram.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 
@@ -16,10 +15,9 @@ import static com.restgram.domain.feed.entity.QFeed.feed;
 import static com.restgram.domain.user.entity.QStore.store;
 
 @RequiredArgsConstructor
-public class FeedQuerydslRepositoryImpl implements FeedQuerydslRepository {
+public class FeedRepositoryCustomImpl implements FeedRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
-    private final FeedImageRepository feedImageRepository;
     private final FeedLikeRepository feedLikeRepository;
 
     @Override
