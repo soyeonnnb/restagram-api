@@ -102,11 +102,11 @@ public class UserServiceImpl implements UserService {
         throw new RestApiException(UserErrorCode.USER_MISMATCH);
       }
     }
-    if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+    if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
       throw new RestApiException(UserErrorCode.PASSWORD_MISMATCH);
     }
 
-    user.updatePassword(passwordEncoder.encode(request.getNewPassword()));
+    user.updatePassword(passwordEncoder.encode(request.newPassword()));
   }
 
   @Override
@@ -115,12 +115,12 @@ public class UserServiceImpl implements UserService {
     User user = userRepository.findById(userId)
         .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
             "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
-    if (userRepository.existsByNickname(request.getNickname())) {
+    if (userRepository.existsByNickname(request.nickname())) {
       throw new RestApiException(UserErrorCode.NICKNAME_DUPLICATED,
-          "닉네임이 중복되었습니다. [닉네임=" + request.getNickname() + "]");
+          "닉네임이 중복되었습니다. [닉네임=" + request.nickname() + "]");
     }
 
-    user.updateNickname(request.getNickname());
+    user.updateNickname(request.nickname());
   }
 
   @Override

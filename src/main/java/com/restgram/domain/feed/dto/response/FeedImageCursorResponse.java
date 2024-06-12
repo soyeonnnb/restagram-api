@@ -1,15 +1,15 @@
 package com.restgram.domain.feed.dto.response;
 
-import lombok.*;
-
 import java.util.List;
+import lombok.Builder;
 
-@Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-public class FeedImageCursorResponse {
-    private Long cursorId;
-    private List<UserFeedImageResponse> images;
-    private boolean hasNext;
+public record FeedImageCursorResponse(
+
+    Long cursorId,
+    List<UserFeedImageResponse> images,
+    boolean hasNext
+
+) {
+
 }

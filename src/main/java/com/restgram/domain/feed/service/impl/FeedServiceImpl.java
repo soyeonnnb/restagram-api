@@ -60,15 +60,15 @@ public class FeedServiceImpl implements FeedService {
         () -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
             "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
 
-    Store store = storeRepository.findById(req.getStoreId())
+    Store store = storeRepository.findById(req.storeId())
         .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID,
-            "사용자ID가 유효하지 않습니다. [사용자ID=" + req.getStoreId() + "]"));
+            "사용자ID가 유효하지 않습니다. [사용자ID=" + req.storeId() + "]"));
 
     // 피드 생성
     Feed feed = Feed.builder()
         .writer(user)
         .store(store)
-        .content(req.getContent())
+        .content(req.content())
         .build();
     feedRepository.save(feed);
 
@@ -77,6 +77,7 @@ public class FeedServiceImpl implements FeedService {
       feedImageService.saveFeedImage(feed, idx, images.get(idx));
     }
   }
+
 
   @Override
   @Transactional(readOnly = true)
@@ -154,15 +155,15 @@ public class FeedServiceImpl implements FeedService {
   @Override
   @Transactional
   public void updateFeed(Long userId, UpdateFeedRequest request) {
-    Feed feed = feedRepository.findById(request.getFeedId())
+    Feed feed = feedRepository.findById(request.feedId())
         .orElseThrow(() -> new RestApiException(FeedErrorCode.INVALID_FEED_ID,
-            "피드ID가 유효하지 않습니다. [피드ID=" + request.getFeedId() + "]"));
+            "피드ID가 유효하지 않습니다. [피드ID=" + request.feedId() + "]"));
     if (feed.getWriter().getId() != userId) {
       throw new RestApiException(UserErrorCode.USER_MISMATCH,
-          "로그인 사용자와 피드 작성자가 일치하지 않습니다. [로그인 사용자ID=" + userId + ", 피드ID=" + request.getFeedId()
+          "로그인 사용자와 피드 작성자가 일치하지 않습니다. [로그인 사용자ID=" + userId + ", 피드ID=" + request.feedId()
               + "]");
     }
-    feed.updateContent(request.getContent());
+    feed.updateContent(request.content());
   }
 
   @Override
@@ -191,7 +192,7 @@ public class FeedServiceImpl implements FeedService {
 
     // 다음 커서 값 설정
     Long nextCursorId =
-        !feedList.isEmpty() ? feedResponseList.get(feedResponseList.size() - 1).getId() : null;
+        !feedList.isEmpty() ? feedResponseList.get(feedResponseList.size() - 1).id() : null;
     boolean hasNext = feedResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
 
     return FeedCursorResponse.builder()

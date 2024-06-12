@@ -38,25 +38,25 @@ public class ReservationFormServiceImpl implements ReservationFormService {
             "[가게] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
 
     // 하루씩 키워나가면서
-    for (LocalDate date = request.getStartAt(); date.isBefore(request.getFinishAt().plusDays(1));
+    for (LocalDate date = request.startAt(); date.isBefore(request.finishAt().plusDays(1));
         date = date.plusDays(1)) {
       // 만약 제외 날짜에 포함되어 있다면 패스
-      if (request.getExceptDateList().contains(date)) {
+      if (request.exceptDateList().contains(date)) {
         continue;
       }
 
-      for (ReservationFormDateRequest datetable : request.getWeekListMap()
+      for (ReservationFormDateRequest datetable : request.weekListMap()
           .getOrDefault(date.getDayOfWeek(), new ArrayList<>())) {
         // 만약 해당 날짜 + 시간에 이미 예약폼이 존재한다면 테이블 수 늘리기
         Optional<ReservationForm> optionalReservationForm = reservationFormRepository.findByStoreAndDateAndTime(
-            store, date, datetable.getTime());
+            store, date, datetable.time());
         if (optionalReservationForm.isPresent()) {
-          optionalReservationForm.get().updateRemainQuantity(datetable.getTable());
+          optionalReservationForm.get().updateRemainQuantity(datetable.table());
         } else {
           ReservationForm form = ReservationForm.builder().store(store).date(date)
-              .time(datetable.getTime()).quantity(datetable.getTable())
-              .remainQuantity(datetable.getTable()).tablePerson(request.getTablePerson())
-              .maxReservationPerson(request.getMaxReservationPerson())
+              .time(datetable.time()).quantity(datetable.table())
+              .remainQuantity(datetable.table()).tablePerson(request.tablePerson())
+              .maxReservationPerson(request.maxReservationPerson())
               .state(ReservationFormState.ACTIVE).build();
           reservationFormRepository.save(form);
         }
@@ -102,9 +102,9 @@ public class ReservationFormServiceImpl implements ReservationFormService {
   @Override
   @Transactional
   public void updateReservationState(Long storeId, UpdateReservationFormStateRequest request) {
-    ReservationForm form = reservationFormRepository.findById(request.getId())
+    ReservationForm form = reservationFormRepository.findById(request.id())
         .orElseThrow(() -> new RestApiException(ReservationErrorCode.INVALID_RESERVATION_FORM_ID,
-            "예약폼ID가 유효하지 않습니다. [예약폼ID=" + request.getId() + "]"));
+            "예약폼ID가 유효하지 않습니다. [예약폼ID=" + request.id() + "]"));
 
     // 유저 일치 확인
     if (form.getStore().getId() != storeId) {
@@ -117,11 +117,11 @@ public class ReservationFormServiceImpl implements ReservationFormService {
     // 이미 시간이 지나간 예약폼은 수정 불가
     if (formDateTime.isBefore(LocalDateTime.now())) {
       throw new RestApiException(ReservationErrorCode.RESERVATION_IS_BEFORE_NOW,
-          "종료된 예약폼은 수정이 불가합니다. [예약폼ID=" + request.getId() + ", 예약폼 날짜=" + form.getDate() + ", 시간="
+          "종료된 예약폼은 수정이 불가합니다. [예약폼ID=" + request.id() + ", 예약폼 날짜=" + form.getDate() + ", 시간="
               + form.getTime() + "]");
     }
 
-    form.updateState(request.getState());
+    form.updateState(request.state());
   }
 
 }

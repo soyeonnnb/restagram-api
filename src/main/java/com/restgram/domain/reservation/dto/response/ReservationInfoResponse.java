@@ -2,46 +2,45 @@ package com.restgram.domain.reservation.dto.response;
 
 import com.restgram.domain.reservation.entity.Reservation;
 import com.restgram.domain.reservation.entity.ReservationState;
-import lombok.*;
-
 import java.time.LocalDateTime;
+import lombok.Builder;
 
-@Getter
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReservationInfoResponse {
-    private Long id;
-    private LocalDateTime datetime;
-    private Integer headCount; // 인원수
-    private String name; // 예약자명
-    private String phone; // 예약자 핸드폰
-    private String memo; // 메세지
-    private ReservationState state;
-    private String cancelMessage;
+public record ReservationInfoResponse(
 
-    public static ReservationInfoResponse of(Reservation reservation) {
-        return ReservationInfoResponse.builder()
-                .id(reservation.getId())
-                .datetime(reservation.getDatetime())
-                .headCount(reservation.getHeadCount())
-                .name(reservation.getName())
-                .phone(reservation.getPhone())
-                .memo(reservation.getMemo())
-                .state(reservation.getState())
-                .build();
-    }
+    Long id,
+    LocalDateTime datetime,
+    Integer headCount, // 인원수
+    String name, // 예약자명
+    String phone, // 예약자 핸드폰
+    String memo, // 메세지
+    ReservationState state,
+    String cancelMessage
+    
+) {
 
-    public static ReservationInfoResponse of(Reservation reservation, String cancelMessage) {
-        return ReservationInfoResponse.builder()
-                .id(reservation.getId())
-                .datetime(reservation.getDatetime())
-                .headCount(reservation.getHeadCount())
-                .name(reservation.getName())
-                .phone(reservation.getPhone())
-                .memo(reservation.getMemo())
-                .state(reservation.getState())
-                .cancelMessage(cancelMessage)
-                .build();
-    }
+  public static ReservationInfoResponse of(Reservation reservation) {
+    return ReservationInfoResponse.builder()
+        .id(reservation.getId())
+        .datetime(reservation.getDatetime())
+        .headCount(reservation.getHeadCount())
+        .name(reservation.getName())
+        .phone(reservation.getPhone())
+        .memo(reservation.getMemo())
+        .state(reservation.getState())
+        .build();
+  }
+
+  public static ReservationInfoResponse of(Reservation reservation, String cancelMessage) {
+    return ReservationInfoResponse.builder()
+        .id(reservation.getId())
+        .datetime(reservation.getDatetime())
+        .headCount(reservation.getHeadCount())
+        .name(reservation.getName())
+        .phone(reservation.getPhone())
+        .memo(reservation.getMemo())
+        .state(reservation.getState())
+        .cancelMessage(cancelMessage)
+        .build();
+  }
 }

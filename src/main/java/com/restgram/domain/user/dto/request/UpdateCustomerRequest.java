@@ -1,9 +1,10 @@
 package com.restgram.domain.user.dto.request;
 
-import lombok.Getter;
+public record UpdateCustomerRequest(
 
-@Getter
-public class UpdateCustomerRequest {
-    private String description;
-    private String phone;
+    String description,
+    String phone
+    
+) {
+
 }

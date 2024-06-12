@@ -42,13 +42,13 @@ public class CouponServiceImpl implements CouponService {
         () -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
             "[가게] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + storeId + "]"));
     // 시작일은 종료일 이전이여야 한다.
-    if (req.getStartAt().isAfter(req.getFinishAt())) {
+    if (req.startAt().isAfter(req.finishAt())) {
       throw new RestApiException(CouponErrorCode.INVALID_COUPON_START_AT,
-          "쿠폰 시작일은 종료일 이전이여야 합니다. [시작일=" + req.getStartAt() + ", 종료일=" + req.getFinishAt() + "]");
+          "쿠폰 시작일은 종료일 이전이여야 합니다. [시작일=" + req.startAt() + ", 종료일=" + req.finishAt() + "]");
     }
 
     // 저장
-    couponRepository.save(req.of(store));
+    couponRepository.save(req.toEntity(store));
   }
 
   @Override

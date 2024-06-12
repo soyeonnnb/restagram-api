@@ -54,38 +54,38 @@ public class ReservationServiceImpl implements ReservationService {
         .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
             "[일반] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
 
-    ReservationForm form = reservationFormRepository.findById(request.getReservationFormId())
+    ReservationForm form = reservationFormRepository.findById(request.reservationFormId())
         .orElseThrow(() -> new RestApiException(ReservationErrorCode.INVALID_RESERVATION_FORM_ID,
-            "예약폼ID가 유효하지 않습니다. [예약폼ID=" + request.getReservationFormId() + "]"));
+            "예약폼ID가 유효하지 않습니다. [예약폼ID=" + request.reservationFormId() + "]"));
 
     // 예약 일자 확인
     LocalDateTime formDate = LocalDateTime.of(form.getDate(), form.getTime());
 
     if (formDate.isBefore(LocalDateTime.now())) {
       throw new RestApiException(ReservationErrorCode.RESERVATION_IS_BEFORE_NOW,
-          "이전 날짜는 예약할 수 없습니다. [예약폼ID=" + request.getReservationFormId() + ", 예약폼 날짜=" + formDate
+          "이전 날짜는 예약할 수 없습니다. [예약폼ID=" + request.reservationFormId() + ", 예약폼 날짜=" + formDate
               + "]");
     }
     if (form.getState().toString().equals(ReservationFormState.DISABLE)) {
       throw new RestApiException(ReservationErrorCode.RESERVATION_DISABLE,
-          "예약이 불가능한 상태입니다. [예약폼ID=" + request.getReservationFormId() + "]");
+          "예약이 불가능한 상태입니다. [예약폼ID=" + request.reservationFormId() + "]");
     }
     // 테이블 수 확인
-    int tableNum = getTableNum(request.getHeadCount(), form.getTablePerson());
+    int tableNum = getTableNum(request.headCount(), form.getTablePerson());
     if (form.getRemainQuantity() < tableNum) {
       throw new RestApiException(ReservationErrorCode.TABLE_UNAVAILABLE,
-          "테이블 수가 부족합니다. [예약폼ID=" + request.getReservationFormId() + ", 남은 테이블 수="
+          "테이블 수가 부족합니다. [예약폼ID=" + request.reservationFormId() + ", 남은 테이블 수="
               + form.getRemainQuantity() + ", 요청 테이블 수=" + tableNum + "]");
     }
     // 예약 가능 수 확인
-    if (form.getMaxReservationPerson() < request.getHeadCount()) {
+    if (form.getMaxReservationPerson() < request.headCount()) {
       throw new RestApiException(ReservationErrorCode.RESERVATION_HEAD_COUNT_EXCEED_TABLE_NUM,
-          "최대 예약 인원수를 초과하였습니다. [예약폼ID=" + request.getReservationFormId() + ", 최대 예약 인원수="
-              + form.getMaxReservationPerson() + ", 요청 예약 인원수=" + request.getHeadCount() + "]");
+          "최대 예약 인원수를 초과하였습니다. [예약폼ID=" + request.reservationFormId() + ", 최대 예약 인원수="
+              + form.getMaxReservationPerson() + ", 요청 예약 인원수=" + request.headCount() + "]");
     }
 
     // 예약 생성
-    Reservation reservation = request.of(form, form.getStore(), customer);
+    Reservation reservation = request.toEntity(form, form.getStore(), customer);
     reservationRepository.save(reservation);
     form.updateRemainQuantity(tableNum * -1);
 
@@ -102,16 +102,16 @@ public class ReservationServiceImpl implements ReservationService {
   @Override
   @Transactional
   public void cancelReservation(Long userId, DeleteReservationRequest request) {
-    Reservation reservation = reservationRepository.findById(request.getReservationId())
+    Reservation reservation = reservationRepository.findById(request.reservationId())
         .orElseThrow(() -> new RestApiException(ReservationErrorCode.INVALID_RESERVATION_ID,
-            "예약ID가 유효하지 않습니다. [예약ID=" + request.getReservationId() + "]"));
+            "예약ID가 유효하지 않습니다. [예약ID=" + request.reservationId() + "]"));
     // 만약 해당 유저와 관계 없는 예약이면 삭제 취소 불가
-    if ((request.getState().equals(ReservationCancelState.CUSTOMER)
+    if ((request.state().equals(ReservationCancelState.CUSTOMER)
         && reservation.getCustomer().getId() != userId) || (
-        request.getState().equals(ReservationCancelState.STORE)
+        request.state().equals(ReservationCancelState.STORE)
             && reservation.getStore().getId() != userId)) {
       throw new RestApiException(UserErrorCode.USER_MISMATCH,
-          "로그인 사용자와 관계 없는 예약입니다. [로그인 사용자ID=" + userId + ", 예약ID=" + request.getReservationId()
+          "로그인 사용자와 관계 없는 예약입니다. [로그인 사용자ID=" + userId + ", 예약ID=" + request.reservationId()
               + "]");
     }
 
@@ -119,15 +119,15 @@ public class ReservationServiceImpl implements ReservationService {
     if (!reservation.getState().equals(ReservationState.ACTIVE) || reservation.getDatetime()
         .isBefore(LocalDateTime.now())) {
       throw new RestApiException(ReservationErrorCode.RESERVATION_CANCEL_DISABLE,
-          "취소가능한 상태가 아닙니다. [예약ID=" + request.getReservationId() + "]");
+          "취소가능한 상태가 아닙니다. [예약ID=" + request.reservationId() + "]");
     }
 
-    ReservationCancel reservationCancel = request.of(reservation);
+    ReservationCancel reservationCancel = request.toEntity(reservation);
 
     // 삭제 처리
-    if (request.getState().equals(ReservationCancelState.CUSTOMER)) {
+    if (request.state().equals(ReservationCancelState.CUSTOMER)) {
       reservation.updateState(ReservationState.USER_CANCELED);
-    } else if (request.getState().equals(ReservationCancelState.STORE)) {
+    } else if (request.state().equals(ReservationCancelState.STORE)) {
       reservation.updateState(ReservationState.STORE_CANCELED);
     }
 
@@ -139,7 +139,7 @@ public class ReservationServiceImpl implements ReservationService {
     reservationCancelRepository.save(reservationCancel);
 
     // 알림 보내기
-    if (request.getState().equals(ReservationCancelState.CUSTOMER)) {
+    if (request.state().equals(ReservationCancelState.CUSTOMER)) {
       notificationService.send(reservation.getStore(), NotificationType.CUSTOMER_RESERVATION_CANCEL,
           reservation);
     } else {

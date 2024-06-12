@@ -41,27 +41,27 @@ public class StoreServiceImpl implements StoreService {
   @Transactional
   public void join(StoreJoinRequest req) {
     // 중복 이메일 확인
-    if (storeRepository.existsByEmail(req.getEmail())) {
+    if (storeRepository.existsByEmail(req.email())) {
       throw new RestApiException(UserErrorCode.EMAIL_DUPLICATED,
-          "이메일이 중복되었습니다. [이메일=" + req.getEmail() + "]");
+          "이메일이 중복되었습니다. [이메일=" + req.email() + "]");
     }
 
     // 중복 닉네임 확인
-    if (userRepository.existsByNickname(req.getNickname())) {
+    if (userRepository.existsByNickname(req.nickname())) {
       throw new RestApiException(UserErrorCode.NICKNAME_DUPLICATED,
-          "닉네임이 중복되었습니다. [닉네임=" + req.getNickname() + "]");
+          "닉네임이 중복되었습니다. [닉네임=" + req.nickname() + "]");
     }
 
     // 비밀번호 암호화
-    String encodedPassword = passwordEncoder.encode(req.getPassword());
+    String encodedPassword = passwordEncoder.encode(req.password());
 
     // 주소 가져오기
-    EmdAddress emdAddress = emdAddressRepository.findById(req.getBcode()).orElseThrow(
+    EmdAddress emdAddress = emdAddressRepository.findById(req.bcode()).orElseThrow(
         () -> new RestApiException(AddressErrorCode.INVALID_BCODE,
-            "주소 BODE가 유효하지 않습니다. [BCODE=" + req.getBcode() + "]"));
+            "주소 BODE가 유효하지 않습니다. [BCODE=" + req.bcode() + "]"));
 
     // 저장
-    storeRepository.save(req.of(emdAddress, encodedPassword));
+    storeRepository.save(req.toEntity(emdAddress, encodedPassword));
   }
 
   @Override
@@ -78,9 +78,9 @@ public class StoreServiceImpl implements StoreService {
     Store store = storeRepository.findById(userId)
         .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
             "[가게] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
-    store.updateDescription(request.getDescription());
-    store.updatePhone(request.getPhone());
-    store.updateStoreInfo(request, emdAddressRepository.findById(request.getBcode())
+    store.updateDescription(request.description());
+    store.updatePhone(request.phone());
+    store.updateStoreInfo(request, emdAddressRepository.findById(request.bcode())
         .orElseThrow(() -> new RestApiException(AddressErrorCode.INVALID_BCODE)));
   }
 
@@ -88,11 +88,11 @@ public class StoreServiceImpl implements StoreService {
   @Override
   @Transactional
   public LoginResponse login(LoginRequest req, HttpServletResponse response) {
-    Store store = storeRepository.findByEmail(req.getEmail())
+    Store store = storeRepository.findByEmail(req.email())
         .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID,
-            "로그인 시도 이메일이 잘못되었습니다. [이메일=" + req.getEmail() + "]"));
+            "로그인 시도 이메일이 잘못되었습니다. [이메일=" + req.email() + "]"));
     // 비밀번호 확인
-    if (!passwordEncoder.matches(req.getPassword(), store.getPassword())) {
+    if (!passwordEncoder.matches(req.password(), store.getPassword())) {
       throw new RestApiException(UserErrorCode.PASSWORD_MISMATCH,
           "비밀번호가 일치하지 않습니다. [로그인 요청 사용자ID=" + store.getId() + "]");
     }

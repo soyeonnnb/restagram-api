@@ -81,8 +81,8 @@ public class CustomerServiceImpl implements CustomerService {
     Customer customer = customerRepository.findById(userId)
         .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
             "[일반] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
-    customer.updateDescription(request.getDescription());
-    customer.updatePhone(request.getPhone());
+    customer.updateDescription(request.description());
+    customer.updatePhone(request.phone());
   }
 
   @Override
@@ -91,7 +91,7 @@ public class CustomerServiceImpl implements CustomerService {
     Customer customer = customerRepository.findById(userId)
         .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
             "[일반] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
-    
+
     int range = customer.getAddressRange();
 
     // 시도는 항상 가져와야 함.(전체여도)

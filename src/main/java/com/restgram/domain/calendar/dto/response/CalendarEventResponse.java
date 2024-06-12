@@ -1,8 +1,7 @@
 package com.restgram.domain.calendar.dto.response;
 
-import lombok.Getter;
+public record CalendarEventResponse(
+    String event_id
+) {
 
-@Getter
-public class CalendarEventResponse {
-    private String event_id;
 }

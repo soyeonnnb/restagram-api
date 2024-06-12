@@ -52,7 +52,7 @@ public class FeedImageServiceImpl implements FeedImageService {
 
     // 다음 커서 값 설정
     Long nextCursorId = !feedImageList.isEmpty() ? userFeedImageResponseList.get(
-        userFeedImageResponseList.size() - 1).getId() : null;
+        userFeedImageResponseList.size() - 1).id() : null;
     boolean hasNext = userFeedImageResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
 
     return FeedImageCursorResponse.builder()
@@ -82,7 +82,7 @@ public class FeedImageServiceImpl implements FeedImageService {
 
     // 다음 커서 값 설정
     Long nextCursorId = !feedImageList.isEmpty() ? userFeedImageResponseList.get(
-        userFeedImageResponseList.size() - 1).getId() : null;
+        userFeedImageResponseList.size() - 1).id() : null;
     boolean hasNext = userFeedImageResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
 
     return FeedImageCursorResponse.builder()
@@ -102,7 +102,7 @@ public class FeedImageServiceImpl implements FeedImageService {
         .url(s3Service.uploadFile(file, "feed/" + feed.getId()))
         .feed(feed)
         .build();
-    
+
     feedImageRepository.save(feedImage);
   }
 }
