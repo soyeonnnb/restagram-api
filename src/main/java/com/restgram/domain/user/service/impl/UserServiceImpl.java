@@ -4,14 +4,12 @@ import com.restgram.domain.coupon.repository.CouponRepository;
 import com.restgram.domain.feed.repository.FeedRepository;
 import com.restgram.domain.follow.repository.FollowRepository;
 import com.restgram.domain.user.dto.request.NicknameRequest;
-import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
 import com.restgram.domain.user.dto.response.CheckResponse;
 import com.restgram.domain.user.dto.response.FeedCustomerInfoResponse;
 import com.restgram.domain.user.dto.response.FeedStoreInfoResponse;
 import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
 import com.restgram.domain.user.dto.response.UserInfoResponse;
 import com.restgram.domain.user.entity.Customer;
-import com.restgram.domain.user.entity.LoginMethod;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.entity.UserType;
@@ -87,26 +85,6 @@ public class UserServiceImpl implements UserService {
     } else {
       return getFeedCustomer(me, userId);
     }
-  }
-
-  @Override
-  @Transactional
-  public void updatePassword(Long userId, UpdatePasswordRequest request) {
-    User user = userRepository.findById(userId)
-        .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
-            "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
-    if (user.getType().toString().equals(UserType.CUSTOMER)) {
-      Customer c = (Customer) user;
-      // 소셜 로그인의 경우에는 비밀번호가 없음
-      if (c.getLoginMethod().toString().equals(LoginMethod.KAKAO)) {
-        throw new RestApiException(UserErrorCode.USER_MISMATCH);
-      }
-    }
-    if (!passwordEncoder.matches(request.oldPassword(), user.getPassword())) {
-      throw new RestApiException(UserErrorCode.PASSWORD_MISMATCH);
-    }
-
-    user.updatePassword(passwordEncoder.encode(request.newPassword()));
   }
 
   @Override

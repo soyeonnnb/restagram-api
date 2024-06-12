@@ -54,10 +54,10 @@ public class SecurityConfig {
                 .dispatcherTypeMatchers(DispatcherType.ERROR)
                 .permitAll() // 인가 안되면 자체 시큐리티 타는데 -> 이거 막아주는 로직
                 .requestMatchers("/ws/**").permitAll()
-                .requestMatchers("/api/v1/feed/test").permitAll()
                 .requestMatchers("/api/v1/store/join", "/api/v1/store/login",
                     "/api/v1/user/reissue", "/api/v1/customer/join", "/api/v1/user/logout",
                     "/api/v1/login/oauth2/**").permitAll()
+                .requestMatchers("/api/v1/store/password").hasAuthority(UserType.STORE.getName())
                 .requestMatchers("/api/v1/customer/info").authenticated()
                 .requestMatchers("/api/v1/address/**").authenticated()
                 .requestMatchers("/api/v1/coupon", "/api/v1/coupon/stop/**",

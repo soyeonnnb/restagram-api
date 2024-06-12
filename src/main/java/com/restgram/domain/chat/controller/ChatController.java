@@ -26,15 +26,15 @@ public class ChatController {
   // 메세지 전송
   @MessageMapping("/chat")
   public void chat(@Payload ChatMessageRequest request) {
-    log.info("채팅");
+    log.info("채팅시작");
     ChatSendResponse sendResponse = chatMessageService.sendChat(request);
     MessageHeaders headers = new MessageHeaders(
         Collections.singletonMap(MessageHeaders.CONTENT_TYPE,
             MimeTypeUtils.APPLICATION_JSON_VALUE));
-      for (Long userId : sendResponse.userIds()) {
-          simpMessagingTemplate.convertAndSend("/sub/chat/" + userId, sendResponse.message(),
-              headers);
-      }
+    for (Long userId : sendResponse.userIds()) {
+      simpMessagingTemplate.convertAndSend("/sub/chat/" + userId, sendResponse.message(),
+          headers);
+    }
   }
 
 }

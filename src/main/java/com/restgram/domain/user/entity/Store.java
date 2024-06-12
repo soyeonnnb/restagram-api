@@ -23,7 +23,9 @@ import lombok.experimental.SuperBuilder;
 public class Store extends User {
 
   @Column(nullable = false)
-  private String email; // 이메이
+  private String email; // 이메일
+  private String password; // 비밀번호
+
 
   private String storeName; // 가게명
   private Double latitude; // 위도
@@ -36,6 +38,10 @@ public class Store extends User {
   private String address; // 가게 주소
   private String detailAddress; // 가게 상세 주소
   private String storePhone; // 가게 번호
+
+  public void updatePassword(String password) {
+    this.password = password;
+  }
 
   public void updateStoreInfo(UpdateStoreRequest request, EmdAddress emdAddress) {
     this.storeName = request.storeName();

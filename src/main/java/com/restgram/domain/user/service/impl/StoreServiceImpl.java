@@ -5,6 +5,7 @@ import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.address.repository.EmdAddressRepository;
 import com.restgram.domain.user.dto.request.LoginRequest;
 import com.restgram.domain.user.dto.request.StoreJoinRequest;
+import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
 import com.restgram.domain.user.dto.request.UpdateStoreRequest;
 import com.restgram.domain.user.dto.response.CheckResponse;
 import com.restgram.domain.user.dto.response.LoginResponse;
@@ -108,5 +109,20 @@ public class StoreServiceImpl implements StoreService {
     return CheckResponse.builder()
         .check(storeRepository.existsByEmail(email))
         .build();
+  }
+
+
+  @Override
+  @Transactional
+  public void updatePassword(Long userId, UpdatePasswordRequest request) {
+    Store store = storeRepository.findById(userId)
+        .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
+            "[가게] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
+
+    if (!passwordEncoder.matches(request.oldPassword(), store.getPassword())) {
+      throw new RestApiException(UserErrorCode.PASSWORD_MISMATCH);
+    }
+
+    store.updatePassword(passwordEncoder.encode(request.newPassword()));
   }
 }

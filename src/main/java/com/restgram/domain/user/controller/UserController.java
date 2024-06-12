@@ -1,7 +1,6 @@
 package com.restgram.domain.user.controller;
 
 import com.restgram.domain.user.dto.request.NicknameRequest;
-import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
 import com.restgram.domain.user.dto.response.CheckResponse;
 import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
 import com.restgram.domain.user.dto.response.UserInfoResponse;
@@ -9,7 +8,6 @@ import com.restgram.domain.user.service.UserService;
 import com.restgram.global.exception.entity.ApiResponse;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -75,16 +73,6 @@ public class UserController {
     FeedUserInfoResponse feedUserInfoResponse = userService.getFeedUser(myId, userId);
 
     return new ResponseEntity<>(ApiResponse.createSuccess(feedUserInfoResponse), HttpStatus.OK);
-  }
-
-  // 유저 패스워드 변경
-  @PatchMapping("/password")
-  public ResponseEntity<ApiResponse<?>> updatePassword(Authentication authentication,
-      @RequestBody @Valid UpdatePasswordRequest request) {
-    Long userId = Long.parseLong(authentication.getName());
-    userService.updatePassword(userId, request);
-
-    return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.OK);
   }
 
   // 유저 닉네임 변경

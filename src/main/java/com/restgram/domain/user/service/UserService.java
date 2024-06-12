@@ -1,7 +1,6 @@
 package com.restgram.domain.user.service;
 
 import com.restgram.domain.user.dto.request.NicknameRequest;
-import com.restgram.domain.user.dto.request.UpdatePasswordRequest;
 import com.restgram.domain.user.dto.response.CheckResponse;
 import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
 import com.restgram.domain.user.dto.response.UserInfoResponse;
@@ -19,7 +18,6 @@ public interface UserService {
 
   FeedUserInfoResponse getFeedUser(Long myId, Long userId);
 
-  void updatePassword(Long userId, UpdatePasswordRequest request);
 
   void updateNickname(Long userId, NicknameRequest request);
 
