@@ -13,7 +13,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface FeedRepository extends JpaRepository<Feed, Long> {
+public interface FeedRepository extends JpaRepository<Feed, Long>, FeedQuerydslRepository {
 
     @EntityGraph(attributePaths = {"feedImageList", "store", "store.emdAddress", "store.emdAddress.siggAddress", "store.emdAddress.siggAddress.sidoAddress"})
     Page<Feed> findAllByWriterInOrWriterOrderByIdDesc(List<User> userList, User writer, Pageable pageable);
@@ -33,6 +33,7 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
     List<Feed> searchByQueryAndEmdAddressList(String query, List<EmdAddress> emdAddressList, Pageable pageable);
 
     Integer countAllByWriter(User user);
+
     Integer countAllByStore(Store store);
 
     Optional<Feed> findTopByOrderByIdDesc();
