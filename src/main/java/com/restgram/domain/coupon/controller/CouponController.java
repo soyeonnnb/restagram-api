@@ -1,6 +1,5 @@
 package com.restgram.domain.coupon.controller;
 
-import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.coupon.dto.request.AddCouponRequest;
 import com.restgram.domain.coupon.dto.response.CustomerCouponResponse;
 import com.restgram.domain.coupon.dto.response.StoreCouponResponse;
@@ -32,10 +31,10 @@ public class CouponController {
 
         return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.CREATED);
     }
-    
+
     // 쿠폰 발급 종료
     @PostMapping("/stop/{couponId}")
-    public ResponseEntity<ApiResponse<?>> stopIssueCoupon(Authentication authentication, @PathVariable Long couponId) {
+    public ResponseEntity<ApiResponse<?>> stopIssueCoupon(Authentication authentication, @PathVariable("couponId") Long couponId) {
         Long storeId = Long.parseLong(authentication.getName());
         couponService.stopCoupon(storeId, couponId);
 
@@ -62,7 +61,7 @@ public class CouponController {
 
     // 구매자 -> 가게 발급가능 쿠폰 가져오기
     @GetMapping("/{storeId}")
-    public ResponseEntity<ApiResponse<List<CustomerCouponResponse>>> getStoresCouponList(Authentication authentication, @PathVariable Long storeId) {
+    public ResponseEntity<ApiResponse<List<CustomerCouponResponse>>> getStoresCouponList(Authentication authentication, @PathVariable("storeId") Long storeId) {
         Long customerId = Long.parseLong(authentication.getName());
         List<CustomerCouponResponse> customerCouponResponseList = couponService.getStoresCouponList(customerId, storeId);
 
@@ -71,7 +70,7 @@ public class CouponController {
 
     // 쿠폰 발급
     @PostMapping("/{couponId}")
-    public ResponseEntity<ApiResponse<?>> issueCoupon(Authentication authentication, @PathVariable Long couponId) {
+    public ResponseEntity<ApiResponse<?>> issueCoupon(Authentication authentication, @PathVariable("couponId") Long couponId) {
         Long customerId = Long.parseLong(authentication.getName());
         couponService.issueCoupon(customerId, couponId);
 

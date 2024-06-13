@@ -20,7 +20,7 @@ public class FeedImageController {
 
     // 유저 피드 이미지 리스트 가져오기
     @GetMapping("/image/{userId}")
-    public ResponseEntity<ApiResponse<FeedImageCursorResponse>> userFeedList(@PathVariable("userId") Long userId, @RequestParam("cursorId") @Nullable Long cursorId) {
+    public ResponseEntity<ApiResponse<FeedImageCursorResponse>> userFeedList(@PathVariable("userId") Long userId, @RequestParam("cursor-id") @Nullable Long cursorId) {
         FeedImageCursorResponse feedImageCursorResponse = feedImageService.getFeedImageList(userId, cursorId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(feedImageCursorResponse), HttpStatus.OK);
@@ -28,7 +28,7 @@ public class FeedImageController {
 
     // 유저 리뷰 이미지 리스트 가져오기
     @GetMapping("/image/review/{userId}")
-    public ResponseEntity<ApiResponse<FeedImageCursorResponse>> userReviewFeedList(@PathVariable("userId") Long userId, @RequestParam("cursorId") @Nullable Long cursorId) {
+    public ResponseEntity<ApiResponse<FeedImageCursorResponse>> userReviewFeedList(@PathVariable("userId") Long userId, @RequestParam("cursor-id") @Nullable Long cursorId) {
         FeedImageCursorResponse feedImageCursorResponse = feedImageService.getReviewImageList(userId, cursorId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(feedImageCursorResponse), HttpStatus.OK);

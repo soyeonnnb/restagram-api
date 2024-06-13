@@ -1,6 +1,5 @@
 package com.restgram.domain.reservation.controller;
 
-import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.reservation.dto.request.AddReservationRequest;
 import com.restgram.domain.reservation.dto.request.DeleteReservationRequest;
 import com.restgram.domain.reservation.dto.response.CustomerReservationResponse;
@@ -27,7 +26,7 @@ public class ReservationController {
 
     // 구매자 예약 등록
     @PostMapping
-    public ResponseEntity<ApiResponse<?>> addReservation(Authentication authentication, @RequestBody AddReservationRequest request) {
+    public ResponseEntity<ApiResponse<?>> addReservation(Authentication authentication, @RequestBody @Valid AddReservationRequest request) {
         Long userId = Long.parseLong(authentication.getName());
         reservationService.addReservation(userId, request);
 
@@ -42,7 +41,7 @@ public class ReservationController {
 
         return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.OK);
     }
-    
+
     // 구매자 예약리스트 가져오기
     @GetMapping("/customer")
     public ResponseEntity<ApiResponse<List<CustomerReservationResponse>>> getCustomerReservationList(Authentication authentication) {
@@ -54,7 +53,7 @@ public class ReservationController {
 
     // 가게 예약리스트 가져오기
     @GetMapping("/store")
-    public ResponseEntity<ApiResponse<List<StoreReservationResponse>>> getStoreReservationList(Authentication authentication, @RequestParam Integer year, @RequestParam Integer month) {
+    public ResponseEntity<ApiResponse<List<StoreReservationResponse>>> getStoreReservationList(Authentication authentication, @RequestParam("year") Integer year, @RequestParam("month") Integer month) {
         Long userId = Long.parseLong(authentication.getName());
         List<StoreReservationResponse> reservationResponseList = reservationService.getStoreReservations(userId, year, month);
 

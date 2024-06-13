@@ -4,6 +4,7 @@ import com.restgram.domain.calendar.dto.request.CalendarAgreeRequest;
 import com.restgram.domain.calendar.dto.response.CalendarAgreeResponse;
 import com.restgram.domain.calendar.service.CalendarService;
 import com.restgram.global.exception.entity.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class CalendarController {
 
     // 캘린더 동의 현황 변경
     @PatchMapping("/agree")
-    public ResponseEntity<ApiResponse<CalendarAgreeResponse>> customerCalendarAgree(Authentication authentication, @RequestBody CalendarAgreeRequest request) {
+    public ResponseEntity<ApiResponse<CalendarAgreeResponse>> customerCalendarAgree(Authentication authentication, @RequestBody @Valid CalendarAgreeRequest request) {
         Long userId = Long.parseLong(authentication.getName());
         CalendarAgreeResponse calendarAgreeResponse = calendarService.agreeCalendar(userId, request);
 

@@ -5,6 +5,7 @@ import com.restgram.domain.reservation.dto.request.UpdateReservationFormStateReq
 import com.restgram.domain.reservation.dto.response.ReservationFormResponse;
 import com.restgram.domain.reservation.service.ReservationFormService;
 import com.restgram.global.exception.entity.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ public class ReservationFormController {
 
     // 가게 예약 등록
     @PostMapping
-    public ResponseEntity<ApiResponse<?>> addReservation(Authentication authentication, @RequestBody ReservationFormRequest request) {
+    public ResponseEntity<ApiResponse<?>> addReservation(Authentication authentication, @RequestBody @Valid ReservationFormRequest request) {
         Long userId = Long.parseLong(authentication.getName());
         reservationFormService.addReservationForm(userId, request);
 
@@ -34,7 +35,7 @@ public class ReservationFormController {
 
     // 구매자 -> 가게 예약 폼 가져오기
     @GetMapping("/{storeId}")
-    public ResponseEntity<ApiResponse<List<ReservationFormResponse>>> getReservationForm(@PathVariable @NonNull Long storeId, @RequestParam @NonNull Integer year, @RequestParam @NonNull Integer month) {
+    public ResponseEntity<ApiResponse<List<ReservationFormResponse>>> getReservationForm(@PathVariable("storeId") @NonNull Long storeId, @RequestParam("year") @NonNull Integer year, @RequestParam("month") @NonNull Integer month) {
         List<ReservationFormResponse> reservationFormResponseList = reservationFormService.getReservationForm(storeId, year, month);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(reservationFormResponseList), HttpStatus.OK);
@@ -42,7 +43,7 @@ public class ReservationFormController {
 
     // 가게 -> 자기가게
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ReservationFormResponse>>> getStoreReservationForm(Authentication authentication, @RequestParam @NonNull Integer year, @RequestParam @NonNull Integer month) {
+    public ResponseEntity<ApiResponse<List<ReservationFormResponse>>> getStoreReservationForm(Authentication authentication, @RequestParam("year") @NonNull Integer year, @RequestParam("month") @NonNull Integer month) {
         Long storeId = Long.parseLong(authentication.getName());
         List<ReservationFormResponse> reservationFormResponseList = reservationFormService.getStoreReservationForm(storeId, year, month);
 
@@ -51,7 +52,7 @@ public class ReservationFormController {
 
     // 예약 상태 변경
     @PatchMapping
-    public ResponseEntity<ApiResponse<?>> getUserReservationFormState(Authentication authentication, @RequestBody UpdateReservationFormStateRequest request) {
+    public ResponseEntity<ApiResponse<?>> getUserReservationFormState(Authentication authentication, @RequestBody @Valid UpdateReservationFormStateRequest request) {
         Long storeId = Long.parseLong(authentication.getName());
         reservationFormService.updateReservationState(storeId, request);
 

@@ -1,6 +1,5 @@
 package com.restgram.domain.feed.controller;
 
-import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.service.FeedLikeService;
 import com.restgram.global.exception.entity.ApiResponse;
@@ -23,7 +22,7 @@ public class FeedLikeController {
 
     // 좋아요 누르기
     @PostMapping("/{feedId}")
-    public ResponseEntity<ApiResponse<?>> postFeedLike(Authentication authentication, @PathVariable Long feedId) {
+    public ResponseEntity<ApiResponse<?>> postFeedLike(Authentication authentication, @PathVariable("feedId") Long feedId) {
         Long userId = Long.parseLong(authentication.getName());
         feedLikeService.postFeedLike(userId, feedId);
 
@@ -32,7 +31,7 @@ public class FeedLikeController {
 
     // 좋아요 취소
     @DeleteMapping("/{feedId}")
-    public ResponseEntity<?> deleteFeedLike(Authentication authentication, @PathVariable Long feedId) {
+    public ResponseEntity<?> deleteFeedLike(Authentication authentication, @PathVariable("feedId") Long feedId) {
         Long userId = Long.parseLong(authentication.getName());
         feedLikeService.deleteFeedLike(userId, feedId);
 
@@ -41,7 +40,7 @@ public class FeedLikeController {
 
     // 좋아요한 피드 리스트
     @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse<List<FeedResponse>>> getFeedLikeList(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<List<FeedResponse>>> getFeedLikeList(@PathVariable("userId") Long userId) {
         List<FeedResponse> feedResponseList = feedLikeService.getUsersFeedLikeList(userId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(feedResponseList), HttpStatus.OK);

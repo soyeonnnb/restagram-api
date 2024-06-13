@@ -6,6 +6,7 @@ import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.service.CustomerService;
 import com.restgram.global.exception.entity.ApiResponse;
 import jakarta.annotation.Nullable;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -50,7 +51,7 @@ public class CustomerController {
 
     // 유저 정보 가져오기
     @PatchMapping
-    public ResponseEntity<ApiResponse<?>> updateCustomer(Authentication authentication, @RequestBody UpdateCustomerRequest request) {
+    public ResponseEntity<ApiResponse<?>> updateCustomer(Authentication authentication, @RequestBody @Valid UpdateCustomerRequest request) {
         Long userId = Long.parseLong(authentication.getName());
         customerService.updateCustomer(userId, request);
 
