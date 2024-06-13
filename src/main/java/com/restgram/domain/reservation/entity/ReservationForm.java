@@ -50,6 +50,10 @@ public class ReservationForm extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ReservationFormState state; // 예약폼 상태
 
+    public void updateQuantity(Integer tableNum) {
+        this.quantity += tableNum;
+    }
+
     public void updateRemainQuantity(Integer tableNum) {
         this.remainQuantity += tableNum;
     }
