@@ -56,8 +56,7 @@ public class ReservationFormServiceImpl implements ReservationFormService {
                 } else {
                     ReservationForm form = ReservationForm.builder().store(store).date(date)
                             .time(datetable.time()).quantity(datetable.table())
-                            .remainQuantity(datetable.table()).tablePerson(request.tablePerson())
-                            .maxReservationPerson(request.maxReservationPerson())
+                            .remainQuantity(datetable.table())
                             .state(ReservationFormState.ACTIVE).build();
                     reservationFormRepository.save(form);
                 }
