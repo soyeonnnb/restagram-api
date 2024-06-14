@@ -52,7 +52,7 @@ public record StoreJoinRequest(
 
         @NotNull(message = "최대 예약 인원수는 필수 영역입니다.")
         @Min(value = 0, message = "최대 예약 인원수는 음수가 될 수 없습니다.")
-        @Max(value = 2000, message = "최대 예약 인원수는 최대 2000까지 가능합니다.")
+        @Max(value = 20, message = "최대 예약 인원수는 최대 20까지 가능합니다.")
         Integer maxReservationPerson // 최대 예약 인원수
 
 ) {

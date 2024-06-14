@@ -2,11 +2,13 @@ package com.restgram.domain.user.controller;
 
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
+import com.restgram.domain.user.dto.response.StoreInfoResponse;
 import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.service.CustomerService;
 import com.restgram.global.exception.entity.ApiResponse;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,6 +33,14 @@ public class CustomerController {
         return new ResponseEntity<>(ApiResponse.createSuccess(loginResponse), HttpStatus.OK);
     }
 
+    // 가게 예약 시 필요한 스토어 유저 정보
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<ApiResponse<StoreInfoResponse>> getStoreInfo(@PathVariable("storeId") @NotNull Long storeId) {
+        StoreInfoResponse storeInfoResponse = customerService.getStoreInfo(storeId);
+
+        return new ResponseEntity<>(ApiResponse.createSuccess(storeInfoResponse), HttpStatus.OK);
+    }
+
     // 유저 주소 업데이트
     @PatchMapping("/address")
     public ResponseEntity<ApiResponse<?>> updateUserAddress(Authentication authentication, @RequestParam("address-id") @Nullable Long addressId, @RequestParam("range") Integer range) {
@@ -49,7 +59,7 @@ public class CustomerController {
         return new ResponseEntity<>(ApiResponse.createSuccess(userAddressListResponse), HttpStatus.OK);
     }
 
-    // 유저 정보 가져오기
+    // 유저 정보 수정하기
     @PatchMapping
     public ResponseEntity<ApiResponse<?>> updateCustomer(Authentication authentication, @RequestBody @Valid UpdateCustomerRequest request) {
         Long userId = Long.parseLong(authentication.getName());

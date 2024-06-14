@@ -69,8 +69,8 @@ public class ReservationFormServiceImpl implements ReservationFormService {
     public List<ReservationFormResponse> getReservationForm(Long storeId, Integer year,
                                                             Integer month) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
-                        "[가게] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + storeId + "]"));
+                .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID,
+                        "[가게] 사용자ID가 유효하지 않습니다. [사용자ID=" + storeId + "]"));
         // 해당 달
         LocalDate date = LocalDate.of(year, month, 1);
 
