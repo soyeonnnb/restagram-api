@@ -3,10 +3,8 @@ package com.restgram.domain.user.controller;
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.StoreInfoResponse;
-import com.restgram.domain.user.dto.response.UserAddressListResponse;
 import com.restgram.domain.user.service.CustomerService;
 import com.restgram.global.exception.entity.ApiResponse;
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -41,23 +39,14 @@ public class CustomerController {
         return new ResponseEntity<>(ApiResponse.createSuccess(storeInfoResponse), HttpStatus.OK);
     }
 
-    // 유저 주소 업데이트
-    @PatchMapping("/address")
-    public ResponseEntity<ApiResponse<?>> updateUserAddress(Authentication authentication, @RequestParam("address-id") @Nullable Long addressId, @RequestParam("range") Integer range) {
-        Long userId = Long.parseLong(authentication.getName());
-        customerService.updateUserAddress(userId, addressId, range);
-
-        return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.OK);
-    }
-
-    // 유저 주소변경 버튼 클릭 시 관련 주소 가져오기
-    @GetMapping("/address")
-    public ResponseEntity<ApiResponse<UserAddressListResponse>> getUserAddressList(Authentication authentication) {
-        Long userId = Long.parseLong(authentication.getName());
-        UserAddressListResponse userAddressListResponse = customerService.getUserAddressList(userId);
-
-        return new ResponseEntity<>(ApiResponse.createSuccess(userAddressListResponse), HttpStatus.OK);
-    }
+//    // 유저 주소 업데이트
+//    @PatchMapping("/address")
+//    public ResponseEntity<ApiResponse<?>> updateUserAddress(Authentication authentication, @RequestParam("address-id") @Nullable Long addressId, @RequestParam("range") Integer range) {
+//        Long userId = Long.parseLong(authentication.getName());
+//        customerService.updateUserAddress(userId, addressId, range);
+//
+//        return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.OK);
+//    }
 
     // 유저 정보 수정하기
     @PatchMapping

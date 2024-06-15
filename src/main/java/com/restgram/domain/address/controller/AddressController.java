@@ -1,5 +1,6 @@
 package com.restgram.domain.address.controller;
 
+import com.restgram.domain.address.dto.response.AddressListResponse;
 import com.restgram.domain.address.dto.response.AddressResponse;
 import com.restgram.domain.address.service.AddressService;
 import com.restgram.global.exception.entity.ApiResponse;
@@ -7,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -41,6 +45,14 @@ public class AddressController {
         List<AddressResponse> addressResponseList = addressService.getEmdList(siggId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(addressResponseList), HttpStatus.OK);
+    }
+
+    // 주소 목록
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<AddressListResponse>>> getAddressList() {
+        List<AddressListResponse> addressListResponseList = addressService.getAddressList();
+
+        return new ResponseEntity<>(ApiResponse.createSuccess(addressListResponseList), HttpStatus.OK);
     }
 
 }
