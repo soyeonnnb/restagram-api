@@ -1,6 +1,8 @@
 package com.restgram.domain.feed.repository.impl;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.restgram.domain.address.entity.EmdAddress;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.entity.Feed;
 import com.restgram.domain.feed.repository.FeedLikeRepository;
@@ -22,13 +24,54 @@ public class FeedRepositoryCustomImpl implements FeedRepositoryCustom {
 
     @Override
     public List<FeedResponse> findByIdLessThanAndWriterInOrderByIdDescQuerydsl(Long cursorId, List<User> userList, User loginUser) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // 커서 ID
+        if (cursorId != null) {
+            builder.and(feed.id.lt(cursorId));
+        }
+        builder.and(feed.writer.in(userList));
+
         List<Feed> feeds = queryFactory
                 .selectFrom(feed)
-                .where(feed.id.lt(cursorId)
-                        .and(feed.writer.in(userList)))
+                .where(builder)
                 .orderBy(feed.id.desc())
                 .limit(20)
                 .fetch();
+
+        return feedToFeedResponse(feeds, loginUser);
+    }
+
+    @Override
+    public List<FeedResponse> searchByQueryAndEmdAddressList(String query, List<EmdAddress> emdAddressList, Long cursorId, User loginUser) {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        // 커서 ID
+        if (cursorId != null) {
+            builder.and(feed.id.lt(cursorId));
+        }
+
+        // 쿼리
+        if (query != null && !query.isEmpty()) {
+            builder.and(feed.hashtag.like(query));
+        }
+
+        // 읍면동 리스트
+        if (emdAddressList != null && !emdAddressList.isEmpty()) {
+            builder.and(feed.store.emdAddress.in(emdAddressList));
+        }
+
+        List<Feed> feeds = queryFactory
+                .selectFrom(feed)
+                .where(builder)
+                .orderBy(feed.id.desc())
+                .limit(20)
+                .fetch();
+
+        return feedToFeedResponse(feeds, loginUser);
+    }
+
+    private List<FeedResponse> feedToFeedResponse(List<Feed> feeds, User loginUser) {
 
         // 가져온 feed ID 목록 추출
         List<Long> feedIds = feeds.stream()

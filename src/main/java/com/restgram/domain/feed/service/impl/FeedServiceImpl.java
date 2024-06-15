@@ -16,7 +16,6 @@ import com.restgram.domain.feed.repository.FeedRepository;
 import com.restgram.domain.feed.service.FeedImageService;
 import com.restgram.domain.feed.service.FeedService;
 import com.restgram.domain.follow.repository.FollowRepository;
-import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.CustomerRepository;
@@ -99,11 +98,12 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FeedResponse> searchFeeds(Long userId, Long addressId, Integer addressRange,
-                                          String query, Pageable pageable) {
-        Customer customer = customerRepository.findById(userId).orElseThrow(
+    public FeedCursorResponse searchFeeds(Long userId, Long addressId, Integer addressRange,
+                                          String query, Long cursorId) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
                         "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
+
 
         List<EmdAddress> emdAddressList = new ArrayList<>();
         switch (addressRange) {
@@ -120,16 +120,18 @@ public class FeedServiceImpl implements FeedService {
                             "읍면동 ID가 유효하지 않습니다. [ID=" + addressId + "]")));
         }
 
-        List<Feed> feedList;
-        if (addressRange == 0) {
-            feedList = feedRepository.searchByQuery(query, pageable);
-        } else {
-            feedList = feedRepository.searchByQueryAndEmdAddressList(query, emdAddressList, pageable);
-        }
+        List<FeedResponse> feedResponseList = feedRepository.searchByQueryAndEmdAddressList(query, emdAddressList, cursorId, user);
 
-        return feedList.stream()
-                .map(feed -> FeedResponse.of(feed, feedImageRepository.findAllByFeed(feed),
-                        feedLikeRepository.existsByFeedAndUser(feed, customer))).collect(Collectors.toList());
+        // 다음 커서 값 설정
+        Long nextCursorId =
+                !feedResponseList.isEmpty() ? feedResponseList.get(feedResponseList.size() - 1).id() : null;
+        boolean hasNext = feedResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
+
+        return FeedCursorResponse.builder()
+                .cursorId(nextCursorId)
+                .hasNext(hasNext)
+                .feeds(feedResponseList)
+                .build();
     }
 
     @Override
@@ -174,13 +176,9 @@ public class FeedServiceImpl implements FeedService {
                         "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
         // 팔로우 리스트 가져오기
         List<User> searchUserList = followRepository.findFollowingsByFollower(user);
-        if (cursorId == null) {
-            cursorId = feedRepository.findTopByOrderByIdDesc()
-                    .orElseThrow(() -> new RestApiException(FeedErrorCode.FEED_EMPTY, "피드 데이터가 없습니다."))
-                    .getId();
-        }
-        searchUserList.add(user);
         
+        searchUserList.add(user);
+
         // 내 + 팔로우한 사람들의 피드 리스트 가져오기
         List<FeedResponse> feedResponseList = feedRepository.findByIdLessThanAndWriterInOrderByIdDescQuerydsl(cursorId,
                 searchUserList, user);

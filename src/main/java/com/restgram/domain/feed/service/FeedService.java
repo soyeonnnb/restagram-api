@@ -11,9 +11,14 @@ import java.util.List;
 
 public interface FeedService {
     void addFeed(Long userId, AddFeedRequest req, List<MultipartFile> images);
+
     List<FeedResponse> getFeeds(Long userId, Pageable pageable);
-    List<FeedResponse> searchFeeds(Long userId, Long addressId, Integer addressRange, String query, Pageable pageable);
+
+    FeedCursorResponse searchFeeds(Long userId, Long addressId, Integer addressRange, String query, Long cursorId);
+
     void deleteFeed(Long userId, Long feedId);
+
     void updateFeed(Long userId, UpdateFeedRequest request);
+
     FeedCursorResponse getFeedsCursor(Long userId, Long cursorId);
 }

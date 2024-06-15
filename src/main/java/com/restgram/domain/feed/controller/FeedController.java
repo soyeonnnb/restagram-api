@@ -77,9 +77,9 @@ public class FeedController {
 
     // 피드 검색
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<FeedResponse>>> searchFeed(Authentication authentication, @RequestParam("address-id") @Nullable Long addressId, @RequestParam("address-range") Integer addressRange, @RequestParam("query") String query, Pageable pageable) {
+    public ResponseEntity<ApiResponse<FeedCursorResponse>> searchFeed(Authentication authentication, @RequestParam("address-id") @Nullable Long addressId, @RequestParam("address-range") Integer addressRange, @RequestParam("query") String query, @RequestParam("cursor-id") @Nullable Long cursorId) {
         Long userId = Long.parseLong(authentication.getName());
-        List<FeedResponse> feedResponseList = feedService.searchFeeds(userId, addressId, addressRange, query, pageable);
+        FeedCursorResponse feedResponseList = feedService.searchFeeds(userId, addressId, addressRange, query, cursorId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(feedResponseList), HttpStatus.OK);
     }

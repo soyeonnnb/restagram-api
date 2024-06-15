@@ -15,6 +15,7 @@ public record FeedResponse(
 
         Long id,
         String content,
+        String hashtag,
         UserInfoResponse user, // 작성자 정보
         StoreInfoResponse store, // 스토어 정보
         List<FeedImageResponse> images,
@@ -31,6 +32,7 @@ public record FeedResponse(
         return FeedResponse.builder()
                 .id(feed.getId())
                 .content(feed.getContent())
+                .hashtag(feed.getHashtag())
                 .time(feed.getCreatedAt())
                 .user(UserInfoResponse.of(feed.getWriter()))
                 .store(StoreInfoResponse.of(feed.getStore()))
@@ -47,6 +49,7 @@ public record FeedResponse(
         return FeedResponse.builder()
                 .id(feed.getId())
                 .content(feed.getContent())
+                .hashtag(feed.getHashtag())
                 .time(feed.getCreatedAt())
                 .user(UserInfoResponse.of(feed.getWriter()))
                 .store(StoreInfoResponse.of(feed.getStore()))

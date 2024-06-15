@@ -14,9 +14,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(indexes = {
-        @Index(name = "feed_id_idx", columnList = "id desc")
-})
 public class Feed extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +29,9 @@ public class Feed extends BaseEntity {
 
     @Column(length = 2000)
     private String content; // 피드 내용
+
+    @Column(length = 200)
+    private String hashtag; // 해시태그
 
     @OneToMany(mappedBy = "feed")
     List<FeedImage> feedImageList = new ArrayList<>();

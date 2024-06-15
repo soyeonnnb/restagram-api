@@ -3,7 +3,7 @@ package com.restgram.domain.user.controller;
 import com.restgram.domain.user.dto.request.NicknameRequest;
 import com.restgram.domain.user.dto.response.CheckResponse;
 import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
-import com.restgram.domain.user.dto.response.UserInfoResponse;
+import com.restgram.domain.user.dto.response.UserInfoCursorResponse;
 import com.restgram.domain.user.service.UserService;
 import com.restgram.global.exception.entity.ApiResponse;
 import jakarta.annotation.Nullable;
@@ -16,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -51,11 +49,12 @@ public class UserController {
 
     // 유저 리스트 검색
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserInfoResponse>>> searchUser(
-            @RequestParam("query") String query) {
-        List<UserInfoResponse> userInfoResponseList = userService.searchUser(query);
+    public ResponseEntity<ApiResponse<UserInfoCursorResponse>> searchUser(@RequestParam(value = "cursor-id", required = false) Long cursorId,
+                                                                          @RequestParam("query") String query) {
 
-        return new ResponseEntity<>(ApiResponse.createSuccess(userInfoResponseList), HttpStatus.OK);
+        UserInfoCursorResponse userInfoCursorResponse = userService.searchUser(cursorId, query);
+
+        return new ResponseEntity<>(ApiResponse.createSuccess(userInfoCursorResponse), HttpStatus.OK);
     }
 
     // 유저 상세 정보 가져오기
