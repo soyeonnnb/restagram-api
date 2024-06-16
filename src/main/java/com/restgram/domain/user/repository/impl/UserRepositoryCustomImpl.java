@@ -15,7 +15,6 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-
     public List<User> findByIdGreaterThanAndNicknameLike(Long cursorId, String query) {
         List<User> userList = queryFactory
                 .selectFrom(user)

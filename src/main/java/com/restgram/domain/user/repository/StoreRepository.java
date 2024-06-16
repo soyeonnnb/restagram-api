@@ -9,8 +9,9 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.Optional;
 
-public interface StoreRepository extends JpaRepository<Store, Long> {
+public interface StoreRepository extends JpaRepository<Store, Long>, StoreRepositoryCustom {
     boolean existsByEmail(String email);
+
     Optional<Store> findByEmail(String email);
 
     @EntityGraph(attributePaths = {"emdAddress", "emdAddress.siggAddress", "emdAddress.siggAddress.sidoAddress"})
@@ -19,4 +20,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     @Query("SELECT s FROM Store s WHERE s.storeName LIKE %:param% OR s.nickname LIKE %:param%")
     @EntityGraph(attributePaths = {"emdAddress", "emdAddress.siggAddress", "emdAddress.siggAddress.sidoAddress"})
     List<Store> findAllByStoreNameOrNicknameContaining(@Param("param") String parameter);
+
+
 }

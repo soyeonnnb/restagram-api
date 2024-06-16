@@ -17,6 +17,7 @@ import org.hibernate.annotations.ColumnDefault;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DiscriminatorValue("STORE")
+@Table(indexes = {@Index(name = "store_storename_idx", columnList = "storeName")})
 public class Store extends User {
 
     @Column(nullable = false)

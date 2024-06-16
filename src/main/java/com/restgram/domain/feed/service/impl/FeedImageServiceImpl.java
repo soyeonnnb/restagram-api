@@ -12,7 +12,6 @@ import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.RestApiException;
-import com.restgram.global.exception.errorCode.FeedErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import com.restgram.global.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
@@ -41,11 +40,6 @@ public class FeedImageServiceImpl implements FeedImageService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
                         "사용자ID가 유효하지 않습니다. [사용자ID=" + userId + "]"));
-        if (cursorId == null) {
-            cursorId = feedRepository.findTopByOrderByIdDesc()
-                    .orElseThrow(() -> new RestApiException(FeedErrorCode.FEED_EMPTY, "피드 데이터가 없습니다."))
-                    .getId();
-        }
         List<FeedImage> feedImageList = feedImageRepository.findByFeedWriterAndIdLessThanOrderByIdDesc(user, cursorId);
 
         List<UserFeedImageResponse> userFeedImageResponseList = feedImageList.stream()
@@ -70,11 +64,6 @@ public class FeedImageServiceImpl implements FeedImageService {
         Store store = storeRepository.findById(userId).orElseThrow(
                 () -> new RestApiException(UserErrorCode.INVALID_USER_ID,
                         "[가게] 사용자ID가 유효하지 않습니다. [사용자ID=" + userId + "]"));
-        if (cursorId == null) {
-            cursorId = feedRepository.findTopByOrderByIdDesc()
-                    .orElseThrow(() -> new RestApiException(FeedErrorCode.FEED_EMPTY, "피드 데이터가 없습니다."))
-                    .getId();
-        }
         List<FeedImage> feedImageList = feedImageRepository.findByFeedStoreAndIdLessThanOrderByIdDesc(store, cursorId);
 
         List<UserFeedImageResponse> userFeedImageResponseList = feedImageList.stream()

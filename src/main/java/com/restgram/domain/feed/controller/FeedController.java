@@ -28,9 +28,9 @@ public class FeedController {
     private final FeedService feedService;
 
     // 게시물 작성
-    @PostMapping
+    @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<ApiResponse<?>> postFeed(Authentication authentication,
-                                                   @RequestPart @Valid AddFeedRequest req,
+                                                   @RequestPart(name = "req") @Valid AddFeedRequest req,
                                                    @RequestPart(name = "images") List<MultipartFile> images) {
         Long userId = Long.parseLong(authentication.getName());
         feedService.addFeed(userId, req, images);

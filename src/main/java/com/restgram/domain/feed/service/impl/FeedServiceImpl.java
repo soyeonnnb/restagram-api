@@ -64,11 +64,7 @@ public class FeedServiceImpl implements FeedService {
                         "사용자ID가 유효하지 않습니다. [사용자ID=" + req.storeId() + "]"));
 
         // 피드 생성
-        Feed feed = Feed.builder()
-                .writer(user)
-                .store(store)
-                .content(req.content())
-                .build();
+        Feed feed = req.toEntity(user, store);
         feedRepository.save(feed);
 
         // 피드 별로 이미지 데이터 생성

@@ -58,7 +58,7 @@ public class SecurityConfig {
                                         "/api/v1/user/reissue", "/api/v1/customer/join", "/api/v1/user/logout",
                                         "/api/v1/login/oauth2/**").permitAll()
                                 .requestMatchers("/api/v1/store/password").hasAuthority(UserType.STORE.getName())
-                                .requestMatchers("/api/v1/customer/info", "/api/v1/customer/store/**").authenticated()
+                                .requestMatchers("/api/v1/customer/info", "/api/v1/customer/store", "/api/v1/customer/store/**").authenticated()
                                 .requestMatchers("/api/v1/address/**").authenticated()
                                 .requestMatchers("/api/v1/coupon", "/api/v1/coupon/stop/**",
                                         "/api/v1/coupon/finish").hasAuthority(UserType.STORE.getName())

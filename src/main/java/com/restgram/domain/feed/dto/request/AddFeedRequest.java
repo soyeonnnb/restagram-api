@@ -1,5 +1,8 @@
 package com.restgram.domain.feed.dto.request;
 
+import com.restgram.domain.feed.entity.Feed;
+import com.restgram.domain.user.entity.Store;
+import com.restgram.domain.user.entity.User;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,5 +22,12 @@ public record AddFeedRequest(
         String hashtag
 
 ) {
-
+    public Feed toEntity(User writer, Store store) {
+        return Feed.builder()
+                .content(content)
+                .store(store)
+                .writer(writer)
+                .hashtag(hashtag)
+                .build();
+    }
 }

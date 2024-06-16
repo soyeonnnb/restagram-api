@@ -11,11 +11,15 @@ import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.service.CustomerService;
+import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.UserErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +57,24 @@ public class CustomerServiceImpl implements CustomerService {
     public StoreInfoResponse getStoreInfo(Long storeId) {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID, "[가게] 사용자ID가 유효하지 않습니다. [사용자ID=" + storeId + "]"));
         return StoreInfoResponse.of(store);
+    }
+
+    @Override
+    public PaginationResponse getStoreList(Long cursorId, String query) {
+        // 유저 리스트 가져오기
+        List<Store> storeList = storeRepository.findByIdGreaterThanAndNicknameAndStoreNameLike(cursorId, query);
+
+        // 다음 커서 값 설정
+        Long nextCursorId =
+                !storeList.isEmpty() ? storeList.get(storeList.size() - 1).getId() : null;
+        boolean hasNext = storeList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
+
+
+        return PaginationResponse.builder()
+                .list(storeList.stream().map(StoreInfoResponse::of).collect(Collectors.toList()))
+                .hasNext(hasNext)
+                .cursorId(nextCursorId)
+                .build();
     }
 
 }
