@@ -1,6 +1,5 @@
 package com.restgram.domain.feed.service.impl;
 
-import com.restgram.domain.feed.dto.response.FeedImageCursorResponse;
 import com.restgram.domain.feed.dto.response.UserFeedImageResponse;
 import com.restgram.domain.feed.entity.Feed;
 import com.restgram.domain.feed.entity.FeedImage;
@@ -11,6 +10,7 @@ import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
+import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.FeedErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
@@ -37,7 +37,7 @@ public class FeedImageServiceImpl implements FeedImageService {
     // 피드리스트에서 첫번째 피드 리스트만 가져오기
     @Override
     @Transactional(readOnly = true)
-    public FeedImageCursorResponse getFeedImageList(Long userId, Long cursorId) {
+    public PaginationResponse getFeedImageList(Long userId, Long cursorId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
                         "사용자ID가 유효하지 않습니다. [사용자ID=" + userId + "]"));
@@ -57,16 +57,16 @@ public class FeedImageServiceImpl implements FeedImageService {
                 userFeedImageResponseList.size() - 1).id() : null;
         boolean hasNext = userFeedImageResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
 
-        return FeedImageCursorResponse.builder()
+        return PaginationResponse.builder()
                 .cursorId(nextCursorId)
-                .images(userFeedImageResponseList)
+                .list(userFeedImageResponseList)
                 .hasNext(hasNext)
                 .build();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public FeedImageCursorResponse getReviewImageList(Long userId, Long cursorId) {
+    public PaginationResponse getReviewImageList(Long userId, Long cursorId) {
         Store store = storeRepository.findById(userId).orElseThrow(
                 () -> new RestApiException(UserErrorCode.INVALID_USER_ID,
                         "[가게] 사용자ID가 유효하지 않습니다. [사용자ID=" + userId + "]"));
@@ -86,9 +86,9 @@ public class FeedImageServiceImpl implements FeedImageService {
                 userFeedImageResponseList.size() - 1).id() : null;
         boolean hasNext = userFeedImageResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
 
-        return FeedImageCursorResponse.builder()
+        return PaginationResponse.builder()
                 .cursorId(nextCursorId)
-                .images(userFeedImageResponseList)
+                .list(userFeedImageResponseList)
                 .hasNext(hasNext)
                 .build();
     }

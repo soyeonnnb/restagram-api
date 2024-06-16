@@ -6,7 +6,6 @@ import com.restgram.domain.address.repository.SidoAddressRepository;
 import com.restgram.domain.address.repository.SiggAddressRepository;
 import com.restgram.domain.feed.dto.request.AddFeedRequest;
 import com.restgram.domain.feed.dto.request.UpdateFeedRequest;
-import com.restgram.domain.feed.dto.response.FeedCursorResponse;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.entity.Feed;
 import com.restgram.domain.feed.entity.FeedImage;
@@ -21,6 +20,7 @@ import com.restgram.domain.user.entity.User;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
+import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.AddressErrorCode;
 import com.restgram.global.exception.errorCode.FeedErrorCode;
@@ -98,7 +98,7 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional(readOnly = true)
-    public FeedCursorResponse searchFeeds(Long userId, Long addressId, Integer addressRange,
+    public PaginationResponse searchFeeds(Long userId, Long addressId, Integer addressRange,
                                           String query, Long cursorId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
@@ -127,10 +127,10 @@ public class FeedServiceImpl implements FeedService {
                 !feedResponseList.isEmpty() ? feedResponseList.get(feedResponseList.size() - 1).id() : null;
         boolean hasNext = feedResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
 
-        return FeedCursorResponse.builder()
+        return PaginationResponse.builder()
                 .cursorId(nextCursorId)
                 .hasNext(hasNext)
-                .feeds(feedResponseList)
+                .list(feedResponseList)
                 .build();
     }
 
@@ -170,13 +170,13 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     @Transactional(readOnly = true)
-    public FeedCursorResponse getFeedsCursor(Long userId, Long cursorId) {
+    public PaginationResponse getFeedsCursor(Long userId, Long cursorId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
                         "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
         // 팔로우 리스트 가져오기
         List<User> searchUserList = followRepository.findFollowingsByFollower(user);
-        
+
         searchUserList.add(user);
 
         // 내 + 팔로우한 사람들의 피드 리스트 가져오기
@@ -188,10 +188,10 @@ public class FeedServiceImpl implements FeedService {
                 !feedResponseList.isEmpty() ? feedResponseList.get(feedResponseList.size() - 1).id() : null;
         boolean hasNext = feedResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
 
-        return FeedCursorResponse.builder()
+        return PaginationResponse.builder()
                 .cursorId(nextCursorId)
                 .hasNext(hasNext)
-                .feeds(feedResponseList)
+                .list(feedResponseList)
                 .build();
     }
 

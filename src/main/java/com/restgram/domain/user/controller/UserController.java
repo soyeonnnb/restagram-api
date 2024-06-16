@@ -3,8 +3,8 @@ package com.restgram.domain.user.controller;
 import com.restgram.domain.user.dto.request.NicknameRequest;
 import com.restgram.domain.user.dto.response.CheckResponse;
 import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
-import com.restgram.domain.user.dto.response.UserInfoCursorResponse;
 import com.restgram.domain.user.service.UserService;
+import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.ApiResponse;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletResponse;
@@ -49,10 +49,10 @@ public class UserController {
 
     // 유저 리스트 검색
     @GetMapping
-    public ResponseEntity<ApiResponse<UserInfoCursorResponse>> searchUser(@RequestParam(value = "cursor-id", required = false) Long cursorId,
-                                                                          @RequestParam("query") String query) {
+    public ResponseEntity<ApiResponse<PaginationResponse>> searchUser(@RequestParam(value = "cursor-id", required = false) Long cursorId,
+                                                                      @RequestParam("query") String query) {
 
-        UserInfoCursorResponse userInfoCursorResponse = userService.searchUser(cursorId, query);
+        PaginationResponse userInfoCursorResponse = userService.searchUser(cursorId, query);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(userInfoCursorResponse), HttpStatus.OK);
     }

@@ -2,9 +2,9 @@ package com.restgram.domain.feed.controller;
 
 import com.restgram.domain.feed.dto.request.AddFeedRequest;
 import com.restgram.domain.feed.dto.request.UpdateFeedRequest;
-import com.restgram.domain.feed.dto.response.FeedCursorResponse;
 import com.restgram.domain.feed.dto.response.FeedResponse;
 import com.restgram.domain.feed.service.FeedService;
+import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.ApiResponse;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
@@ -68,18 +68,18 @@ public class FeedController {
 
     // 팔로우한+내 유저의 피드 가져오기
     @GetMapping("/cursor")
-    public ResponseEntity<ApiResponse<FeedCursorResponse>> getFeedsCursor(Authentication authentication, @RequestParam(value = "cursor-id", required = false) Long cursorId) {
+    public ResponseEntity<ApiResponse<PaginationResponse>> getFeedsCursor(Authentication authentication, @RequestParam(value = "cursor-id", required = false) Long cursorId) {
         Long userId = Long.parseLong(authentication.getName());
-        FeedCursorResponse feedResponseList = feedService.getFeedsCursor(userId, cursorId);
+        PaginationResponse feedResponseList = feedService.getFeedsCursor(userId, cursorId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(feedResponseList), HttpStatus.OK);
     }
 
     // 피드 검색
     @GetMapping("/search")
-    public ResponseEntity<ApiResponse<FeedCursorResponse>> searchFeed(Authentication authentication, @RequestParam("address-id") @Nullable Long addressId, @RequestParam("address-range") Integer addressRange, @RequestParam("query") String query, @RequestParam("cursor-id") @Nullable Long cursorId) {
+    public ResponseEntity<ApiResponse<PaginationResponse>> searchFeed(Authentication authentication, @RequestParam("address-id") @Nullable Long addressId, @RequestParam("address-range") Integer addressRange, @RequestParam("query") String query, @RequestParam("cursor-id") @Nullable Long cursorId) {
         Long userId = Long.parseLong(authentication.getName());
-        FeedCursorResponse feedResponseList = feedService.searchFeeds(userId, addressId, addressRange, query, cursorId);
+        PaginationResponse feedResponseList = feedService.searchFeeds(userId, addressId, addressRange, query, cursorId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(feedResponseList), HttpStatus.OK);
     }

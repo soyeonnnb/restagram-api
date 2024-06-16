@@ -1,7 +1,7 @@
 package com.restgram.domain.feed.controller;
 
-import com.restgram.domain.feed.dto.response.FeedImageCursorResponse;
 import com.restgram.domain.feed.service.FeedImageService;
+import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.ApiResponse;
 import jakarta.annotation.Nullable;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +20,16 @@ public class FeedImageController {
 
     // 유저 피드 이미지 리스트 가져오기
     @GetMapping("/image/{userId}")
-    public ResponseEntity<ApiResponse<FeedImageCursorResponse>> userFeedList(@PathVariable("userId") Long userId, @RequestParam("cursor-id") @Nullable Long cursorId) {
-        FeedImageCursorResponse feedImageCursorResponse = feedImageService.getFeedImageList(userId, cursorId);
+    public ResponseEntity<ApiResponse<PaginationResponse>> userFeedList(@PathVariable("userId") Long userId, @RequestParam("cursor-id") @Nullable Long cursorId) {
+        PaginationResponse feedImageCursorResponse = feedImageService.getFeedImageList(userId, cursorId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(feedImageCursorResponse), HttpStatus.OK);
     }
 
     // 유저 리뷰 이미지 리스트 가져오기
     @GetMapping("/image/review/{userId}")
-    public ResponseEntity<ApiResponse<FeedImageCursorResponse>> userReviewFeedList(@PathVariable("userId") Long userId, @RequestParam("cursor-id") @Nullable Long cursorId) {
-        FeedImageCursorResponse feedImageCursorResponse = feedImageService.getReviewImageList(userId, cursorId);
+    public ResponseEntity<ApiResponse<PaginationResponse>> userReviewFeedList(@PathVariable("userId") Long userId, @RequestParam("cursor-id") @Nullable Long cursorId) {
+        PaginationResponse feedImageCursorResponse = feedImageService.getReviewImageList(userId, cursorId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(feedImageCursorResponse), HttpStatus.OK);
     }

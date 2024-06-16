@@ -14,6 +14,7 @@ import com.restgram.domain.user.repository.RefreshTokenRepository;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
 import com.restgram.domain.user.service.UserService;
+import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.JwtTokenErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
@@ -59,7 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserInfoCursorResponse searchUser(Long cursorId, String query) {
+    public PaginationResponse searchUser(Long cursorId, String query) {
         if (cursorId == null) {
             cursorId = 1L;
         }
@@ -74,7 +75,7 @@ public class UserServiceImpl implements UserService {
         boolean hasNext = userInfoResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
 
 
-        return UserInfoCursorResponse.builder()
+        return PaginationResponse.builder()
                 .list(userInfoResponseList)
                 .hasNext(hasNext)
                 .cursorId(nextCursorId)
