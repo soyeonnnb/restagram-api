@@ -31,11 +31,11 @@ public class FollowController {
     }
 
     // 팔로우 취소
-    @DeleteMapping("/{followId}")
+    @DeleteMapping("/{followingId}")
     public ResponseEntity<ApiResponse<?>> deleteFollow(Authentication authentication,
-                                                       @PathVariable("followId") Long followId) {
+                                                       @PathVariable("followingId") Long followingId) {
         Long userId = Long.parseLong(authentication.getName());
-        followService.deleteFollow(userId, followId);
+        followService.deleteFollow(userId, followingId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.OK);
     }
