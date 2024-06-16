@@ -16,6 +16,7 @@ import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.repository.CustomerRepository;
 import com.restgram.domain.user.repository.StoreRepository;
 import com.restgram.domain.user.repository.UserRepository;
+import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.RestApiException;
 import com.restgram.global.exception.errorCode.ReservationErrorCode;
 import com.restgram.global.exception.errorCode.UserErrorCode;
@@ -152,15 +153,15 @@ public class ReservationServiceImpl implements ReservationService {
     // 구매자 예약 리스트
     @Override
     @Transactional(readOnly = true)
-    public List<CustomerReservationResponse> getCustomerReservations(Long userId) {
+    public PaginationResponse getCustomerReservations(Long userId, Long cursorId) {
         Customer customer = customerRepository.findById(userId)
                 .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
                         "[일반] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
 
-        List<Reservation> reservationList = reservationRepository.findAllByCustomerOrderByDatetimeDesc(
-                customer);
+        List<Reservation> reservationList = reservationRepository.findAllByCustomerAndDatetimeBeforeThanOrderByDatetimeDesc(
+                customer, cursorId);
 
-        return reservationList.stream()
+        List<CustomerReservationResponse> customerReservationResponseList = reservationList.stream()
                 .map(reservation -> {
                     if (reservation.getState().equals(ReservationState.ACTIVE)) { // 예약이 정상 상태
                         return CustomerReservationResponse.of(reservation);
@@ -174,6 +175,19 @@ public class ReservationServiceImpl implements ReservationService {
                     }
                 })
                 .collect(Collectors.toList());
+
+
+        Long nextCursorId =
+                !customerReservationResponseList.isEmpty() ? customerReservationResponseList.get(customerReservationResponseList.size() - 1).reservation().id() : null;
+        boolean hasNext = customerReservationResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
+
+
+        return PaginationResponse.builder()
+                .list(customerReservationResponseList)
+                .hasNext(hasNext)
+                .cursorId(nextCursorId)
+                .build();
+
     }
 
     @Override

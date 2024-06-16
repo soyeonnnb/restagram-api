@@ -2,7 +2,6 @@ package com.restgram.domain.reservation.repository;
 
 import com.restgram.domain.reservation.entity.Reservation;
 import com.restgram.domain.reservation.entity.ReservationState;
-import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -13,12 +12,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+public interface ReservationRepository extends JpaRepository<Reservation, Long>, ReservationRepositoryCustom {
     @Lock(LockModeType.PESSIMISTIC_READ) // 비관적 락 사용
     @EntityGraph(attributePaths = {"customer"})
     Optional<Reservation> findById(Long id);
-    @EntityGraph(attributePaths = {"store"})
-    List<Reservation> findAllByCustomerOrderByDatetimeDesc(Customer customer);
 
     @EntityGraph(attributePaths = {"customer"})
     List<Reservation> findAllByStoreAndDatetimeGreaterThanEqualAndDatetimeLessThanOrderByDatetime(Store store, LocalDateTime startAt, LocalDateTime endAt);

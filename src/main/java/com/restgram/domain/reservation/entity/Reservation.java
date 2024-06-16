@@ -21,7 +21,7 @@ public class Reservation extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JoinColumn(name = "reservation_id", nullable = false)
+    @JoinColumn(name = "reservation_form_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private ReservationForm reservationForm; // 예약폼
 
