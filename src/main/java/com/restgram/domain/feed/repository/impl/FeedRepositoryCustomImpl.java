@@ -71,6 +71,25 @@ public class FeedRepositoryCustomImpl implements FeedRepositoryCustom {
         return feedToFeedResponse(feeds, loginUser);
     }
 
+    @Override
+    public List<FeedResponse> findByWriterAndIdLessOrGreaterThanIdDesc(User loginUser, User user, Long cursorId) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if (cursorId != null) {
+            builder.and(feed.id.lt(cursorId));
+
+        }
+        builder.and(feed.writer.eq(user));
+
+        List<Feed> feeds = queryFactory
+                .selectFrom(feed)
+                .where(builder)
+                .orderBy(feed.id.desc())
+                .limit(20)
+                .fetch();
+
+        return feedToFeedResponse(feeds, loginUser);
+    }
+
     private List<FeedResponse> feedToFeedResponse(List<Feed> feeds, User loginUser) {
 
         // 가져온 feed ID 목록 추출
@@ -84,6 +103,7 @@ public class FeedRepositoryCustomImpl implements FeedRepositoryCustom {
                 .leftJoin(feed.feedImageList).fetchJoin()
                 .leftJoin(feed.store, store).fetchJoin()
                 .where(feed.id.in(feedIds))
+                .orderBy(feed.id.desc())
                 .fetch();
 
         return results.stream()

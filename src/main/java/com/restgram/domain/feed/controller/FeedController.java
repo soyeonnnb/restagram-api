@@ -83,4 +83,15 @@ public class FeedController {
 
         return new ResponseEntity<>(ApiResponse.createSuccess(feedResponseList), HttpStatus.OK);
     }
+
+    // 유저의 특정 피드 전/후 가져오기
+    @GetMapping("/{userId}")
+    public ResponseEntity<ApiResponse<PaginationResponse>> searchPrevNextFeed(Authentication authentication, @PathVariable("userId") Long userId, @RequestParam("cursor-id") Long cursorId) {
+        Long loginUserId = Long.parseLong(authentication.getName());
+        PaginationResponse feedResponseList = feedService.searchUserFeed(loginUserId, userId, cursorId);
+
+        return new ResponseEntity<>(ApiResponse.createSuccess(feedResponseList), HttpStatus.OK);
+    }
+
+
 }

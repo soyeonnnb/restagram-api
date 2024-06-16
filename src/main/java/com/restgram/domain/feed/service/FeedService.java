@@ -21,4 +21,6 @@ public interface FeedService {
     void updateFeed(Long userId, UpdateFeedRequest request);
 
     PaginationResponse getFeedsCursor(Long userId, Long cursorId);
+
+    PaginationResponse searchUserFeed(Long loginUserId, Long userId, Long cursorId);
 }

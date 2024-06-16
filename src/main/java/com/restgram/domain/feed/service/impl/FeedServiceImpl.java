@@ -191,4 +191,29 @@ public class FeedServiceImpl implements FeedService {
                 .build();
     }
 
+    @Override
+    public PaginationResponse searchUserFeed(Long loginUserId, Long userId, Long cursorId) {
+        User loginUser = userRepository.findById(loginUserId).orElseThrow(
+                () -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
+                        "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new RestApiException(UserErrorCode.INVALID_USER_ID,
+                        "사용자ID가 유효하지 않습니다. [사용자ID=" + userId + "]"));
+
+        // 내 + 팔로우한 사람들의 피드 리스트 가져오기
+        List<FeedResponse> feedResponseList = feedRepository.findByWriterAndIdLessOrGreaterThanIdDesc(loginUser, user, cursorId);
+
+        // 다음 커서 값 설정
+
+        Long nextCursorId = !feedResponseList.isEmpty() ? feedResponseList.get(feedResponseList.size() - 1).id() : null;
+
+        boolean hasNext = feedResponseList.size() == 20;  // 페이지 크기와 동일한 경우 다음 페이지가 있다고 간주
+
+        return PaginationResponse.builder()
+                .cursorId(nextCursorId)
+                .hasNext(hasNext)
+                .list(feedResponseList)
+                .build();
+    }
+
 }
