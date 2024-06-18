@@ -84,15 +84,16 @@ sourceSets {
 }
 
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
     querydsl.extendsFrom compileClasspath //외부라이브러리 컴파일 경로 상속
 }
 
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
+tasks.named('compileQuerydsl').configure {
+    enabled = false
 }
+
+//compileQuerydsl {
+//    options.annotationProcessorPath = configurations.querydsl
+//}
 
 clean.doFirst {
     delete querydslDir
