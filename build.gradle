@@ -91,10 +91,6 @@ tasks.named('compileQuerydsl').configure {
     enabled = false
 }
 
-//compileQuerydsl {
-//    options.annotationProcessorPath = configurations.querydsl
-//}
-
 clean.doFirst {
     delete querydslDir
 }
