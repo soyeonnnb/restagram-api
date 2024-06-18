@@ -22,6 +22,7 @@ public class ChatRoom extends BaseEntity {
     private ChatMessage lastMessage; // 마지막 전송 메세지
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<ChatMember> members = new ArrayList<>(); // 채팅 멤버
 
     public void updateLastMessage(ChatMessage message) {

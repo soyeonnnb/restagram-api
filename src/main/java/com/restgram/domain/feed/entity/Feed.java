@@ -34,6 +34,7 @@ public class Feed extends BaseEntity {
     private String hashtag; // 해시태그
 
     @OneToMany(mappedBy = "feed")
+    @Builder.Default
     List<FeedImage> feedImageList = new ArrayList<>();
 
     public void updateContent(String content) {
