@@ -29,7 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override // 이 주소로 오는 건 토큰 없어도 됨.
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
-        return path.equals("/api/v1/store/login") || path.equals("/api/v1/store/join") || path.equals("/api/v1/user/logout") || path.equals("/api/v1/user/reissue") || path.equals("/api/v1/customer/join") || path.startsWith("/ws");
+        return path.equals("/api/v1/store/login") || path.equals("/api/v1/store/join") || path.equals("/api/v1/user/logout") || path.equals("/api/v1/user/reissue") || path.equals("/api/v1/customer/join") || path.startsWith("/ws") || path.equals("/api/v1/store/duplicate/email") || path.equals("/api/v1/user/duplicate/nickname");
     }
 
     @Override

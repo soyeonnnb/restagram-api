@@ -56,7 +56,7 @@ public class SecurityConfig {
                                 .requestMatchers("/ws/**").permitAll()
                                 .requestMatchers("/api/v1/store/join", "/api/v1/store/login",
                                         "/api/v1/user/reissue", "/api/v1/customer/join", "/api/v1/user/logout",
-                                        "/api/v1/login/oauth2/**").permitAll()
+                                        "/api/v1/login/oauth2/**", "/api/v1/store/duplicate/email", "/api/v1/user/duplicate/nickname").permitAll()
                                 .requestMatchers("/api/v1/store/password").hasAuthority(UserType.STORE.getName())
                                 .requestMatchers("/api/v1/customer/info", "/api/v1/customer/store", "/api/v1/customer/store/**").authenticated()
                                 .requestMatchers("/api/v1/address/**").authenticated()
