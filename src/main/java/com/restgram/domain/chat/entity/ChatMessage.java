@@ -3,7 +3,6 @@ package com.restgram.domain.chat.entity;
 import com.restgram.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -22,7 +21,6 @@ public class ChatMessage {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @ColumnDefault("TEXT")
     private ChatMessageType type; // 채팅 메세지 타입 TALK, IMAGE
 
     @Column(nullable = false, length = 1000)
