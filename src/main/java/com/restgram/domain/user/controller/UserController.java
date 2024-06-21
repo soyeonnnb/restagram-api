@@ -29,8 +29,8 @@ public class UserController {
 
     // 회원 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<?>> logout(@CookieValue(value = TYPE_ACCESS) String accessToken,
-                                                 @CookieValue(value = TYPE_REFRESH) String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<ApiResponse<?>> logout(@CookieValue(value = TYPE_ACCESS) @Nullable String accessToken,
+                                                 @CookieValue(value = TYPE_REFRESH) @Nullable String refreshToken, HttpServletResponse response) {
         userService.logout(response, accessToken, refreshToken);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.OK);
