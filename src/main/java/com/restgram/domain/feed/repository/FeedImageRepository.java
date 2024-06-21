@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface FeedImageRepository extends JpaRepository<FeedImage, Long>, FeedImageRepositoryCustom {
-    List<FeedImage> findAllByFeed(Feed feed);
+    List<FeedImage> findAllByFeedOrderByNumber(Feed feed);
 
     void deleteAllByFeed(Feed feed);
 

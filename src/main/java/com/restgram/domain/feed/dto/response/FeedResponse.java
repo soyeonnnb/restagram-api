@@ -27,6 +27,7 @@ public record FeedResponse(
     public static FeedResponse of(Feed feed, boolean isLike) {
         List<FeedImageResponse> feedImageResponsesList = feed.getFeedImageList().stream()
                 .map(image -> FeedImageResponse.of(image))
+                .sorted((f1, f2) -> f1.number() - f2.number())
                 .collect(Collectors.toList());
 
         return FeedResponse.builder()
@@ -44,6 +45,7 @@ public record FeedResponse(
     public static FeedResponse of(Feed feed, List<FeedImage> images, boolean isLike) {
         List<FeedImageResponse> feedImageResponsesList = images.stream()
                 .map(image -> FeedImageResponse.of(image))
+                .sorted((f1, f2) -> f1.number() - f2.number())
                 .collect(Collectors.toList());
 
         return FeedResponse.builder()

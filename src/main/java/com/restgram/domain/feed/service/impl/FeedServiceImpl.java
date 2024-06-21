@@ -142,7 +142,7 @@ public class FeedServiceImpl implements FeedService {
                     "로그인 사용자와 피드 작성자가 일치하지 않습니다. [로그인 사용자ID=" + userId + ", 피드ID=" + feedId + "]");
         }
 
-        List<FeedImage> feedImageList = feedImageRepository.findAllByFeed(feed);
+        List<FeedImage> feedImageList = feedImageRepository.findAllByFeedOrderByNumber(feed);
         for (FeedImage feedImage : feedImageList) {
             feedImageRepository.delete(feedImage);
         }
