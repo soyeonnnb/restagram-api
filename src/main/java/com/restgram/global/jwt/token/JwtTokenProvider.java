@@ -144,7 +144,9 @@ public class JwtTokenProvider implements InitializingBean {
         log.info("토큰 삭제");
         tokenCookieRemove(response, TYPE_ACCESS);
         tokenCookieRemove(response, TYPE_REFRESH);
-        refreshTokenRepository.deleteByAccessTokenAndRefreshToken(accessToken, refreshToken); // 서버에서 삭제 -> 비교군
+
+        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByAccessTokenAndRefreshToken(accessToken, refreshToken);
+        if (optionalRefreshToken.isPresent()) refreshTokenRepository.delete(optionalRefreshToken.get());
     }
 
     // 쿠키에서 삭제
@@ -219,7 +221,7 @@ public class JwtTokenProvider implements InitializingBean {
     // HttpServletRequest 쿠키에서
     // key에 해당하는 토큰이 있다면 해당 값 반환
     public String resolveToken(HttpServletRequest request, String keyValue) {
-        if(request.getCookies() == null) return null;
+        if (request.getCookies() == null) return null;
         Optional<Cookie> cookie = Arrays.stream(request.getCookies())
                 .filter(c -> c.getName().equals(keyValue))
                 .findFirst();
@@ -237,7 +239,8 @@ public class JwtTokenProvider implements InitializingBean {
             throw new RestApiException(JwtTokenErrorCode.DOES_NOT_EXIST_TOKEN);
         }
         // db에 있는 값인지 확인한 후, db에 없으면 유효하지 않다고 판단 -> 재로그인 요청
-        if (!refreshTokenRepository.existsByAccessTokenAndRefreshToken(accessToken, refreshToken)) throw new RestApiException(JwtTokenErrorCode.INVALID_TOKEN);
+        if (!refreshTokenRepository.existsByAccessTokenAndRefreshToken(accessToken, refreshToken))
+            throw new RestApiException(JwtTokenErrorCode.INVALID_TOKEN);
         com.restgram.domain.user.entity.User user = userRepository.findById(getUserId(refreshToken, response)).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID));
 
         // 존재한다면 우선 토큰 삭제
