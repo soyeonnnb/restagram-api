@@ -9,8 +9,6 @@ import java.util.Optional;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 
-    void deleteByAccessTokenAndRefreshToken(String accessToken, String refreshToken);
-    
     @Lock(value = LockModeType.PESSIMISTIC_WRITE)
     Optional<RefreshToken> findByAccessTokenAndRefreshToken(String accessToken, String refreshToken);
 
