@@ -4,7 +4,9 @@ import com.restgram.domain.coupon.dto.request.AddCouponRequest;
 import com.restgram.domain.coupon.dto.response.CustomerCouponResponse;
 import com.restgram.domain.coupon.dto.response.StoreCouponResponse;
 import com.restgram.domain.coupon.service.CouponService;
+import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.ApiResponse;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,9 +54,9 @@ public class CouponController {
 
     // 발급 종료 쿠폰 리스트 가져오기
     @GetMapping("/finish")
-    public ResponseEntity<ApiResponse<List<StoreCouponResponse>>> getFinishCouponList(Authentication authentication) {
+    public ResponseEntity<ApiResponse<PaginationResponse<?>>> getFinishCouponList(Authentication authentication, @Nullable @RequestParam("cursor-id") Long cursorId) {
         Long storeId = Long.parseLong(authentication.getName());
-        List<StoreCouponResponse> storeCouponResponseList = couponService.getFinsihCouponList(storeId);
+        PaginationResponse<?> storeCouponResponseList = couponService.getFinishCouponList(storeId, cursorId);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(storeCouponResponseList), HttpStatus.OK);
     }

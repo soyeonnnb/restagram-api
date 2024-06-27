@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface IssueCouponService {
     List<IssueCouponResponse> getCustomerCouponList(Long customerId);
+
+    void useCoupon(Long customerId, Long couponId);
 }

@@ -35,9 +35,9 @@ public class IssueCoupon extends BaseEntity {
 
     private LocalDateTime usedAt; // 사용시간
 
-    private String qrImage; // qr 이미지
-
-    public void setQrImage(String qrImage) {
-        this.qrImage = qrImage;
+    public void use() {
+        isUsed = true;
+        usedAt = LocalDateTime.now();
     }
+
 }
