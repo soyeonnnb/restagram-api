@@ -42,7 +42,7 @@ public class CouponSchedulerService {
             List<Coupon> couponList = couponRepository.findAllByStartAtAndDisable(dateTimeNow, false);
 
             log.info("{} 쿠폰 알림 보내기 시작", dateTimeNow);
-            for(Coupon coupon : couponList) {
+            for (Coupon coupon : couponList) {
                 List<User> userList = followRepository.findFollowersByFollowing(coupon.getStore());
                 notificationService.sendList(userList, NotificationType.START_COUPON, coupon);
             }

@@ -77,6 +77,7 @@ public class SecurityConfig {
                                 .requestMatchers("/api/v1/notification/**").authenticated()
                                 .requestMatchers("/api/v1/customer/calender/agree")
                                 .hasAuthority(UserType.CUSTOMER.getName())
+                                .requestMatchers("/api/v1/chat/**").authenticated()
                                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

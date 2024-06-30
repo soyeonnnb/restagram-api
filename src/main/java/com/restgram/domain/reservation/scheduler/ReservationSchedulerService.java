@@ -39,7 +39,7 @@ public class ReservationSchedulerService {
 
             List<Reservation> reservationList = reservationRepository.findAllByDatetimeAndState(dateTimeNow, ReservationState.ACTIVE);
             log.info("{} 예약 알림 보내기 시작", dateTimeNow);
-            for(Reservation reservation : reservationList) {
+            for (Reservation reservation : reservationList) {
                 notificationService.send(reservation.getCustomer(), NotificationType.BEFORE_RESERVATION, reservation);
             }
             log.info("{} 예약 알림 보내기 성공", dateTimeNow);
@@ -47,5 +47,5 @@ public class ReservationSchedulerService {
             log.error("예약 2시간 전 알람 스케줄 중 예외 발생", e);
         }
     }
-    
+
 }

@@ -15,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,9 +31,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     @Transactional
     public ChatRoomResponse getChatRoom(Long userId, Long receiverId) {
-        if (userId == receiverId) throw new RestApiException(ChatErrorCode.SENDER_RECEIVER_IS_THE_SAME, "채팅 수신자와 발신자가 동일합니다. [사용자ID="+userId+"]");
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID, "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID="+userId+"]"));
-        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID, "채팅 수신자 ID가 유효하지 않습니다. [채팅 수신자ID="+receiverId+"]"));
+        if (userId == receiverId)
+            throw new RestApiException(ChatErrorCode.SENDER_RECEIVER_IS_THE_SAME, "채팅 수신자와 발신자가 동일합니다. [사용자ID=" + userId + "]");
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID, "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
+        User receiver = userRepository.findById(receiverId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_USER_ID, "채팅 수신자 ID가 유효하지 않습니다. [채팅 수신자ID=" + receiverId + "]"));
 
         Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByUsers(user, receiver);
         ChatRoom chatRoom;
@@ -47,7 +46,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
             // 채팅방 생성 후
             chatRoom = ChatRoom.builder()
-                    .members(Arrays.asList(member1, member2))
+//                    .members(Arrays.asList(member1, member2))
                     .build();
 
             chatRoomRepository.save(chatRoom);
@@ -69,8 +68,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     @Transactional(readOnly = true)
     public List<ChatRoomResponse> getChatRoomList(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID, "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID="+userId+"]"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID, "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
         List<ChatRoom> chatRoomList = chatRoomRepository.findAllByUser(user);
+        System.out.println(chatRoomList);
         List<ChatRoomResponse> chatRoomResponseList = chatRoomList.stream()
                 .map(chatRoom -> {
                     User receiver = chatRoom.getMembers().stream()

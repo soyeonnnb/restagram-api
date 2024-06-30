@@ -1,8 +1,9 @@
 package com.restgram.domain.chat.service;
 
-import com.restgram.domain.chat.dto.request.ChatMessageRequest;
-import com.restgram.domain.chat.dto.response.ChatSendResponse;
+import com.restgram.domain.chat.dto.response.ChatMessageResponse;
+
+import java.util.List;
 
 public interface ChatMessageService {
-    ChatSendResponse sendChat(ChatMessageRequest request);
+    List<ChatMessageResponse> getChatList(Long userId, Long roomId);
 }
