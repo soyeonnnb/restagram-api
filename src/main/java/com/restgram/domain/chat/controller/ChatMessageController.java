@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,7 +23,7 @@ public class ChatMessageController {
     private final ChatMessageService chatMessageService;
 
     // 내 채팅방 리스트 가져오기
-    @GetMapping("/{roomId}")
+    @PostMapping("/{roomId}")
     public ResponseEntity<ApiResponse<List<ChatMessageResponse>>> getChatList(Authentication authentication, @PathVariable("roomId") @NotNull Long roomId) {
         Long userId = Long.parseLong(authentication.getName());
         List<ChatMessageResponse> chatMessageResponseList = chatMessageService.getChatList(userId, roomId);

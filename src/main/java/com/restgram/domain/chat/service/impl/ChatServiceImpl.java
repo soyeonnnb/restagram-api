@@ -1,8 +1,10 @@
 package com.restgram.domain.chat.service.impl;
 
 import com.restgram.domain.chat.dto.request.ChatMessageRequest;
+import com.restgram.domain.chat.dto.response.ChatMemberResponse;
 import com.restgram.domain.chat.dto.response.ChatMessageResponse;
 import com.restgram.domain.chat.dto.response.ChatSendResponse;
+import com.restgram.domain.chat.entity.ChatMember;
 import com.restgram.domain.chat.entity.ChatMessage;
 import com.restgram.domain.chat.entity.ChatRoom;
 import com.restgram.domain.chat.repository.ChatMessageRepository;
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,17 +51,31 @@ public class ChatServiceImpl implements ChatService {
                     "로그인 사용자가 참여한 채팅방이 아닙니다. [로그인 사용자ID=" + request.userId() + ", 채팅방ID="
                             + request.roomId() + "]");
         }
-
+        ChatMember receiverMember = chatRoom.getMembers().stream().filter((u) -> !u.getUser().getId().equals(request.userId())).findFirst().orElseThrow(() -> new RestApiException(ChatErrorCode.INVALID_CHAT_MEMBER, "채팅 멤버가 유효하지 않습니다. [채팅방ID=" + request.roomId() + "]"));
+        ChatMember me = chatRoom.getMembers().stream().filter((u) -> u.getUser().getId().equals(request.userId())).findFirst().orElseThrow(() -> new RestApiException(ChatErrorCode.INVALID_CHAT_MEMBER, "채팅 멤버가 유효하지 않습니다. [채팅방ID=" + request.roomId() + "]"));
         // 메세지 저장
         ChatMessage message = request.toEntity(sender, chatRoom);
         chatMessageRepository.save(message);
 
         // 메세지 설정
         chatRoom.updateLastMessage(message);
+        receiverMember.addCount();
+
+        // 리턴값
+        List<ChatMemberResponse> chatMemberResponseList = new ArrayList<>();
+        chatMemberResponseList.add(ChatMemberResponse.of(me, receiverMember));
+        chatMemberResponseList.add(ChatMemberResponse.of(receiverMember, me));
 
         return ChatSendResponse.builder()
                 .message(ChatMessageResponse.of(message))
-                .userIds(memberIds)
+                .chatMemberResponseList(chatMemberResponseList)
                 .build();
+
+
+//        return ChatSendResponse.builder()
+//                .message(ChatMessageResponse.of(message))
+//                .userIds(memberIds)
+//                .chatRoomResponse(ChatRoomResponse.of(chatRoom, me))
+//                .build();
     }
 }

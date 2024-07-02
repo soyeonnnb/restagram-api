@@ -1,14 +1,17 @@
 package com.restgram.domain.chat.dto.response;
 
-import java.util.List;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public record ChatSendResponse(
 
-    List<Long> userIds,
-    ChatMessageResponse message
-    
+//        List<Long> userIds,
+        ChatMessageResponse message,
+//        ChatRoomResponse chatRoomResponse,
+        List<ChatMemberResponse> chatMemberResponseList
+
 ) {
 
 }

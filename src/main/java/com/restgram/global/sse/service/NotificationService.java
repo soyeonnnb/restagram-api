@@ -12,15 +12,24 @@ import java.util.List;
 public interface NotificationService {
 
     SseEmitter subscribe(Long userId, String lastEventId);
+
     void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data);
+
     String makeTimeIncludeId(Long userId);
+
     boolean hasLostData(String lastEventId);
+
     void sendLostData(String lastEventId, Long userId, String emitterId, SseEmitter emitter);
+
     void sendToClient(SseEmitter emitter, String id, Object data);
+
     void send(User receiver, NotificationType type, Reservation reservation);
+
     void sendList(List<User> receiverList, NotificationType type, Coupon coupon);
+
     // 예약 생성/예약 2시간 전/취소
     Notification createNotification(User receiver, NotificationType type, Reservation reservation);
+
     // 쿠폰 발급 시작
     Notification createNotification(User receiver, NotificationType type, Coupon coupon);
 }

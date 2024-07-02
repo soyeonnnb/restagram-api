@@ -38,6 +38,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findByUsers(user, receiver);
         ChatRoom chatRoom;
+        Long num = 0L;
         // 만약 이전에 생성되지 않은 채팅방이라면
         if (chatRoomOptional.isEmpty()) {
             // 멤버 생성
@@ -60,9 +61,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             chatMemberRepository.save(member2);
         } else {
             chatRoom = chatRoomOptional.get();
+            num = chatMemberRepository.findByUserAndChatRoom(user, chatRoom).orElseThrow(() -> new RestApiException(ChatErrorCode.INVALID_CHAT_MEMBER, "채팅 멤버가 유효하지 않습니다. [사용자ID=" + userId + ", 채팅방ID=" + chatRoom.getId() + "]")).getUnReadMessageCount();
         }
 
-        return ChatRoomResponse.of(chatRoom, receiver);
+        return ChatRoomResponse.of(chatRoom, receiver, num);
     }
 
     @Override
@@ -70,15 +72,17 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public List<ChatRoomResponse> getChatRoomList(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID, "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
         List<ChatRoom> chatRoomList = chatRoomRepository.findAllByUser(user);
-        System.out.println(chatRoomList);
         List<ChatRoomResponse> chatRoomResponseList = chatRoomList.stream()
                 .map(chatRoom -> {
-                    User receiver = chatRoom.getMembers().stream()
-                            .map(ChatMember::getUser)  // ChatMember에서 User를 추출
-                            .filter(member -> !member.equals(user))  // me와 다른 user를 필터링
+                    ChatMember receiver = chatRoom.getMembers().stream()
+                            .filter(member -> !member.getUser().equals(user))  // me와 다른 user를 필터링
                             .findFirst()
                             .orElse(null);
-                    return ChatRoomResponse.of(chatRoom, receiver);
+                    ChatMember me = chatRoom.getMembers().stream()
+                            .filter(member -> member.getUser().equals(user))  // me와 다른 user를 필터링
+                            .findFirst()
+                            .orElse(null);
+                    return ChatRoomResponse.of(receiver, me.getUnReadMessageCount());
                 })
                 .collect(Collectors.toList());
         return chatRoomResponseList;

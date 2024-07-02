@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(indexes = @Index(name = "idx_notification_user", columnList = "user_id"))
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
