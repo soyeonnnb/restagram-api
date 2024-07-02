@@ -42,8 +42,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         // 만약 이전에 생성되지 않은 채팅방이라면
         if (chatRoomOptional.isEmpty()) {
             // 멤버 생성
-            ChatMember member1 = ChatMember.builder().user(user).build();
-            ChatMember member2 = ChatMember.builder().user(receiver).build();
+            ChatMember member1 = ChatMember.builder().user(user).unReadMessageCount(0L).build();
+            ChatMember member2 = ChatMember.builder().user(receiver).unReadMessageCount(0L).build();
 
             // 채팅방 생성 후
             chatRoom = ChatRoom.builder()

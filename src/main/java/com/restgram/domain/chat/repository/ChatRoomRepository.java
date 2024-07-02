@@ -16,7 +16,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     @EntityGraph(attributePaths = {"lastMessage"})
     Optional<ChatRoom> findByUsers(@Param("user") User user, @Param("receiver") User receiver);
 
-    @Query("select cr from ChatRoom cr join cr.members cm where cm.user = :user and cr.lastMessage is not null")
+    @Query("select cr from ChatRoom cr join cr.members cm where cm.user = :user and cr.lastMessage is not null order by cr.updatedAt desc")
     @EntityGraph(attributePaths = {"lastMessage"})
     List<ChatRoom> findAllByUser(@Param("user") User user);
 
