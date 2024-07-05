@@ -6,9 +6,11 @@ import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -51,4 +53,25 @@ public class Reservation extends BaseEntity {
         this.state = state;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+            return false;
+        }
+
+        Reservation that = (Reservation) obj;
+
+        return this.reservationForm.equals(that.reservationForm) &&
+                this.customer.equals(that.customer) &&
+                this.getCreatedAt().equals(that.getCreatedAt())
+                ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.reservationForm, this.customer, this.getCreatedAt());
+    }
 }

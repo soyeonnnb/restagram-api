@@ -3,10 +3,12 @@ package com.restgram.domain.chat.entity;
 import com.restgram.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
@@ -37,4 +39,25 @@ public class ChatMessage {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime time; // 작성 시간
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+            return false;
+        }
+        ChatMessage that = (ChatMessage) obj;
+        return this.message.equals(that.message) &&
+                this.chatRoom.equals(that.chatRoom) &&
+                this.author.equals(that.author) &&
+                this.time.equals(that.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.message, this.author, this.time);
+    }
 }

@@ -51,8 +51,8 @@ public class ChatServiceImpl implements ChatService {
                     "로그인 사용자가 참여한 채팅방이 아닙니다. [로그인 사용자ID=" + request.userId() + ", 채팅방ID="
                             + request.roomId() + "]");
         }
-        ChatMember receiverMember = chatRoom.getMembers().stream().filter((u) -> !u.getUser().getId().equals(request.userId())).findFirst().orElseThrow(() -> new RestApiException(ChatErrorCode.INVALID_CHAT_MEMBER, "채팅 멤버가 유효하지 않습니다. [채팅방ID=" + request.roomId() + "]"));
-        ChatMember me = chatRoom.getMembers().stream().filter((u) -> u.getUser().getId().equals(request.userId())).findFirst().orElseThrow(() -> new RestApiException(ChatErrorCode.INVALID_CHAT_MEMBER, "채팅 멤버가 유효하지 않습니다. [채팅방ID=" + request.roomId() + "]"));
+        ChatMember receiverMember = chatRoom.getMembers().stream().filter((u) -> !u.getUser().equals(sender)).findFirst().orElseThrow(() -> new RestApiException(ChatErrorCode.INVALID_CHAT_MEMBER, "채팅 멤버가 유효하지 않습니다. [채팅방ID=" + request.roomId() + "]"));
+        ChatMember me = chatRoom.getMembers().stream().filter((u) -> u.getUser().equals(sender)).findFirst().orElseThrow(() -> new RestApiException(ChatErrorCode.INVALID_CHAT_MEMBER, "채팅 멤버가 유효하지 않습니다. [채팅방ID=" + request.roomId() + "]"));
         // 메세지 저장
         ChatMessage message = request.toEntity(sender, chatRoom);
         chatMessageRepository.save(message);

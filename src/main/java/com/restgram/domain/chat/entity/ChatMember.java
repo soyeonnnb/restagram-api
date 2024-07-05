@@ -4,7 +4,10 @@ import com.restgram.domain.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.util.Objects;
 
 @Entity
 @AllArgsConstructor
@@ -49,4 +52,22 @@ public class ChatMember {
                 ", unReadMessageCount=" + unReadMessageCount +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+            return false;
+        }
+        ChatMember that = (ChatMember) obj;
+        return this.user.equals(that.user) && this.chatRoom.equals(that.chatRoom);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(user, chatRoom);
+    }
+
 }

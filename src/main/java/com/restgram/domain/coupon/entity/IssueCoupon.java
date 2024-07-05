@@ -4,9 +4,11 @@ import com.restgram.domain.user.entity.Customer;
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -38,6 +40,26 @@ public class IssueCoupon extends BaseEntity {
     public void use() {
         isUsed = true;
         usedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+            return false;
+        }
+
+        IssueCoupon that = (IssueCoupon) obj;
+
+        return this.customer.equals(that.customer) &&
+                this.coupon.equals(that.coupon);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.customer, this.coupon);
     }
 
 }

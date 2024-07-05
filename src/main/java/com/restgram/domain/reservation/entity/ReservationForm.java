@@ -4,10 +4,12 @@ import com.restgram.domain.user.entity.Store;
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -50,5 +52,27 @@ public class ReservationForm extends BaseEntity {
 
     public void updateState(ReservationFormState state) {
         this.state = state;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+            return false;
+        }
+
+        ReservationForm that = (ReservationForm) obj;
+
+        return this.store.equals(that.store) &&
+                this.date.equals(that.date) &&
+                this.time.equals(that.time)
+                ;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.store, this.date, this.time);
     }
 }

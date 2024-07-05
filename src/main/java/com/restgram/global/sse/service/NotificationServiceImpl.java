@@ -100,7 +100,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .data(data, MediaType.APPLICATION_JSON)
                     .reconnectTime(0)
             );
-        } catch(Exception exception) {
+        } catch (Exception exception) {
             emitterRepository.deleteById(id);
             emitter.completeWithError(exception);
         }
@@ -124,46 +124,6 @@ public class NotificationServiceImpl implements NotificationService {
                 }
         );
     }
-//
-//    @Override
-//    @Transactional
-//    public void send(User receiver, NotificationType type, Coupon coupon) {
-//        Notification notification = createNotification(receiver, type, coupon);
-//
-//        // 로그인 한 유저의 SseEmitter 모두 가져오기
-//        Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(receiver.getId());
-//
-//        sseEmitters.forEach(
-//                (key, emitter) -> {
-//                    // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
-//                    emitterRepository.saveEventCache(key, notification);
-//                    // 데이터 전송
-//                    sendToClient(emitter, key, NotificationResponse.of(notification));
-//                }
-//        );
-//    }
-//
-//    @Override
-//    @Transactional
-//    public void sendList(List<User> receiverList, NotificationType type, Reservation reservation) {
-//        Map<String, SseEmitter> sseEmitters;
-//
-//        for (User receiver : receiverList) {
-//
-//            sseEmitters = emitterRepository.findAllEmitterStartWithByUserId(receiver.getId());
-//
-//            Notification notification = createNotification(receiver, type, reservation);
-//
-//            sseEmitters.forEach(
-//                    (key, emitter) -> {
-//                        // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
-//                        emitterRepository.saveEventCache(key, notification);
-//                        // 데이터 전송
-//                        sendToClient(emitter, key, NotificationResponse.of(notification));
-//                    }
-//            );
-//        }
-//    }
 
     @Override
     @Transactional
@@ -198,7 +158,7 @@ public class NotificationServiceImpl implements NotificationService {
                     .append(reservation.getDatetime().getDayOfMonth()).append("일 ")
                     .append(reservation.getDatetime().getHour()).append("시 ");
             if (reservation.getDatetime().getMinute() > 0)
-                    contentSb.append(reservation.getDatetime().getMinute()).append("분 ");
+                contentSb.append(reservation.getDatetime().getMinute()).append("분 ");
             contentSb.append("예약이 고객 사정으로 인해 취소되었습니다.");
         } else if (type.equals(NotificationType.STORE_RESERVATION_CANCEL)) {
             // [XX] YYYY년 MM월 DD일 HH시 MM분 예약이 가게 사정으로 인해 취소되었습니다.

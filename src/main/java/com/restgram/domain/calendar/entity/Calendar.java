@@ -1,14 +1,12 @@
 package com.restgram.domain.calendar.entity;
 
 import com.restgram.domain.user.entity.Customer;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,4 +30,21 @@ public class Calendar {
     @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime agreedAt; // 동의 시간
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+            return false;
+        }
+        Calendar that = (Calendar) obj;
+        return this.calendarId.equals(that.calendarId);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.calendarId.hashCode();
+    }
 }

@@ -3,6 +3,7 @@ package com.restgram.domain.calendar.entity;
 import com.restgram.domain.reservation.entity.Reservation;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 @Entity
 @Builder
@@ -20,4 +21,21 @@ public class CalendarEvent {
 
     @Column(nullable = false)
     private String eventId; // 일정 ID
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+            return false;
+        }
+        CalendarEvent that = (CalendarEvent) obj;
+        return this.eventId.equals(that.eventId);
+    }
+
+    @Override
+    public int hashCode() {
+        return this.eventId.hashCode();
+    }
 }

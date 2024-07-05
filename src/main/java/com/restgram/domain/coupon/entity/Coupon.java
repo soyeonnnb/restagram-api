@@ -3,11 +3,12 @@ package com.restgram.domain.coupon.entity;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -55,8 +56,27 @@ public class Coupon extends BaseEntity {
     public void setDisable(boolean disable) {
         this.disable = disable;
     }
+
     public void issueCoupon() {
         this.remainQuantity--;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+            return false;
+        }
+
+        Coupon that = (Coupon) obj;
+        return this.store.equals(that.store) && this.getCreatedAt().equals(that.getCreatedAt());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.store, this.getCreatedAt());
     }
 
 }

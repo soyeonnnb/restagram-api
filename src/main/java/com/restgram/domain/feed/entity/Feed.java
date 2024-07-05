@@ -5,9 +5,11 @@ import com.restgram.domain.user.entity.User;
 import com.restgram.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Builder
@@ -39,5 +41,27 @@ public class Feed extends BaseEntity {
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) {
+            return false;
+        }
+
+        Feed that = (Feed) obj;
+
+        return this.store.equals(that.store) &&
+                this.writer.equals(that.writer) &&
+                this.getCreatedAt().equals(that.getCreatedAt())
+                ;
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.store, this.writer, this.getCreatedAt());
     }
 }

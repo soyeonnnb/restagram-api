@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @SuperBuilder
@@ -46,7 +47,6 @@ public class User {
         return this.getClass().getAnnotation(DiscriminatorValue.class).value();
     }
 
-
     public void updateDescription(String description) {
         this.description = description;
     }
@@ -61,6 +61,23 @@ public class User {
 
     public void updateProfileImage(String url) {
         this.profileImage = url;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || obj instanceof User) return false;
+
+        User user = (User) obj;
+
+        return this.nickname.equals(user.nickname) &&
+                this.joinedAt.equals(user.joinedAt) &&
+                this.getType().equals(user.getType());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nickname, joinedAt, getType());
     }
 
 }
