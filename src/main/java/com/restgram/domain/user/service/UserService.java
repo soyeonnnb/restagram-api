@@ -3,6 +3,7 @@ package com.restgram.domain.user.service;
 import com.restgram.domain.user.dto.request.NicknameRequest;
 import com.restgram.domain.user.dto.response.CheckResponse;
 import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
+import com.restgram.domain.user.dto.response.UserProfileResponse;
 import com.restgram.global.entity.PaginationResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +20,7 @@ public interface UserService {
 
     void updateNickname(Long userId, NicknameRequest request);
 
-    void updateProfileImage(Long userId, MultipartFile image);
+    UserProfileResponse updateProfileImage(Long userId, MultipartFile image);
 
     CheckResponse duplicateNickname(String query);
 }

@@ -3,6 +3,7 @@ package com.restgram.domain.user.controller;
 import com.restgram.domain.user.dto.request.NicknameRequest;
 import com.restgram.domain.user.dto.response.CheckResponse;
 import com.restgram.domain.user.dto.response.FeedUserInfoResponse;
+import com.restgram.domain.user.dto.response.UserProfileResponse;
 import com.restgram.domain.user.service.UserService;
 import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.ApiResponse;
@@ -78,13 +79,13 @@ public class UserController {
     }
 
     // 유저 프로필 이미지 변경
-    @PatchMapping("/image")
-    public ResponseEntity<ApiResponse<?>> updateImage(Authentication authentication,
-                                                      @RequestPart(name = "image") @Nullable MultipartFile image) {
+    @PatchMapping(path = "/image", consumes = "multipart/form-data")
+    public ResponseEntity<ApiResponse<UserProfileResponse>> updateImage(Authentication authentication,
+                                                                        @RequestPart(name = "image") @Nullable MultipartFile image) {
         Long userId = Long.parseLong(authentication.getName());
-        userService.updateProfileImage(userId, image);
+        UserProfileResponse response = userService.updateProfileImage(userId, image);
 
-        return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.OK);
+        return new ResponseEntity<>(ApiResponse.createSuccess(response), HttpStatus.OK);
 
     }
 

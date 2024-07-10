@@ -117,16 +117,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateProfileImage(Long userId, MultipartFile image) {
+    public UserProfileResponse updateProfileImage(Long userId, MultipartFile image) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
                         "로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
-        if (image != null) {
-            user.updateProfileImage(s3Service.uploadFile(image, "user/profile/" + user.getId()));
+
+        // 이전 이미지
+        String beforeUrl = user.getProfileImage();
+
+        // s3 업로드 결과
+        String result = s3Service.uploadFile(image, "user/profile/" + user.getId());
+        user.updateProfileImage(result);
+
+        // 성공 후 이전 이미지 삭제
+        if (beforeUrl != null) {
+            s3Service.delete(beforeUrl);
         }
-        if (user.getProfileImage() != null) {
-            s3Service.delete(user.getProfileImage());
-        }
+
+        return UserProfileResponse.builder().imageUrl(result).build();
     }
 
 

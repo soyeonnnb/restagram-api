@@ -3,6 +3,7 @@ package com.restgram.domain.user.controller;
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.StoreInfoResponse;
+import com.restgram.domain.user.dto.response.UpdateCustomerInfoResponse;
 import com.restgram.domain.user.service.CustomerService;
 import com.restgram.global.entity.PaginationResponse;
 import com.restgram.global.exception.entity.ApiResponse;
@@ -56,6 +57,14 @@ public class CustomerController {
         customerService.updateCustomer(userId, request);
 
         return new ResponseEntity<>(ApiResponse.createSuccess(null), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<UpdateCustomerInfoResponse>> getUpdateCustomerInfo(Authentication authentication) {
+        Long userId = Long.parseLong(authentication.getName());
+        UpdateCustomerInfoResponse updateCustomerInfoResponse = customerService.getUpdateCustomerInfo(userId);
+
+        return new ResponseEntity<>(ApiResponse.createSuccess(updateCustomerInfoResponse), HttpStatus.OK);
     }
 
 }

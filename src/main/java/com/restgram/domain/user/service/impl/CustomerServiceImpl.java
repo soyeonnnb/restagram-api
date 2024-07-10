@@ -6,6 +6,7 @@ import com.restgram.domain.address.repository.SiggAddressRepository;
 import com.restgram.domain.user.dto.request.UpdateCustomerRequest;
 import com.restgram.domain.user.dto.response.LoginResponse;
 import com.restgram.domain.user.dto.response.StoreInfoResponse;
+import com.restgram.domain.user.dto.response.UpdateCustomerInfoResponse;
 import com.restgram.domain.user.entity.Customer;
 import com.restgram.domain.user.entity.Store;
 import com.restgram.domain.user.repository.CustomerRepository;
@@ -48,8 +49,8 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.findById(userId)
                 .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
                         "[일반] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
+        
         customer.updateDescription(request.description());
-        customer.updatePhone(request.phone());
     }
 
 
@@ -75,6 +76,15 @@ public class CustomerServiceImpl implements CustomerService {
                 .hasNext(hasNext)
                 .cursorId(nextCursorId)
                 .build();
+    }
+
+    @Override
+    public UpdateCustomerInfoResponse getUpdateCustomerInfo(Long userId) {
+        Customer customer = customerRepository.findById(userId)
+                .orElseThrow(() -> new RestApiException(UserErrorCode.INVALID_LOGIN_USER_ID,
+                        "[일반] 로그인 사용자ID가 유효하지 않습니다. [로그인 사용자ID=" + userId + "]"));
+
+        return UpdateCustomerInfoResponse.of(customer);
     }
 
 }
